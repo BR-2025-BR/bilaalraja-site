@@ -36,6 +36,8 @@
 :root[data-theme="dark"]{--bg:#000000;--panel:#1b1b1b;--ink:#ffffff;--ink2:#c4c4c4;
  --ink3:#8a8a8a;--rule:#2f2f2f;--s1:#ff9900;}
 *{box-sizing:border-box;margin:0;padding:0}
+#dots{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.wrap{position:relative;z-index:1}
 @supports (corner-shape: squircle){.card{corner-shape:squircle}}
 body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;
  line-height:1.55;-webkit-font-smoothing:antialiased}
@@ -56,6 +58,7 @@ footer a{color:var(--s1)}
 .rights{display:block;margin-top:12px;padding-top:12px;border-top:1px solid var(--rule);
  max-width:76ch;line-height:1.7;font-size:11.5px}
 </style></head><body><div class="wrap">
+<canvas id="dots" aria-hidden="true"></canvas>
 <h1>Bilaal Raja</h1>
 <div class="sub">Equity research &middot; quantitative analysis</div>
 <p class="lede">Work built from primary sources. The universe, the factor
@@ -85,4 +88,81 @@ for reuse. The underlying SEC filing data is public domain. Published as a
 personal project; nothing here is investment advice or a recommendation to buy
 or sell any security.</span>
 </footer>
-</div></body></html>
+</div>
+<script>
+(function(){
+  const c=document.getElementById("dots"), x=c.getContext("2d");
+  const calm=matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const dark=()=>matchMedia("(prefers-color-scheme: dark)").matches
+    || document.documentElement.dataset.theme==="dark";
+  let w=0,h=0,dpr=1,dots=[];
+
+  // Three depth layers. Nearer dots are bigger, brighter and shift further
+  // under tilt, which is what sells the parallax.
+  const LAYERS=[{n:70,r:[0.9,1.7],a:[.05,.11],p:6},
+                {n:46,r:[1.5,2.6],a:[.08,.16],p:14},
+                {n:24,r:[2.3,3.6],a:[.11,.21],p:26}];
+
+  function seed(){
+    dots=[];
+    for(const L of LAYERS) for(let i=0;i<L.n;i++) dots.push({
+      x:Math.random(), y:Math.random(),
+      r:L.r[0]+Math.random()*(L.r[1]-L.r[0]),
+      a:L.a[0]+Math.random()*(L.a[1]-L.a[0]),
+      p:L.p,
+      vx:(Math.random()-.5)*0.000045,
+      vy:(Math.random()-.5)*0.000045
+    });
+  }
+
+  function size(){
+    dpr=Math.min(devicePixelRatio||1,2);
+    w=innerWidth; h=innerHeight;
+    c.width=w*dpr; c.height=h*dpr;
+    x.setTransform(dpr,0,0,dpr,0,0);
+  }
+
+  // Tilt target, driven by gyroscope on a phone or the pointer on a desktop.
+  let tx=0,ty=0,cx=0,cy=0;
+  addEventListener("deviceorientation",e=>{
+    if(e.gamma==null) return;
+    tx=Math.max(-1,Math.min(1,e.gamma/35));          // left-right
+    ty=Math.max(-1,Math.min(1,((e.beta||0)-45)/35)); // front-back, 45deg rest
+  },true);
+  addEventListener("mousemove",e=>{
+    tx=(e.clientX/w-.5)*2; ty=(e.clientY/h-.5)*2;
+  },{passive:true});
+
+  // iOS will not emit orientation events without explicit permission, and only
+  // asks in response to a gesture. Try once on first touch, then stop.
+  function askOnce(){
+    const D=window.DeviceOrientationEvent;
+    if(D && typeof D.requestPermission==="function") D.requestPermission().catch(()=>{});
+    removeEventListener("touchend",askOnce); removeEventListener("click",askOnce);
+  }
+  addEventListener("touchend",askOnce,{passive:true});
+  addEventListener("click",askOnce);
+
+  function frame(){
+    cx+=(tx-cx)*0.045; cy+=(ty-cy)*0.045;   // ease, so tilt never jerks
+    x.clearRect(0,0,w,h);
+    const base=dark()?"255,255,255":"0,0,0";
+    for(const d of dots){
+      if(!calm){
+        d.x+=d.vx; d.y+=d.vy;
+        if(d.x<-0.02)d.x=1.02; if(d.x>1.02)d.x=-0.02;
+        if(d.y<-0.02)d.y=1.02; if(d.y>1.02)d.y=-0.02;
+      }
+      x.beginPath();
+      x.arc(d.x*w-cx*d.p, d.y*h-cy*d.p, d.r, 0, 6.2832);
+      x.fillStyle="rgba("+base+","+d.a+")";
+      x.fill();
+    }
+    requestAnimationFrame(frame);
+  }
+
+  size(); seed(); frame();
+  addEventListener("resize",()=>{size();},{passive:true});
+})();
+</script>
+</body></html>
