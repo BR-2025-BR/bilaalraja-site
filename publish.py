@@ -72,15 +72,15 @@ LANDING = """<!doctype html>
 "sameAs":["https://linkedin.com/in/bilaalraja"]}}
 </script>
 <style>
-:root{{--bg:#f6f6f4;--panel:#fff;--ink:#14140f;--ink2:#4a4a42;--ink3:#87867c;
- --rule:#e0dfd8;--s1:#2a78d6;
+:root{{--bg:#ffffff;--panel:#f4f4f4;--ink:#000000;--ink2:#3d3d3d;--ink3:#7a7a7a;
+ --rule:#d8d8d8;--s1:#ff9900;
  --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace;
  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;}}
 @media (prefers-color-scheme:dark){{:root:not([data-theme="light"]){{
- --bg:#131312;--panel:#1c1c1a;--ink:#f4f3ee;--ink2:#c0bfb6;--ink3:#8b8a80;
- --rule:#2e2e2a;--s1:#3987e5;}}}}
-:root[data-theme="dark"]{{--bg:#131312;--panel:#1c1c1a;--ink:#f4f3ee;--ink2:#c0bfb6;
- --ink3:#8b8a80;--rule:#2e2e2a;--s1:#3987e5;}}
+ --bg:#000000;--panel:#1b1b1b;--ink:#ffffff;--ink2:#c4c4c4;--ink3:#8a8a8a;
+ --rule:#2f2f2f;--s1:#ff9900;}}}}
+:root[data-theme="dark"]{{--bg:#000000;--panel:#1b1b1b;--ink:#ffffff;--ink2:#c4c4c4;
+ --ink3:#8a8a8a;--rule:#2f2f2f;--s1:#ff9900;}}
 *{{box-sizing:border-box;margin:0;padding:0}}
 @supports (corner-shape: squircle){{.card{{corner-shape:squircle}}}}
 body{{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;

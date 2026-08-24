@@ -1,0 +1,1 @@
+REVERT POINT: 06e2399  (Fix: pipeline script wrote to the old scratch path)

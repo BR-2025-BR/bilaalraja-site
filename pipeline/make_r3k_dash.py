@@ -80,24 +80,24 @@ HTML = """<meta charset="utf-8">
 <title>Russell 3000 Cross-Section</title>
 <style>
 :root{
-  --bg:#f6f6f4; --panel:#ffffff; --ink:#14140f; --ink2:#4a4a42; --ink3:#87867c;
-  --rule:#e0dfd8; --rule2:#f0efe9; --grid:#e8e7e0;
-  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; --s4:#a11b2e;
-  --dot:#8d8c82; --accentbg:#eaf1fb;
+  --bg:#ffffff; --panel:#f4f4f4; --ink:#000000; --ink2:#3d3d3d; --ink3:#7a7a7a;
+  --rule:#d8d8d8; --rule2:#ececec; --grid:#e6e6e6;
+  --s1:#ff9900; --s2:#000000; --s3:#c47400; --s4:#6b6b6b;
+  --dot:#9a9a9a; --accentbg:#fff3e0;
   --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace;
   --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#131312; --panel:#1c1c1a; --ink:#f4f3ee; --ink2:#c0bfb6; --ink3:#8b8a80;
-  --rule:#2e2e2a; --rule2:#232320; --grid:#2a2a26;
-  --s1:#3987e5; --s2:#f07b4c; --s3:#22c68a; --s4:#e05a68;
-  --dot:#6e6d65; --accentbg:#16263a;
+  --bg:#000000; --panel:#1b1b1b; --ink:#ffffff; --ink2:#c4c4c4; --ink3:#8a8a8a;
+  --rule:#2f2f2f; --rule2:#212121; --grid:#282828;
+  --s1:#ff9900; --s2:#ffffff; --s3:#ffb84d; --s4:#8a8a8a;
+  --dot:#6d6d6d; --accentbg:#2a1c05;
 }}
 :root[data-theme="dark"]{
-  --bg:#131312; --panel:#1c1c1a; --ink:#f4f3ee; --ink2:#c0bfb6; --ink3:#8b8a80;
-  --rule:#2e2e2a; --rule2:#232320; --grid:#2a2a26;
-  --s1:#3987e5; --s2:#f07b4c; --s3:#22c68a; --s4:#e05a68;
-  --dot:#6e6d65; --accentbg:#16263a;
+  --bg:#000000; --panel:#1b1b1b; --ink:#ffffff; --ink2:#c4c4c4; --ink3:#8a8a8a;
+  --rule:#2f2f2f; --rule2:#212121; --grid:#282828;
+  --s1:#ff9900; --s2:#ffffff; --s3:#ffb84d; --s4:#8a8a8a;
+  --dot:#6d6d6d; --accentbg:#2a1c05;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 @supports (corner-shape: squircle){
