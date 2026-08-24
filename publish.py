@@ -100,7 +100,7 @@ footer{{margin-top:40px;padding-top:18px;border-top:1px solid var(--rule);
 footer a{{color:var(--s1)}}
 </style></head><body><div class="wrap">
 <h1>Bilaal Raja</h1>
-<div class="sub">Equity research &middot; quantitative analysis &middot; Liverpool</div>
+<div class="sub">Equity research &middot; quantitative analysis</div>
 <p class="lede">Work built from primary sources. The universe, the factor
 construction and the validation below are my own, assembled from SEC XBRL
 company facts rather than a vendor feed.</p>
