@@ -186,8 +186,8 @@ footer{font-size:11.5px;color:var(--ink3);font-family:var(--mono);border-top:1px
 <header>
   <div>
     <h1>Russell 3000 &mdash; Cross-Section</h1>
-    <p class="sub">One point per company at its own most recently filed quarter. No history, no trails
-      &mdash; where the US market sits right now.</p>
+    <p class="sub">One point per company, at its own most recently filed quarter.
+      Where the US market sits right now.</p>
   </div>
   <div class="stamp" id="stamp"></div>
   <div class="byline">
