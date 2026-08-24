@@ -47,8 +47,30 @@ def rewrite_links(html: str) -> tuple[str, int]:
 LANDING = """<!doctype html>
 <html lang="en-GB"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Bilaal Raja</title>
-<meta name="description" content="Equity research and quantitative work built from primary SEC filings.">
+<title>Bilaal Raja | Equity Research and Quantitative Analysis</title>
+<meta name="description" content="Bilaal Raja. Cross-sectional equity screening built from primary SEC EDGAR filings: the full Russell 3000, metrics computed point in time, management commentary parsed alongside.">
+<meta name="author" content="Bilaal Raja">
+<link rel="canonical" href="https://bilaalraja.com/">
+<meta property="og:type" content="profile">
+<meta property="og:site_name" content="Bilaal Raja">
+<meta property="og:title" content="Bilaal Raja | Equity Research and Quantitative Analysis">
+<meta property="og:description" content="Cross-sectional equity screening built from primary SEC EDGAR filings. The full Russell 3000, metrics computed point in time, management commentary parsed alongside.">
+<meta property="og:url" content="https://bilaalraja.com/">
+<meta property="og:image" content="https://bilaalraja.com/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Bilaal Raja | Equity Research and Quantitative Analysis">
+<meta name="twitter:description" content="Cross-sectional equity screening built from primary SEC EDGAR filings.">
+<meta name="twitter:image" content="https://bilaalraja.com/og.png">
+<script type="application/ld+json">
+{{"@context":"https://schema.org","@type":"Person","name":"Bilaal Raja",
+"url":"https://bilaalraja.com/","image":"https://bilaalraja.com/og.png",
+"jobTitle":"Quality Scientist","description":"Equity research and quantitative analysis built from primary SEC filings.",
+"alumniOf":{{"@type":"CollegeOrUniversity","name":"University of Manchester"}},
+"knowsAbout":["Equity research","Quantitative analysis","SEC EDGAR filings","Factor investing","Financial data engineering"],
+"sameAs":["https://linkedin.com/in/bilaalraja"]}}
+</script>
 <style>
 :root{{--bg:#f6f6f4;--panel:#fff;--ink:#14140f;--ink2:#4a4a42;--ink3:#87867c;
  --rule:#e0dfd8;--s1:#2a78d6;
@@ -105,6 +127,59 @@ domain; the analysis is my own.<br>
 </div></body></html>
 """
 
+
+
+# ----------------------------------------------------------------- metadata
+# Open Graph is the one that actually matters here: without it a link pasted
+# into LinkedIn or an email renders as a bare URL instead of a card.
+DESCRIPTIONS = {
+ "russell3000": ("Russell 3000 Cross-Section | Bilaal Raja",
+   "Every relevant line item pulled from SEC EDGAR filings for the Russell "
+   "3000, with key financial metrics computed point in time. 2,544 companies, "
+   "35 metrics, sector-neutral percentile ranking."),
+ "commentary": ("Russell 3000 Results Commentary | Bilaal Raja",
+   "Management's own discussion of results, parsed from 10-Q and 10-K filings "
+   "for thousands of US listed companies and matched to the reported figures."),
+}
+
+
+def inject_meta(html: str, path: str, domain: str) -> str:
+    if path not in DESCRIPTIONS:
+        return html
+    title, desc = DESCRIPTIONS[path]
+    url = f"https://{domain}/{path}"
+    tags = f"""
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="{desc}">
+<meta name="author" content="Bilaal Raja">
+<link rel="canonical" href="{url}">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Bilaal Raja">
+<meta property="og:title" content="{title}">
+<meta property="og:description" content="{desc}">
+<meta property="og:url" content="{url}">
+<meta property="og:image" content="https://{domain}/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{title}">
+<meta name="twitter:description" content="{desc}">
+<meta name="twitter:image" content="https://{domain}/og.png">
+"""
+    # insert straight after the existing <title>...</title>
+    i = html.find("</title>")
+    return html[:i + 8] + tags + html[i + 8:] if i != -1 else tags + html
+
+
+def write_sitemap(site: Path, domain: str, paths, lastmod: str):
+    urls = "".join(
+        f"  <url><loc>https://{domain}/{p}</loc><lastmod>{lastmod}</lastmod>"
+        f"<changefreq>monthly</changefreq><priority>{pr}</priority></url>\n"
+        for p, pr in paths)
+    (site / "sitemap.xml").write_text(
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        + urls + "</urlset>\n")
 
 
 # ---------------------------------------------------------------- referrers
@@ -172,6 +247,7 @@ def main():
         if "dashboard" in src.name:
             meta = meta_from_dashboard(html)
         html, n = rewrite_links(html)
+        html = inject_meta(html, path, DOMAIN)
         d = SITE / path
         d.mkdir(parents=True, exist_ok=True)
         (d / "index.html").write_text(html)
@@ -192,6 +268,9 @@ def main():
         "/*\n  X-Content-Type-Options: nosniff\n"
         "  Referrer-Policy: strict-origin-when-cross-origin\n")
     (SITE / ".nojekyll").write_text("")
+    write_sitemap(SITE, DOMAIN,
+                  [("", "1.0"), ("russell3000", "0.9"), ("commentary", "0.8")],
+                  meta["built"])
     (SITE / "robots.txt").write_text(
         "User-agent: *\nDisallow: /r/\nAllow: /\n"
         f"Sitemap: https://{DOMAIN}/sitemap.xml\n")
