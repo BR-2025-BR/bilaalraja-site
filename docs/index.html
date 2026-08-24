@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en-GB"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bilaal Raja</title>
+<meta name="description" content="Equity research and quantitative work built from primary SEC filings.">
+<style>
+:root{--bg:#f6f6f4;--panel:#fff;--ink:#14140f;--ink2:#4a4a42;--ink3:#87867c;
+ --rule:#e0dfd8;--s1:#2a78d6;
+ --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace;
+ --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+ --bg:#131312;--panel:#1c1c1a;--ink:#f4f3ee;--ink2:#c0bfb6;--ink3:#8b8a80;
+ --rule:#2e2e2a;--s1:#3987e5;}}
+:root[data-theme="dark"]{--bg:#131312;--panel:#1c1c1a;--ink:#f4f3ee;--ink2:#c0bfb6;
+ --ink3:#8b8a80;--rule:#2e2e2a;--s1:#3987e5;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;
+ line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:760px;margin:0 auto;padding:64px 22px 80px}
+h1{font-size:26px;letter-spacing:-.01em;margin-bottom:4px}
+.sub{color:var(--ink3);font-family:var(--mono);font-size:12.5px;margin-bottom:30px}
+.lede{color:var(--ink2);margin-bottom:34px;max-width:60ch}
+.card{display:block;text-decoration:none;color:inherit;background:var(--panel);
+ border:1px solid var(--rule);border-left:3px solid var(--s1);border-radius:3px;
+ padding:17px 19px;margin-bottom:12px}
+.card:hover{border-left-color:var(--ink)}
+.card h2{font-size:16.5px;margin-bottom:4px}
+.card p{color:var(--ink2);font-size:14px}
+.card .m{font-family:var(--mono);font-size:11.5px;color:var(--ink3);margin-top:8px}
+footer{margin-top:40px;padding-top:18px;border-top:1px solid var(--rule);
+ font-family:var(--mono);font-size:12px;color:var(--ink3)}
+footer a{color:var(--s1)}
+</style></head><body><div class="wrap">
+<h1>Bilaal Raja</h1>
+<div class="sub">Equity research &middot; quantitative analysis &middot; Liverpool</div>
+<p class="lede">Work built from primary sources. The universe, the factor
+construction and the validation below are my own, assembled from SEC XBRL
+company facts rather than a vendor feed.</p>
+
+<a class="card" href="/russell3000">
+  <h2>Russell 3000 Cross-Section</h2>
+  <p>2,544 companies with computable trailing-twelve-month fundamentals, screened on
+  35 metrics with sector-neutral percentile ranking and a composite score.</p>
+  <div class="m">data through 2026-08-20 &middot; rebuilt 24 August 2026</div>
+</a>
+
+<a class="card" href="/commentary">
+  <h2>Results Commentary</h2>
+  <p>Management's own discussion of results, extracted from 10-Q and 10-K
+  filings and matched to the reported figures.</p>
+  <div class="m">data through 2026-08-20 &middot; rebuilt 24 August 2026</div>
+</a>
+
+<footer>
+Built from SEC XBRL company facts and market prices. SEC filing data is public
+domain; the analysis is my own.<br>
+<a href="https://linkedin.com/in/bilaalraja">linkedin.com/in/bilaalraja</a>
+</footer>
+</div></body></html>
