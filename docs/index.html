@@ -56,6 +56,14 @@ h1{font-size:26px;letter-spacing:-.01em;margin-bottom:4px}
  padding:18px 20px;margin-bottom:12px}
 .card:hover{border-left-color:var(--ink)}
 .card h2{font-size:16.5px;margin-bottom:4px}
+.chead{display:flex;align-items:center;gap:11px;margin-bottom:4px}
+.chead h2{margin-bottom:0}
+.ico{flex:0 0 auto;width:34px;height:34px;border-radius:10px;
+ display:grid;place-items:center;background:var(--panel);
+ border:1px solid var(--rule);color:var(--s1)}
+.card:hover .ico{border-color:var(--s1)}
+.ico svg{width:19px;height:19px;stroke:currentColor;fill:none;
+ stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 .card p{color:var(--ink2);font-size:14px}
 .card .m{font-family:var(--mono);font-size:11.5px;color:var(--ink3);margin-top:8px}
 footer{margin-top:40px;padding-top:18px;border-top:1px solid var(--rule);
@@ -79,21 +87,32 @@ construction and the validation below are my own, assembled from SEC XBRL
 company facts rather than a vendor feed.</p>
 
 <a class="card" href="/russell3000">
-  <h2>Russell 3000 Cross-Section</h2>
+  <div class="chead"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M4 3v16a2 2 0 0 0 2 2h15"/>
+    <circle cx="9"  cy="15" r="1.5"/><circle cx="13" cy="9"  r="1.5"/>
+    <circle cx="17" cy="13" r="1.5"/><circle cx="19" cy="6"  r="1.5"/>
+    <circle cx="8"  cy="9"  r="1.5"/>
+  </svg></span><h2>Russell 3000 Cross-Section</h2></div>
   <p>2,544 companies with computable trailing-twelve-month fundamentals, screened on
   35 metrics with sector-neutral percentile ranking and a composite score.</p>
   <div class="m">data through 2026-08-20 &middot; rebuilt 24 August 2026</div>
 </a>
 
 <a class="card" href="/commentary">
-  <h2>Results Commentary</h2>
+  <div class="chead"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M21 12a7 7 0 0 1-7 7H8l-4 3v-4.6A7 7 0 0 1 3 12a7 7 0 0 1 7-7h4a7 7 0 0 1 7 7z"/>
+    <path d="M8.5 10.5h7"/><path d="M8.5 13.5h4"/>
+  </svg></span><h2>Results Commentary</h2></div>
   <p>Management's own discussion of results, extracted from 10-Q and 10-K
   filings and matched to the reported figures.</p>
   <div class="m">data through 2026-08-20 &middot; rebuilt 24 August 2026</div>
 </a>
 
 <a class="card" href="/methodology">
-  <h2>How this was built</h2>
+  <div class="chead"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M12 3 3 7.5 12 12l9-4.5L12 3z"/>
+    <path d="M3 12.5 12 17l9-4.5"/><path d="M3 17.5 12 22l9-4.5"/>
+  </svg></span><h2>How this was built</h2></div>
   <p>Universe construction, point-in-time discipline, metric definitions, and the
   thirteen defects found by checking output against reality.</p>
   <div class="m">methodology</div>
