@@ -19,7 +19,7 @@ import json, math, datetime as _dt
 from pathlib import Path
 import pandas as pd
 
-HERE = Path("/Users/bilaa/.claude/jobs/52c77db1/tmp/r3k")
+HERE = Path(__file__).resolve().parent
 rows = json.load(open(HERE/"r3k_scored.json"))
 skipped = json.load(open(HERE/"r3k_skipped_full.json"))
 uni = pd.read_json(HERE/"r3k_universe.json")

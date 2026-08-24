@@ -39,8 +39,12 @@
   --dot:#6e6d65; --accentbg:#16263a;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-.updated{margin:0;padding:8px 14px;align-self:stretch;border:1px solid var(--rule);
-  border-left:3px solid var(--s1);background:var(--panel);border-radius:3px;
+@supports (corner-shape: squircle){
+  button,select,input[type=search],.panel,.updated,.warn,.sm figure,.tscroll,
+  a[href*="commentary"],.tip,canvas{corner-shape:squircle}
+}
+.updated{margin:0;padding:9px 15px;align-self:stretch;border:1px solid var(--rule);
+  border-left:3px solid var(--s1);background:var(--panel);border-radius:12px;
   font-size:12.5px;color:var(--ink2);font-family:var(--mono)}
 body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.5;
   -webkit-font-smoothing:antialiased}
@@ -51,7 +55,7 @@ h1{font-size:clamp(21px,4vw,30px);letter-spacing:-.02em;line-height:1.08;font-we
 .sub{color:var(--ink2);font-size:14px;margin-top:4px;max-width:62ch}
 .stamp{font-family:var(--mono);font-size:11px;letter-spacing:.05em;color:var(--ink3);text-align:right;
   white-space:nowrap}
-.panel{background:var(--panel);border:1px solid var(--rule);border-radius:10px;padding:16px 18px}
+.panel{background:var(--panel);border:1px solid var(--rule);border-radius:14px;padding:16px 18px}
 .phead{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;
   margin-bottom:10px}
 h2{font-size:15px;font-weight:650;letter-spacing:-.01em}
@@ -61,17 +65,17 @@ h2{font-size:15px;font-weight:650;letter-spacing:-.01em}
 .fld{display:flex;flex-direction:column;gap:4px;min-width:190px}
 label{font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--ink3);font-weight:600}
 select,input[type=search]{font:inherit;font-size:13.5px;padding:7px 9px;border:1px solid var(--rule);
-  border-radius:7px;background:var(--panel);color:var(--ink);width:100%}
+  border-radius:10px;background:var(--panel);color:var(--ink);width:100%}
 select:focus,input:focus{outline:2px solid var(--s1);outline-offset:1px}
 .toggles{display:flex;gap:6px}
 button{font:inherit;font-size:12.5px;font-weight:600;padding:7px 13px;border:1px solid var(--rule);
-  border-radius:7px;background:var(--panel);color:var(--ink2);cursor:pointer}
+  border-radius:10px;background:var(--panel);color:var(--ink2);cursor:pointer}
 button[aria-pressed="true"]{background:var(--s1);border-color:var(--s1);color:#fff}
 button:focus-visible{outline:2px solid var(--s1);outline-offset:2px}
 .chartbox{position:relative;width:100%}
-canvas{width:100%;height:auto;display:block;border-radius:6px;cursor:crosshair}
+canvas{width:100%;height:auto;display:block;border-radius:10px;cursor:crosshair}
 .tip{position:absolute;pointer-events:none;background:var(--panel);border:1px solid var(--rule);
-  border-radius:8px;padding:8px 11px;font-size:12.5px;box-shadow:0 4px 14px rgba(0,0,0,.13);
+  border-radius:12px;padding:9px 12px;font-size:12.5px;box-shadow:0 4px 14px rgba(0,0,0,.13);
   opacity:0;transition:opacity .1s;min-width:172px;z-index:5}
 .tip.on{opacity:1}
 .tip b{display:block;font-size:13px;margin-bottom:1px}
@@ -86,7 +90,7 @@ canvas{width:100%;height:auto;display:block;border-radius:6px;cursor:crosshair}
 .chip[aria-pressed="true"] i{background:var(--s1)}
 .chip small{font-family:var(--mono);font-size:10.5px;color:var(--ink3)}
 .sm{display:grid;grid-template-columns:repeat(auto-fill,minmax(178px,1fr));gap:12px;margin-top:6px}
-.sm figure{border:1px solid var(--rule2);border-radius:8px;padding:8px 8px 4px;background:var(--panel)}
+.sm figure{border:1px solid var(--rule2);border-radius:12px;padding:8px 8px 4px;background:var(--panel)}
 .sm figcaption{font-size:12px;font-weight:600;margin-bottom:5px;display:flex;justify-content:space-between;
   align-items:baseline;gap:6px}
 .sm figcaption em{font-style:normal;font-family:var(--mono);font-size:10.5px;color:var(--ink3);font-weight:400}
@@ -96,13 +100,13 @@ th:first-child,td:first-child{text-align:left}
 th{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);font-weight:600;
   position:sticky;top:0;background:var(--panel)}
 td.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
-.tscroll{max-height:390px;overflow:auto;border:1px solid var(--rule2);border-radius:8px}
+.tscroll{max-height:390px;overflow:auto;border:1px solid var(--rule2);border-radius:12px}
 details{border-top:1px solid var(--rule);padding-top:12px}
 summary{cursor:pointer;font-size:13.5px;font-weight:600;color:var(--ink2)}
 details .body{margin-top:10px;font-size:13.5px;color:var(--ink2);display:flex;flex-direction:column;gap:9px}
 details .body b{color:var(--ink)}
 details .body ul{margin-left:17px;display:flex;flex-direction:column;gap:5px}
-.warn{background:var(--accentbg);border-left:3px solid var(--s1);padding:10px 13px;border-radius:0 7px 7px 0;
+.warn{background:var(--accentbg);border-left:3px solid var(--s1);padding:10px 13px;border-radius:0 12px 12px 0;
   font-size:13.5px;color:var(--ink2)}
 
 .byline{display:flex;justify-content:space-between;align-items:baseline;gap:14px;flex-wrap:wrap;
@@ -140,7 +144,7 @@ footer{font-size:11.5px;color:var(--ink3);font-family:var(--mono);border-top:1px
       searchable across 11.3M characters of what they wrote about their own quarters.</p></div>
   <a href="/commentary" target="_blank"
      rel="noopener" style="font-size:13.5px;font-weight:600;padding:9px 16px;border:1px solid var(--s1);
-     border-radius:8px;color:var(--s1);text-decoration:none;white-space:nowrap">Open commentary &rarr;</a>
+     border-radius:10px;color:var(--s1);text-decoration:none;white-space:nowrap">Open commentary &rarr;</a>
 </section>
 
 <section class="panel">
