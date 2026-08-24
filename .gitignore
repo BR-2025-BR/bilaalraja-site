@@ -10,7 +10,7 @@ pipeline/commentary.html
 pipeline/r3k_dashboard.html
 pipeline/*.bak
 
-# Tracked contact links: generated from contacts.txt, one page per person.
-# Not committed, so recipient names stay off a public repo.
-docs/r/
+# The contact list holds real names, so it stays local. The generated pages
+# under docs/r/ MUST be committed or Cloudflare never receives them and every
+# tracked link 404s. They contain only the slug, no names.
 contacts.txt
