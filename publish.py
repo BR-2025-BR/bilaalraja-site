@@ -91,6 +91,12 @@ body{{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15
 h1{{font-size:26px;letter-spacing:-.01em;margin-bottom:4px}}
 .sub{{color:var(--ink3);font-family:var(--mono);font-size:12.5px;margin-bottom:30px}}
 .lede{{color:var(--ink2);margin-bottom:34px;max-width:60ch}}
+.stats{{display:flex;flex-wrap:wrap;gap:34px;margin:4px 0 30px;
+ padding:18px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}}
+.stats b{{display:block;font-family:var(--mono);font-size:25px;font-weight:500;
+ letter-spacing:-.02em;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1.15}}
+.stats span{{font-family:var(--mono);font-size:10.5px;letter-spacing:.13em;
+ text-transform:uppercase;color:var(--ink3)}}
 .card{{display:block;text-decoration:none;color:inherit;background:var(--panel);
  border:1px solid var(--rule);border-left:3px solid var(--s1);border-radius:14px;
  padding:18px 20px;margin-bottom:12px}}
@@ -107,6 +113,13 @@ footer a{{color:var(--s1)}}
 <canvas id="dots" aria-hidden="true"></canvas>
 <h1>Bilaal Raja</h1>
 <div class="sub">Equity research &middot; quantitative analysis</div>
+<div class="stats">
+  <div><b>{n}</b><span>companies</span></div>
+  <div><b>${mcap}tn</b><span>market cap</span></div>
+  <div><b>{metrics}</b><span>metrics</span></div>
+  <div><b>{sectors}</b><span>sectors</span></div>
+</div>
+
 <p class="lede">Work built from primary sources. The universe, the factor
 construction and the validation below are my own, assembled from SEC XBRL
 company facts rather than a vendor feed.</p>
@@ -602,6 +615,7 @@ def main():
         sys.exit("could not read META from the dashboard — landing page not written")
     pretty = dict(meta, n=f"{meta['n']:,}", year=meta["built"][:4], domain=DOMAIN,
                   universe=f"{meta['universe']:,}", skipped=f"{meta['skipped']:,}",
+                  mcap=f"{meta['total_mcap']/1000:.1f}",
                   banks=f"{meta['banks']:,}")
     (SITE / "index.html").write_text(LANDING.format(**pretty))
     print(f"  /              {len(LANDING)/1e3:6.2f} KB   landing page")

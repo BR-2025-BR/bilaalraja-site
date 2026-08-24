@@ -74,6 +74,8 @@ meta={
  "latest_end":max(x["end"] for x in rows if x.get("end")),
  "built":_dt.datetime.now().strftime("%Y-%m-%d"),
  "built_human":_dt.datetime.now().strftime("%-d %B %Y"),
+ "metrics":len(METRICS),
+ "sectors":len(SECTORS),
 }
 
 HTML = """<meta charset="utf-8">
@@ -415,13 +417,27 @@ function draw(){
   PLOT={pts,dx,dy};
 
   const sel=st.sector, hue=cssv("--s1"), dot=cssv("--dot");
+
+  // On the first paint only, points materialise left to right. It costs
+  // nothing and it makes the volume legible: a static cloud is just there,
+  // whereas watching two and a half thousand points arrive conveys scale.
+  // ENTER runs 0 -> 1; each point's own progress is offset by its x position.
+  const ent=(p)=>{
+    if(ENTER>=1) return 1;
+    const lead=(p.x-L)/Math.max(pw,1);              // 0 at left, 1 at right
+    const t=(ENTER*1.55)-lead*0.55;                 // sweep, then settle
+    return t<=0?0:t>=1?1:t*t*(3-2*t);               // smoothstep
+  };
+
   // background layer first so the highlighted sector always sits on top
   for(const p of pts){ if(sel&&p.d.s===sel) continue;
-    g.globalAlpha=sel?0.13:0.34; g.fillStyle=dot;
-    g.beginPath(); g.arc(p.x,p.y,sel?4.4:5.2,0,6.284); g.fill(); }
+    const e=ent(p); if(e<=0) continue;
+    g.globalAlpha=(sel?0.13:0.34)*e; g.fillStyle=dot;
+    g.beginPath(); g.arc(p.x,p.y,(sel?4.4:5.2)*(0.35+0.65*e),0,6.284); g.fill(); }
   if(sel){ for(const p of pts){ if(p.d.s!==sel) continue;
-      g.globalAlpha=0.9; g.fillStyle=hue;
-      g.beginPath(); g.arc(p.x,p.y,6.4,0,6.284); g.fill(); } }
+      const e=ent(p); if(e<=0) continue;
+      g.globalAlpha=0.9*e; g.fillStyle=hue;
+      g.beginPath(); g.arc(p.x,p.y,6.4*(0.35+0.65*e),0,6.284); g.fill(); } }
   g.globalAlpha=1;
 
   if(st.q){
@@ -617,7 +633,18 @@ if(st.sector){
     .find(c=>c.textContent.startsWith(st.sector));
   if(b) b.setAttribute("aria-pressed","true");
 }
+// Entrance runs once, on first paint, and is skipped for anyone who has asked
+// for reduced motion.
+let ENTER = matchMedia("(prefers-reduced-motion: reduce)").matches ? 1 : 0;
 draw(); drawSmall();
+if(ENTER<1){
+  const t0=performance.now(), DUR=900;
+  (function step(now){
+    ENTER=Math.min(1,(now-t0)/DUR);
+    draw();
+    if(ENTER<1) requestAnimationFrame(step);
+  })(t0);
+}
 </script>
 """
 
