@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en-GB"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Methodology | Bilaal Raja</title>
+<meta name="description" content="How the Russell 3000 cross-section is built from SEC EDGAR filings: universe construction, point-in-time discipline, metric definitions, and the defects found along the way.">
+<link rel="canonical" href="https://bilaalraja.com/methodology">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Methodology | Bilaal Raja">
+<meta property="og:description" content="How the cross-section is built, and the thirteen defects found by checking output against reality.">
+<meta property="og:url" content="https://bilaalraja.com/methodology">
+<meta property="og:image" content="https://bilaalraja.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+:root{--bg:#ffffff;--panel:#f4f4f4;--ink:#000000;--ink2:#3d3d3d;--ink3:#7a7a7a;
+ --rule:#d8d8d8;--rule2:#ececec;--s1:#ff9900;
+ --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace;
+ --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+ --bg:#000000;--panel:#1b1b1b;--ink:#ffffff;--ink2:#c4c4c4;--ink3:#8a8a8a;
+ --rule:#2f2f2f;--rule2:#212121;--s1:#ff9900;}}
+:root[data-theme="dark"]{--bg:#000000;--panel:#1b1b1b;--ink:#ffffff;--ink2:#c4c4c4;
+ --ink3:#8a8a8a;--rule:#2f2f2f;--rule2:#212121;--s1:#ff9900;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;
+ line-height:1.68;-webkit-font-smoothing:antialiased}
+.wrap{max-width:760px;margin:0 auto;padding:56px 22px 90px}
+a{color:var(--s1)}
+.back{font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-decoration:none;
+ display:inline-block;margin-bottom:34px}
+h1{font-size:31px;letter-spacing:-.018em;line-height:1.14;margin-bottom:10px}
+.lede{color:var(--ink2);font-size:17px;margin-bottom:14px}
+.stamp{font-family:var(--mono);font-size:12px;color:var(--ink3);
+ padding-bottom:26px;border-bottom:1px solid var(--rule);margin-bottom:34px}
+h2{font-size:20px;letter-spacing:-.012em;margin:40px 0 12px}
+h3{font-size:15.5px;margin:26px 0 6px}
+p{margin-bottom:14px;color:var(--ink2)}
+p strong,li strong{color:var(--ink);font-weight:600}
+ul{margin:0 0 16px 20px} li{margin-bottom:9px;color:var(--ink2)}
+code{font-family:var(--mono);font-size:.88em;background:var(--panel);
+ padding:1px 5px;border-radius:5px;color:var(--ink)}
+.note{background:var(--panel);border-left:3px solid var(--s1);border-radius:12px;
+ padding:15px 18px;margin:22px 0}
+.note p:last-child{margin-bottom:0}
+ol.defects{list-style:none;counter-reset:d;margin:0;padding:0}
+ol.defects li{counter-increment:d;background:var(--panel);border:1px solid var(--rule2);
+ border-radius:14px;padding:16px 18px;margin-bottom:10px}
+ol.defects li::before{content:counter(d,decimal-leading-zero);font-family:var(--mono);
+ font-size:11px;color:var(--s1);display:block;margin-bottom:5px;letter-spacing:.08em}
+ol.defects b{display:block;color:var(--ink);font-size:15.5px;margin-bottom:5px}
+ol.defects p{margin:0;font-size:14.5px}
+footer{margin-top:52px;padding-top:20px;border-top:1px solid var(--rule);
+ font-family:var(--mono);font-size:11.5px;color:var(--ink3);line-height:1.7}
+</style></head><body><div class="wrap">
+<a class="back" href="/">&larr; BILAALRAJA.COM</a>
+<h1>How this was built</h1>
+<p class="lede">The universe, the point-in-time discipline, the metric definitions,
+and the defects I found along the way.</p>
+<div class="stamp">2,544 companies &middot; data through 2026-08-20 &middot;
+rebuilt 24 August 2026</div>
+
+<h2>What this is, and what it is not</h2>
+<p>It is a <strong>reconstruction</strong>, not the licensed index. Constituents are
+the top 3,000 US-listed companies by market capitalisation on the price date,
+rebuilt from SEC filings using Russell's own published rule. It is not a
+membership list, and where FTSE Russell's actual reconstitution differs, mine
+will differ with it.</p>
+<p>Of 3,000 candidates, <strong>2,544 carry enough filed data</strong> to compute a
+trailing twelve month figure. The remaining 456 are absent, not zero. That
+distinction matters: dropping them silently would bias every cross-sectional
+statistic on the page.</p>
+
+<h2>Point in time</h2>
+<p>Every figure is <strong>as filed</strong>, not as later restated. A company that
+revised its June quarter in October shows what it originally reported.</p>
+<ul>
+<li>TTM is reconstructed from <strong>four contiguous quarters</strong>, accepted
+only where the window spans 240 to 300 days. Anything outside that is a gap, and
+a gap is a null rather than a guess.</li>
+<li>Filers on a 52/53 week calendar produce two quarters ending days apart.
+Those are <strong>deduplicated by period end</strong>, otherwise a quarter is
+double counted.</li>
+<li>Concept selection is <strong>duration-aware</strong>. An instantaneous balance
+sheet fact and a quarterly flow carry the same tag in places, and taking either
+without checking the period type silently mixes stocks with flows.</li>
+<li>Prices are a <strong>single dated snapshot</strong>. Fundamentals are as
+filed. The two are not contemporaneous and the page says so.</li>
+</ul>
+
+<h2>Metric definitions worth stating</h2>
+<h3>Return on capital employed, not invested capital</h3>
+<p>ROCE uses equity plus debt. Subtracting cash to reach invested capital
+collapses the denominator on cash-rich balance sheets and produces returns in
+the thousands of percent, which is arithmetic rather than insight. Capital
+employed is guarded at a floor so a near-zero denominator cannot manufacture a
+ranking.</p>
+<h3>Banks do not report revenue</h3>
+<p><strong>171 banks carry no revenue tag at all.</strong> They use net
+interest income plus non-interest income instead. Anyone screening the full
+market on a revenue multiple without handling this is quietly excluding an
+entire sector, and will not notice.</p>
+<h3>Winsorisation and sector-neutral ranking</h3>
+<p>Raw cross-sectional ranges are unusable. Percentiles are computed within
+sector so a utility is compared with utilities, and extreme values are clipped
+rather than dropped, so the company stays in the ranking without dominating it.</p>
+
+<h2>Sector is a filter, not a colour</h2>
+<p>Twelve categorical hues on three thousand overlapping points is not a design
+preference, it is a measurable failure. Run through a colourblind separation
+check, twelve hues score a worst all-pairs OKLab distance of <strong>2.0</strong>
+against a threshold of 8. Even four hues only pass with a carefully chosen set.</p>
+<p>So the main chart is a neutral density cloud and one sector highlights at a
+time, which is always a two-category comparison and always separable. Comparing
+sectors is done with small multiples, which is the prescribed route when
+all-pairs separation fails.</p>
+
+<h2>Thirteen defects, and how they were found</h2>
+<div class="note"><p>Every one of these was caught by checking output against
+reality, not by reading code. None of them raised an error. That is the point
+worth taking from this section: a pipeline that runs cleanly and reports success
+can still be wrong in ways only a sanity check will surface.</p></div>
+<ol class="defects">
+<li><b>American depositary receipts valued at the ordinary share count</b>
+<p>One company appeared at a $555bn market capitalisation. The share count was
+ordinary shares; the price was per ADS. Fixed by cross-checking counts against
+an independent source and excluding on an ADR signature.</p></li>
+<li><b>Reverse splits left share counts unadjusted</b>
+<p>545 names carried pre-split counts against post-split prices. Fixed by
+applying a cumulative split factor from the period end forward.</p></li>
+<li><b>Multi-class filers were invisible</b>
+<p>Several of the largest companies in the market never became candidates,
+because their share counts are dimensioned by class and do not appear in the
+undimensioned cover-page data. Fixed by broadening the candidate pool to every
+tickered filer rather than trusting one tag.</p></li>
+<li><b>A truncated filing history deleted the banking sector</b>
+<p>The stored form list holds only the most recent filings. Testing "does this
+company file a 10-K" against it excluded frequent filers whose annual report had
+scrolled off the end. Fixed by removing the positive form test entirely.</p></li>
+<li><b>Ticker selection preferred baby bonds to common stock</b>
+<p>A utility resolved to its preferred note rather than its common line, valuing
+it at $3.3bn instead of $29.1bn. Fixed by preferring the ticker that carries a
+reported share count, which only common equity does.</p></li>
+<li><b>Cash flow read from the wrong accessor</b>
+<p>Operating cash flow resolved for 18 quarters where a different accessor found
+71. Free cash flow coverage rose from 0.8% to 81.7% once corrected.</p></li>
+<li><b>Tag migration produced negative quarters</b>
+<p>A revenue standard change mid-history produced negative implied quarters when
+differencing cumulative figures. Now guarded: a negative quarter inside a TTM
+window invalidates the window rather than propagating.</p></li>
+<li><b>Log axes on raw percentiles</b>
+<p>A second-percentile value near 1e-9 stretched an axis across nine decades and
+compressed every real observation into a line. Found only by rendering the page
+and looking at it.</p></li>
+<li><b>A grouped operation silently misaligned</b>
+<p>A pandas grouped apply returned results in a different order than the frame it
+was assigned to, so a large-cap growth name scored 85.9 on a cheapness screen.
+Caught by a sanity anchor; fixed by ranking within group directly.</p></li>
+<li><b>Footnotes returned instead of commentary</b>
+<p>The first extraction scored 93% on a structural check while returning
+accounting footnotes for roughly a third of companies. Measured against a second
+version on identical companies, the rate of passages leading with results went
+from 42.8% to 65.0%.</p></li>
+<li><b>One filer's commentary collapsed to boilerplate</b>
+<p>A 171,000 character section reduced to 5,598 characters of front matter across
+that filer's entire history, because the heading anchor matched too early. Fixed
+with tiered anchors and a minimum-length test before accepting a narrower slice.</p></li>
+<li><b>Background work killed by a foreground timeout</b>
+<p>A polling loop hit a timeout, and the resulting signal took the whole process
+group with it, losing thousands of in-memory results. Fixed by detaching the
+session and checkpointing to disk.</p></li>
+<li><b>A stale tier file silently narrowed a queue</b>
+<p>A priority filter read tiering written by an earlier run and queued 5,874 items
+instead of 25,548. It completed successfully, which is what made it dangerous.</p></li>
+</ol>
+
+<h2>What it cannot tell you</h2>
+<ul>
+<li>It is a <strong>snapshot</strong>. There is no history and no time series, so
+nothing here supports a trend or a backtest.</li>
+<li>Prices and fundamentals are <strong>not contemporaneous</strong>.</li>
+<li>Companies report on <strong>different calendars</strong>. A comparison across
+the cross-section compares quarters ending at different dates.</li>
+<li>Business development companies and a small number of other structures are
+<strong>excluded or misclassified</strong> by the SIC-derived sector mapping.</li>
+<li>A metric that is null is <strong>missing, not zero</strong>, and is excluded
+from ranking rather than treated as the worst value.</li>
+</ul>
+
+<footer>
+Built from SEC XBRL company facts and market prices.
+&copy; 2026 Bilaal Raja. The universe construction, factor definitions, analysis
+and code are my own work and are not licensed for reuse. The underlying SEC
+filing data is public domain. Published as a personal project; nothing here is
+investment advice or a recommendation to buy or sell any security.
+</footer>
+</div></body></html>
