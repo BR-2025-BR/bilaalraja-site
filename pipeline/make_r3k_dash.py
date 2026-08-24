@@ -176,6 +176,8 @@ details .body ul{margin-left:17px;display:flex;flex-direction:column;gap:5px}
 .byline a{color:var(--s1);text-decoration:none}
 .byline a:hover{text-decoration:underline}
 .byline .meth{font-size:12px}
+.rights{display:block;margin-top:9px;padding-top:9px;border-top:1px solid var(--rule2);
+  max-width:96ch;line-height:1.65}
 footer{font-size:11.5px;color:var(--ink3);font-family:var(--mono);border-top:1px solid var(--rule);
   padding-top:11px;line-height:1.7}
 </style>
@@ -569,7 +571,12 @@ $("method").innerHTML=`
 $("foot").innerHTML=`Built from SEC XBRL company facts and market prices · universe ${META.universe} ranked,
   ${META.n} with computable fundamentals, ${META.skipped} without · total market cap
   $${(META.total_mcap/1000).toFixed(1)}tn · prices ${META.price_date}
-  · data through ${META.latest_filing} · rebuilt ${META.built_human}`;
+  · data through ${META.latest_filing} · rebuilt ${META.built_human}
+  <span class="rights">&copy; ${new Date(META.built).getFullYear()} Bilaal Raja.
+  The universe construction, factor definitions, analysis and code on this page
+  are my own work and are not licensed for reuse. The underlying SEC filing data
+  is public domain. Published as a personal project; nothing here is investment
+  advice or a recommendation to buy or sell any security.</span>`;
 
 addEventListener("resize",()=>{clearTimeout(window._rt);window._rt=setTimeout(()=>{draw();drawSmall();},120);});
 matchMedia("(prefers-color-scheme:dark)").addEventListener("change",()=>{draw();drawSmall();});

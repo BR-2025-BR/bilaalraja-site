@@ -1,0 +1,14 @@
+Copyright (c) 2026 Bilaal Raja. All rights reserved.
+
+The universe construction, factor definitions, scoring methodology, extraction
+logic, analysis, code and design in this repository are the original work of
+Bilaal Raja. No licence is granted to copy, modify, redistribute or make
+derivative works of them, in whole or in part, without prior written permission.
+
+The underlying data is drawn from filings made to the United States Securities
+and Exchange Commission, which are in the public domain. No claim is made over
+that source data. The claim is over its selection, computation, presentation and
+the code that produces them.
+
+Nothing in this repository is investment advice or a recommendation to buy or
+sell any security. It is published as a personal project.
