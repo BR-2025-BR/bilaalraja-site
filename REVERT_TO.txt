@@ -1,1 +1,10 @@
-REVERT POINT: 06e2399  (Fix: pipeline script wrote to the old scratch path)
+UNDO POINTS
+
+  pre-palette   06e2399   before black/orange
+  pre-polish    f258e38   before entrance animation + stat strip
+
+To undo the polish only:
+  git revert --no-edit f258e38..cc8829b && git push
+
+To go back wholesale to before the polish:
+  git reset --hard pre-polish && git push --force
