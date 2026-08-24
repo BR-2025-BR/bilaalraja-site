@@ -285,16 +285,43 @@ const cssv=n=>getComputedStyle(document.documentElement).getPropertyValue(n).tri
 
 const st={x:"fcf_yield",y:"ev_sales",lx:false,ly:true,sector:null,hit:null,q:""};
 
+// Shareable views. The chart state lives in the URL so a specific cross-section
+// can be sent as a link rather than described in words.
+(function readURL(){
+  const p=new URLSearchParams(location.search);
+  const valid=new Set(METRICS.map(m=>m[0]));
+  if(valid.has(p.get("x"))) st.x=p.get("x");
+  if(valid.has(p.get("y"))) st.y=p.get("y");
+  if(p.has("lx")) st.lx = p.get("lx")==="1";
+  if(p.has("ly")) st.ly = p.get("ly")==="1";
+  if(p.get("sector") && SECTORS.includes(p.get("sector"))) st.sector=p.get("sector");
+  if(p.get("q")) st.q=p.get("q").trim().toUpperCase();
+})();
+
+let _urlHold=false;
+function writeURL(){
+  if(_urlHold) return;
+  const p=new URLSearchParams();
+  p.set("x",st.x); p.set("y",st.y);
+  p.set("lx", st.lx?"1":"0"); p.set("ly", st.ly?"1":"0");
+  if(st.sector) p.set("sector", st.sector);
+  if(st.q) p.set("q", st.q);
+  // replaceState, not pushState: dragging a slider should not fill the
+  // back button with fifty near-identical entries.
+  history.replaceState(null,"", location.pathname+"?"+p.toString());
+}
+
 for(const sel of [$("xs"),$("ys")]){
   METRICS.forEach(([k,l])=>{const o=document.createElement("option");o.value=k;o.textContent=l;sel.appendChild(o);});
 }
 $("xs").value=st.x; $("ys").value=st.y;
-$("xs").onchange=e=>{st.x=e.target.value;draw();drawSmall();};
-$("ys").onchange=e=>{st.y=e.target.value;draw();drawSmall();};
+$("xs").onchange=e=>{st.x=e.target.value;writeURL();draw();drawSmall();};
+$("ys").onchange=e=>{st.y=e.target.value;writeURL();draw();drawSmall();};
 for(const [id,k] of [["lx","lx"],["ly","ly"]]){
-  $(id).onclick=()=>{st[k]=!st[k];$(id).setAttribute("aria-pressed",st[k]);draw();drawSmall();};
+  $(id).onclick=()=>{st[k]=!st[k];$(id).setAttribute("aria-pressed",st[k]);
+    writeURL();draw();drawSmall();};
 }
-$("q").oninput=e=>{st.q=e.target.value.trim().toUpperCase();draw();};
+$("q").oninput=e=>{st.q=e.target.value.trim().toUpperCase();writeURL();draw();};
 
 const lab=k=>(METRICS.find(m=>m[0]===k)||[k,k])[1];
 
@@ -479,7 +506,7 @@ for(const s of SECTORS){
   b.onclick=()=>{
     st.sector = st.sector===s ? null : s;
     [...leg.children].forEach(c=>c.setAttribute("aria-pressed", c===b && st.sector===s));
-    draw();
+    writeURL(); draw();
   };
   leg.appendChild(b);
 }
@@ -580,6 +607,16 @@ $("foot").innerHTML=`Built from SEC XBRL company facts and market prices · univ
 
 addEventListener("resize",()=>{clearTimeout(window._rt);window._rt=setTimeout(()=>{draw();drawSmall();},120);});
 matchMedia("(prefers-color-scheme:dark)").addEventListener("change",()=>{draw();drawSmall();});
+// Push any state restored from the URL back into the controls, so the page a
+// visitor lands on matches the link they followed.
+$("q").value=st.q;
+$("lx").setAttribute("aria-pressed",st.lx);
+$("ly").setAttribute("aria-pressed",st.ly);
+if(st.sector){
+  const b=[...$("leg").children]
+    .find(c=>c.textContent.startsWith(st.sector));
+  if(b) b.setAttribute("aria-pressed","true");
+}
 draw(); drawSmall();
 </script>
 """
