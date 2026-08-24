@@ -98,21 +98,30 @@ or sell any security.</span>
   let w=0,h=0,dpr=1,dots=[];
 
   // Three depth layers. Nearer dots are bigger, brighter and shift further
-  // under tilt, which is what sells the parallax.
-  const LAYERS=[{n:70,r:[0.9,1.7],a:[.05,.11],p:6},
-                {n:46,r:[1.5,2.6],a:[.08,.16],p:14},
-                {n:24,r:[2.3,3.6],a:[.11,.21],p:26}];
+  // under tilt, which is what makes the parallax read as depth.
+  const LAYERS=[{n:70,r:[0.9,1.7],a:[.05,.11],p:6,  v:0.006},
+                {n:46,r:[1.5,2.6],a:[.08,.16],p:14, v:0.009},
+                {n:24,r:[2.3,3.6],a:[.11,.21],p:26, v:0.013}];
+
+  const rand=(lo,hi)=>lo+Math.random()*(hi-lo);
 
   function seed(){
     dots=[];
-    for(const L of LAYERS) for(let i=0;i<L.n;i++) dots.push({
-      x:Math.random(), y:Math.random(),
-      r:L.r[0]+Math.random()*(L.r[1]-L.r[0]),
-      a:L.a[0]+Math.random()*(L.a[1]-L.a[0]),
-      p:L.p,
-      vx:(Math.random()-.5)*0.000045,
-      vy:(Math.random()-.5)*0.000045
-    });
+    for(const L of LAYERS) for(let i=0;i<L.n;i++){
+      const ang=Math.random()*6.2832, sp=L.v*rand(.6,1.4);
+      dots.push({
+        hx:Math.random(), hy:Math.random(),          // drifting home point
+        vx:Math.cos(ang)*sp, vy:Math.sin(ang)*sp,    // units per SECOND
+        r:rand(L.r[0],L.r[1]), a:rand(L.a[0],L.a[1]), p:L.p,
+        // Two sine components per axis at unrelated periods. Sums of sines are
+        // smooth by construction and never settle into a visible loop, which a
+        // per-frame random walk cannot manage without looking jittery.
+        fx1:rand(.10,.26), fx2:rand(.29,.55), phx1:Math.random()*6.28, phx2:Math.random()*6.28,
+        fy1:rand(.10,.26), fy2:rand(.29,.55), phy1:Math.random()*6.28, phy2:Math.random()*6.28,
+        ax1:rand(.008,.020), ax2:rand(.003,.009),
+        ay1:rand(.008,.020), ay2:rand(.003,.009)
+      });
+    }
   }
 
   function size(){
@@ -122,19 +131,17 @@ or sell any security.</span>
     x.setTransform(dpr,0,0,dpr,0,0);
   }
 
-  // Tilt target, driven by gyroscope on a phone or the pointer on a desktop.
   let tx=0,ty=0,cx=0,cy=0;
   addEventListener("deviceorientation",e=>{
     if(e.gamma==null) return;
-    tx=Math.max(-1,Math.min(1,e.gamma/35));          // left-right
-    ty=Math.max(-1,Math.min(1,((e.beta||0)-45)/35)); // front-back, 45deg rest
+    tx=Math.max(-1,Math.min(1,e.gamma/35));
+    ty=Math.max(-1,Math.min(1,((e.beta||0)-45)/35));
   },true);
   addEventListener("mousemove",e=>{
     tx=(e.clientX/w-.5)*2; ty=(e.clientY/h-.5)*2;
   },{passive:true});
 
-  // iOS will not emit orientation events without explicit permission, and only
-  // asks in response to a gesture. Try once on first touch, then stop.
+  // iOS emits nothing without an explicit grant, and only asks on a gesture.
   function askOnce(){
     const D=window.DeviceOrientationEvent;
     if(D && typeof D.requestPermission==="function") D.requestPermission().catch(()=>{});
@@ -143,26 +150,39 @@ or sell any security.</span>
   addEventListener("touchend",askOnce,{passive:true});
   addEventListener("click",askOnce);
 
-  function frame(){
-    cx+=(tx-cx)*0.045; cy+=(ty-cy)*0.045;   // ease, so tilt never jerks
+  let last=performance.now(), T=0;
+  function frame(now){
+    // Time based, not frame based: a 120Hz phone must not run at double speed.
+    // Clamped so a backgrounded tab does not teleport everything on return.
+    let dt=Math.min((now-last)/1000, 0.05); last=now;
+    if(!calm) T+=dt;
+
+    const k=1-Math.pow(0.001, dt);          // frame-rate independent easing
+    cx+=(tx-cx)*k; cy+=(ty-cy)*k;
+
     x.clearRect(0,0,w,h);
     const base=dark()?"255,255,255":"0,0,0";
     for(const d of dots){
       if(!calm){
-        d.x+=d.vx; d.y+=d.vy;
-        if(d.x<-0.02)d.x=1.02; if(d.x>1.02)d.x=-0.02;
-        if(d.y<-0.02)d.y=1.02; if(d.y>1.02)d.y=-0.02;
+        d.hx+=d.vx*dt; d.hy+=d.vy*dt;
+        if(d.hx<-.05)d.hx=1.05; else if(d.hx>1.05)d.hx=-.05;
+        if(d.hy<-.05)d.hy=1.05; else if(d.hy>1.05)d.hy=-.05;
       }
+      const px=(d.hx + Math.sin(T*d.fx1+d.phx1)*d.ax1 + Math.sin(T*d.fx2+d.phx2)*d.ax2)*w
+               - cx*d.p;
+      const py=(d.hy + Math.sin(T*d.fy1+d.phy1)*d.ay1 + Math.sin(T*d.fy2+d.phy2)*d.ay2)*h
+               - cy*d.p;
       x.beginPath();
-      x.arc(d.x*w-cx*d.p, d.y*h-cy*d.p, d.r, 0, 6.2832);
+      x.arc(px,py,d.r,0,6.2832);
       x.fillStyle="rgba("+base+","+d.a+")";
       x.fill();
     }
     requestAnimationFrame(frame);
   }
 
-  size(); seed(); frame();
+  size(); seed();
   addEventListener("resize",()=>{size();},{passive:true});
+  requestAnimationFrame(n=>{last=n; frame(n);});
 })();
 </script>
 </body></html>
