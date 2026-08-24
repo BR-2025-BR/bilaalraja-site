@@ -106,6 +106,47 @@ domain; the analysis is my own.<br>
 """
 
 
+
+# ---------------------------------------------------------------- referrers
+# One landing page per contact. Each fires the analytics beacon under its own
+# path, then forwards to the dashboard, so "did this person open it" becomes a
+# page view you can actually see rather than a guess.
+REF_PAGE = """<!doctype html>
+<html lang="en-GB"><head><meta charset="utf-8">
+<title>Russell 3000 Cross-Section</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="canonical" href="https://{domain}{target}">
+<style>body{{background:#131312;color:#8b8a80;font:14px -apple-system,sans-serif;
+ display:flex;align-items:center;justify-content:center;height:100vh;margin:0}}</style>
+</head><body>
+<p>Opening&#8230; <a href="{target}">continue</a></p>
+<script>
+// Delay briefly so the analytics beacon fires before we navigate away.
+addEventListener("load",()=>setTimeout(()=>location.replace("{target}"),350));
+</script>
+</body></html>
+"""
+
+
+def build_referrers(site: Path, domain: str, target: str = "/russell3000") -> list:
+    src = Path(__file__).resolve().parent / "contacts.txt"
+    if not src.exists():
+        return []
+    out = []
+    for line in src.read_text().splitlines():
+        line = line.strip()
+        if not line or line.startswith("#"):
+            continue
+        parts = [x.strip() for x in line.split(",")]
+        slug = parts[0]
+        who = ", ".join(parts[1:]) or "-"
+        d = site / "r" / slug
+        d.mkdir(parents=True, exist_ok=True)
+        (d / "index.html").write_text(REF_PAGE.format(domain=domain, target=target))
+        out.append((slug, who))
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--no-build", action="store_true",
@@ -151,6 +192,15 @@ def main():
         "/*\n  X-Content-Type-Options: nosniff\n"
         "  Referrer-Policy: strict-origin-when-cross-origin\n")
     (SITE / ".nojekyll").write_text("")
+    (SITE / "robots.txt").write_text(
+        "User-agent: *\nDisallow: /r/\nAllow: /\n"
+        f"Sitemap: https://{DOMAIN}/sitemap.xml\n")
+
+    refs = build_referrers(SITE, DOMAIN)
+    if refs:
+        print(f"\n{len(refs)} tracked link(s):")
+        for slug, who in refs:
+            print(f"   https://{DOMAIN}/r/{slug:<10}  {who}")
 
     print(f"\nstaged {total:.2f} MB in {SITE}")
     print(f"data through {meta['latest_filing']} · rebuilt {meta['built_human']}"
