@@ -1,6 +1,7 @@
 UNDO POINTS
 
   pre-palette   06e2399   before black/orange
+  pre-icons     ac061b6   before the card icons
   pre-polish    f258e38   before entrance animation + stat strip
 
 To undo the polish only:
@@ -8,3 +9,6 @@ To undo the polish only:
 
 To go back wholesale to before the polish:
   git reset --hard pre-polish && git push --force
+
+To undo the icons only:
+  git revert --no-edit ac061b6..2af99b3 && git push
