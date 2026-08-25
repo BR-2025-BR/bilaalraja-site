@@ -11,6 +11,7 @@ past a metadata-only filter and reached rank 13 at a fictitious $555bn.
 """
 import json, re, sys
 from pathlib import Path
+import datetime as _dt
 import pandas as pd
 sys.path.insert(0, str(Path(__file__).parent))
 from sectors import sector_for_ticker
@@ -47,6 +48,11 @@ def split_corrected(tk, cik):
     for d, r in (splits.get(tk) or []):
         if d > str(end)[:10]: f *= r
     return raw * f
+
+# A split inside this window means any third-party share count may still be
+# pre-split. Wide enough to cover the lag, narrow enough not to override
+# yfinance for old splits it has long since absorbed.
+RECENT_SPLIT_FROM = (_dt.date.today() - _dt.timedelta(days=45)).isoformat()
 
 rows, drop, flags = [], {}, []
 def rej(w): drop[w] = drop.get(w, 0) + 1
@@ -121,7 +127,22 @@ for f in (HERE/"submissions").glob("*.json"):
     if ratio and ratio > ADR_RATIO and not soi:
         rej("ADR signature (blank domicile, shares ratio)"); continue
 
-    shares, src = (yf_s, "yfinance") if yf_s else (sec_s, "sec-split-corrected")
+    # yfinance is normally the better count, but it lags a split by days or
+    # weeks, and during that window it reports the pre-split number against a
+    # post-split price. The SEC path is split-corrected by construction, so
+    # after a recent split it is the one to trust.
+    recent_split = any(d >= RECENT_SPLIT_FROM for d, _ in (splits.get(tk) or []))
+    if recent_split and sec_s:
+        shares, src = sec_s, "sec-split-corrected (recent split)"
+    elif recent_split:
+        # Split on the record but no SEC count to carry through it, so the only
+        # available count is the third-party one, which may or may not have
+        # caught up. A reverse split not caught here inflates market cap by the
+        # ratio and pushes a shell-scale company up the ranking. Drop it rather
+        # than publish a number that cannot be checked.
+        rej("recent split, no SEC count to correct"); continue
+    else:
+        shares, src = (yf_s, "yfinance") if yf_s else (sec_s, "sec-split-corrected")
     if not shares:                          rej("no share count"); continue
     if ratio and (ratio > 1.15 or ratio < 0.87):
         flags.append(dict(ticker=tk, name=name, sec=sec_s, yf=yf_s, ratio=ratio))

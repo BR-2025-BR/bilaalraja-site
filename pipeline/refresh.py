@@ -173,6 +173,18 @@ def gates(prev, now, force):
                      f"differs from the snapshot: the panel did not use the "
                      f"prices it claims to")
 
+    # A large price move with no split behind it is a real move. A large price
+    # move WITH a split means the share count needs to have moved too, and if
+    # it has not the market cap is wrong by the ratio.
+    sm = now.get("split_mismatch") or []
+    if sm:
+        # Over a week a few genuine moves of this size are normal, so list them
+        # for a look rather than blocking. Many at once means splits are not
+        # being applied, which is a pipeline fault rather than a market.
+        msg = (f"{len(sm)} companies moved more than a third on an unchanged "
+               f"share count: {', '.join(sm[:10])}")
+        (fails if len(sm) > 8 else warns).append(msg)
+
     if now["n"] < 2000:
         fails.append(f"only {now['n']} companies built")
     if now["priced"] < 4000:
@@ -203,7 +215,24 @@ def measure():
         if s and abs(s["price"] - r.price) > max(0.01, r.price * 1e-6):
             mismatch += 1
 
+    # Compare per company against the previous universe. Where price moved by
+    # more than a third and shares did not move at all, a split has almost
+    # certainly landed that the share count has not caught up with.
+    split_mismatch = []
+    prevf = HERE/"r3k_universe.prev.json"
+    if prevf.exists():
+        pv = pd.read_json(prevf).set_index("ticker")
+        for t, r in uni.set_index("ticker").iterrows():
+            if t not in pv.index: continue
+            a, b = pv.loc[t,"price"], r.price
+            sa, sb = pv.loc[t,"shares"], r.shares
+            if not a or a <= 0: continue
+            ratio = b / a
+            if (ratio < 0.66 or ratio > 1.5) and abs(sb - sa) < 1:
+                split_mismatch.append(t)
+
     return {
+        "split_mismatch": split_mismatch,
         "price_mismatch": mismatch,
         "n": len(scored),
         "total_mcap": float(uni.mcap.sum()),
@@ -252,7 +281,19 @@ def main():
     snap = json.load(open(HERE/"prices_snapshot.json"))
     log(f"  snapshot now holds {len(snap)} ({len(snap)-before:+d})")
 
-    step("3. Universe")
+    step("3. Splits and share counts")
+    # A cover-page share count is dated. If the company split after that date,
+    # the count no longer matches the shares the quoted price refers to and
+    # market cap is wrong by the split ratio. On 25 August three companies
+    # split and a fourth did a 1-for-10 reverse, and the build carried
+    # post-split prices against pre-split counts.
+    run("fetch_splits.py"); log("  splits refreshed")
+    run("fetch_shares.py"); log("  share counts refreshed")
+
+    step("4. Universe")
+    # keep the previous universe so the checks can compare prices per company
+    if (HERE/"r3k_universe.json").exists():
+        (HERE/"r3k_universe.prev.json").write_bytes((HERE/"r3k_universe.json").read_bytes())
     out = run("build_universe_v2.py")
     log("  " + out.strip().splitlines()[-1] if out.strip() else "  built")
     r = pd.read_json(HERE/"universe_ranked.json")
@@ -262,19 +303,19 @@ def main():
     log(f"  {len(r)} ranked, top 3000 kept, floor ${top.mcap.min():.3f}bn, "
         f"total ${top.mcap.sum()/1000:.2f}tn")
 
-    step("4. Panel")
+    step("5. Panel")
     log("  parsing companyfacts, this takes about twenty minutes")
     out = run("r3k_build.py")
     log("  " + [l for l in out.splitlines() if l.startswith("built ")][-1])
 
-    step("5. Scores")
+    step("6. Scores")
     log("  " + run("score.py").strip().splitlines()[0])
 
-    step("6. Checks")
+    step("7. Checks")
     now = measure()
     ok = gates(prev, now, a.force)
 
-    step("7. Dashboard")
+    step("8. Dashboard")
     run("make_r3k_dash.py")
     log("  rebuilt")
 

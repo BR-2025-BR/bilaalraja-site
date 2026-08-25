@@ -191,9 +191,40 @@ def main():
         # small caps, so a top-N slice would not exercise what actually breaks
         idx = np.linspace(0, len(uni)-1, 300).astype(int)
         uni = [uni[i] for i in sorted(set(idx))]
-    print(f"building {len(uni)} companies ({tag})", flush=True)
-    rows, skipped = [], []
+    # Incremental rebuild. Parsing 3,000 companyfacts files takes twenty
+    # minutes and 11GB of reads, but on a normal refresh only a handful of
+    # companies have filed anything new. Reuse the previous row wherever the
+    # facts file has not been touched since that row was built, and wherever
+    # the price is unchanged. Anything that fails either test is rebuilt.
+    prev, prev_built = {}, 0.0
+    pfile = HERE/f"r3k_panel_{tag}.json"
+    if tag == "full" and pfile.exists() and "--full" not in sys.argv:
+        try:
+            prev = {r["cik"]: r for r in json.load(open(pfile))}
+            prev_built = pfile.stat().st_mtime
+        except Exception:
+            prev = {}
+
+    def unchanged(rec):
+        if not prev: return None
+        old_row = prev.get(rec["cik"])
+        if not old_row: return None
+        f = Path(EDGAR)/f"companyfacts_{int(rec['cik']):010d}.json"
+        if (not f.exists()) or f.stat().st_mtime > prev_built: return None
+        if abs(old_row.get("price", 0) - rec["price"]) > 1e-9: return None
+        if abs(old_row.get("shares", 0) - rec["shares"]) > 1e-6: return None
+        return old_row
+
+    print(f"building {len(uni)} companies ({tag})"
+          + (f", {len(prev)} rows available to reuse" if prev else ""), flush=True)
+    rows, skipped, reused = [], [], 0
     for i, rec in enumerate(uni, 1):
+        keep = unchanged(rec)
+        if keep is not None:
+            rows.append(keep); reused += 1
+            if i % 500 == 0:
+                print(f"  {i}/{len(uni)}  built={len(rows)} reused={reused}", flush=True)
+            continue
         try:
             r, why = one(rec)
         except Exception as e:
@@ -201,11 +232,13 @@ def main():
         if r: rows.append(r)
         else: skipped.append({"ticker": rec["ticker"], "rank": int(rec["rank"]), "why": why})
         if i % 50 == 0:
-            print(f"  {i}/{len(uni)}  built={len(rows)} skipped={len(skipped)}", flush=True)
+            print(f"  {i}/{len(uni)}  built={len(rows)} reused={reused} "
+                  f"skipped={len(skipped)}", flush=True)
     out = HERE/(f"r3k_panel_{tag}.json")
     json.dump(rows, open(out,"w"))
     json.dump(skipped, open(HERE/f"r3k_skipped_{tag}.json","w"), indent=1)
-    print(f"\nbuilt {len(rows)} / {len(uni)}   skipped {len(skipped)}")
+    print(f"\nbuilt {len(rows)} / {len(uni)}   "
+          f"({reused} reused, {len(rows)-reused} recomputed)   skipped {len(skipped)}")
     print(f"-> {out}")
 
 if __name__ == "__main__":

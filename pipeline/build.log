@@ -1,0 +1,331 @@
+building 3000 companies (full)
+cik=731766: dropping 30 fact row(s) with unparseable period start/end date
+cik=886982: dropping 1 fact row(s) with unparseable period start/end date
+cik=886982: dropping 1 fact row(s) with unparseable period start/end date
+cik=886982: dropping 1 fact row(s) with unparseable period start/end date
+cik=886982: dropping 1 fact row(s) with unparseable period start/end date
+cik=886982: dropping 1 fact row(s) with unparseable period start/end date
+cik=97476: dropping 1 fact row(s) with unparseable period start/end date
+  50/3000  built=45 reused=0 skipped=5
+cik=100885: dropping 5 fact row(s) with unparseable period start/end date
+cik=78003: dropping 1 fact row(s) with unparseable period start/end date
+cik=106040: dropping 2 fact row(s) with unparseable period start/end date
+cik=936468: dropping 1 fact row(s) with unparseable period start/end date
+  100/3000  built=95 reused=0 skipped=5
+cik=1674101: dropping 2 fact row(s) with unparseable period start/end date
+cik=865752: dropping 3 fact row(s) with unparseable period start/end date
+cik=1534701: dropping 1 fact row(s) with unparseable period start/end date
+  150/3000  built=144 reused=0 skipped=6
+cik=1053507: dropping 7 fact row(s) with unparseable period start/end date
+cik=68505: dropping 1 fact row(s) with unparseable period start/end date
+cik=1633978: dropping 1 fact row(s) with unparseable period start/end date
+cik=1858681: dropping 10 fact row(s) with unparseable period start/end date
+cik=1739940: dropping 21 fact row(s) with unparseable period start/end date
+cik=1437107: dropping 1 fact row(s) with unparseable period start/end date
+cik=885725: dropping 1 fact row(s) with unparseable period start/end date
+  200/3000  built=193 reused=0 skipped=7
+  250/3000  built=241 reused=0 skipped=9
+cik=1381197: dropping 2 fact row(s) with unparseable period start/end date
+cik=1819994: dropping 1 fact row(s) with unparseable period start/end date
+cik=878927: dropping 1 fact row(s) with unparseable period start/end date
+cik=827054: dropping 6 fact row(s) with unparseable period start/end date
+cik=1020569: dropping 10 fact row(s) with unparseable period start/end date
+  300/3000  built=288 reused=0 skipped=12
+cik=1511737: dropping 2 fact row(s) with unparseable period start/end date
+cik=1178670: dropping 1 fact row(s) with unparseable period start/end date
+cik=1555280: dropping 1 fact row(s) with unparseable period start/end date
+cik=759944: dropping 1 fact row(s) with unparseable period start/end date
+cik=1097864: dropping 1 fact row(s) with unparseable period start/end date
+  350/3000  built=336 reused=0 skipped=14
+cik=1820953: dropping 1 fact row(s) with unparseable period start/end date
+cik=1442145: dropping 11 fact row(s) with unparseable period start/end date
+  400/3000  built=385 reused=0 skipped=15
+cik=1113169: dropping 1 fact row(s) with unparseable period start/end date
+cik=75677: dropping 9 fact row(s) with unparseable period start/end date
+cik=895126: dropping 1 fact row(s) with unparseable period start/end date
+  450/3000  built=432 reused=0 skipped=18
+cik=1658566: dropping 1 fact row(s) with unparseable period start/end date
+cik=1659166: dropping 2 fact row(s) with unparseable period start/end date
+cik=1043219: dropping 3 fact row(s) with unparseable period start/end date
+  500/3000  built=479 reused=0 skipped=21
+cik=1025378: dropping 1 fact row(s) with unparseable period start/end date
+cik=1324948: dropping 7 fact row(s) with unparseable period start/end date
+cik=912593: dropping 6 fact row(s) with unparseable period start/end date
+cik=93556: dropping 2 fact row(s) with unparseable period start/end date
+cik=1236275: dropping 1 fact row(s) with unparseable period start/end date
+cik=1236275: dropping 6 fact row(s) with unparseable period start/end date
+  550/3000  built=524 reused=0 skipped=26
+cik=1616707: dropping 1 fact row(s) with unparseable period start/end date
+cik=711404: dropping 18 fact row(s) with unparseable period start/end date
+cik=1219601: dropping 1 fact row(s) with unparseable period start/end date
+  600/3000  built=570 reused=0 skipped=30
+cik=895417: dropping 4 fact row(s) with unparseable period start/end date
+cik=1575965: dropping 43 fact row(s) with unparseable period start/end date
+cik=1531152: dropping 1 fact row(s) with unparseable period start/end date
+cik=1579091: dropping 1 fact row(s) with unparseable period start/end date
+cik=1286681: dropping 3 fact row(s) with unparseable period start/end date
+  650/3000  built=616 reused=0 skipped=34
+cik=1097149: dropping 1 fact row(s) with unparseable period start/end date
+cik=71691: dropping 1 fact row(s) with unparseable period start/end date
+cik=1801368: dropping 1 fact row(s) with unparseable period start/end date
+cik=703351: dropping 7 fact row(s) with unparseable period start/end date
+cik=1623925: dropping 21 fact row(s) with unparseable period start/end date
+  700/3000  built=665 reused=0 skipped=35
+cik=851205: dropping 1 fact row(s) with unparseable period start/end date
+cik=908937: dropping 5 fact row(s) with unparseable period start/end date
+  750/3000  built=708 reused=0 skipped=42
+cik=6201: dropping 2 fact row(s) with unparseable period start/end date
+cik=1611052: dropping 1 fact row(s) with unparseable period start/end date
+cik=1822993: dropping 4 fact row(s) with unparseable period start/end date
+cik=1109354: dropping 1 fact row(s) with unparseable period start/end date
+cik=1109354: dropping 13 fact row(s) with unparseable period start/end date
+cik=1590714: dropping 1 fact row(s) with unparseable period start/end date
+  800/3000  built=754 reused=0 skipped=46
+cik=1289419: dropping 1 fact row(s) with unparseable period start/end date
+cik=23217: dropping 1 fact row(s) with unparseable period start/end date
+cik=1486159: dropping 4 fact row(s) with unparseable period start/end date
+  850/3000  built=796 reused=0 skipped=54
+cik=1679273: dropping 19 fact row(s) with unparseable period start/end date
+cik=97216: dropping 1 fact row(s) with unparseable period start/end date
+cik=1773751: dropping 1 fact row(s) with unparseable period start/end date
+cik=277509: dropping 2 fact row(s) with unparseable period start/end date
+cik=277509: dropping 6 fact row(s) with unparseable period start/end date
+cik=1895262: dropping 8 fact row(s) with unparseable period start/end date
+cik=56047: dropping 1 fact row(s) with unparseable period start/end date
+cik=8858: dropping 1 fact row(s) with unparseable period start/end date
+cik=866706: dropping 1 fact row(s) with unparseable period start/end date
+cik=1520006: dropping 8 fact row(s) with unparseable period start/end date
+cik=1309108: dropping 1 fact row(s) with unparseable period start/end date
+cik=1309108: dropping 1 fact row(s) with unparseable period start/end date
+  900/3000  built=841 reused=0 skipped=59
+cik=1759509: dropping 1 fact row(s) with unparseable period start/end date
+cik=1567683: dropping 1 fact row(s) with unparseable period start/end date
+cik=1580905: dropping 12 fact row(s) with unparseable period start/end date
+cik=52827: dropping 1 fact row(s) with unparseable period start/end date
+  950/3000  built=885 reused=0 skipped=65
+cik=1477294: dropping 4 fact row(s) with unparseable period start/end date
+cik=1767042: dropping 1 fact row(s) with unparseable period start/end date
+cik=1592386: dropping 1 fact row(s) with unparseable period start/end date
+cik=91767: dropping 1 fact row(s) with unparseable period start/end date
+  1000/3000  built=928 reused=0 skipped=72
+cik=1556593: dropping 2 fact row(s) with unparseable period start/end date
+cik=1297989: dropping 1 fact row(s) with unparseable period start/end date
+cik=1838359: dropping 1 fact row(s) with unparseable period start/end date
+cik=887596: dropping 1 fact row(s) with unparseable period start/end date
+cik=1691303: dropping 8 fact row(s) with unparseable period start/end date
+cik=1389050: dropping 19 fact row(s) with unparseable period start/end date
+cik=1624794: dropping 1 fact row(s) with unparseable period start/end date
+  1050/3000  built=970 reused=0 skipped=80
+cik=1877322: dropping 1 fact row(s) with unparseable period start/end date
+cik=717423: dropping 2 fact row(s) with unparseable period start/end date
+cik=890926: dropping 1 fact row(s) with unparseable period start/end date
+cik=1679049: dropping 1 fact row(s) with unparseable period start/end date
+cik=1679049: dropping 27 fact row(s) with unparseable period start/end date
+cik=1735707: dropping 1 fact row(s) with unparseable period start/end date
+cik=1735707: dropping 3 fact row(s) with unparseable period start/end date
+  1100/3000  built=1010 reused=0 skipped=90
+cik=1786352: dropping 1 fact row(s) with unparseable period start/end date
+cik=1646188: dropping 1 fact row(s) with unparseable period start/end date
+cik=1045450: dropping 1 fact row(s) with unparseable period start/end date
+cik=1609253: dropping 5 fact row(s) with unparseable period start/end date
+  1150/3000  built=1049 reused=0 skipped=101
+cik=1757073: dropping 1 fact row(s) with unparseable period start/end date
+cik=1818201: dropping 2 fact row(s) with unparseable period start/end date
+cik=1025996: dropping 1 fact row(s) with unparseable period start/end date
+  1200/3000  built=1091 reused=0 skipped=109
+cik=730263: dropping 1 fact row(s) with unparseable period start/end date
+cik=1361538: dropping 4 fact row(s) with unparseable period start/end date
+cik=745308: dropping 2 fact row(s) with unparseable period start/end date
+  1250/3000  built=1135 reused=0 skipped=115
+cik=1376139: dropping 11 fact row(s) with unparseable period start/end date
+cik=1157408: dropping 1 fact row(s) with unparseable period start/end date
+  1300/3000  built=1178 reused=0 skipped=122
+cik=860413: dropping 1 fact row(s) with unparseable period start/end date
+cik=1674168: dropping 1 fact row(s) with unparseable period start/end date
+cik=1674168: dropping 1 fact row(s) with unparseable period start/end date
+cik=1697500: dropping 4 fact row(s) with unparseable period start/end date
+cik=82020: dropping 28 fact row(s) with unparseable period start/end date
+cik=832988: dropping 3 fact row(s) with unparseable period start/end date
+  1350/3000  built=1219 reused=0 skipped=131
+cik=69891: dropping 6 fact row(s) with unparseable period start/end date
+cik=1670592: dropping 1 fact row(s) with unparseable period start/end date
+cik=1280263: dropping 1 fact row(s) with unparseable period start/end date
+cik=1636222: dropping 4 fact row(s) with unparseable period start/end date
+cik=1834622: dropping 2 fact row(s) with unparseable period start/end date
+cik=833640: dropping 7 fact row(s) with unparseable period start/end date
+cik=874499: dropping 1 fact row(s) with unparseable period start/end date
+  1400/3000  built=1263 reused=0 skipped=137
+cik=1737706: dropping 1 fact row(s) with unparseable period start/end date
+cik=25445: dropping 1 fact row(s) with unparseable period start/end date
+cik=1459200: dropping 1 fact row(s) with unparseable period start/end date
+  1450/3000  built=1310 reused=0 skipped=140
+cik=107140: dropping 8 fact row(s) with unparseable period start/end date
+cik=1704715: dropping 6 fact row(s) with unparseable period start/end date
+cik=1817358: dropping 2 fact row(s) with unparseable period start/end date
+cik=1217234: dropping 1 fact row(s) with unparseable period start/end date
+cik=863436: dropping 3 fact row(s) with unparseable period start/end date
+cik=763744: dropping 3 fact row(s) with unparseable period start/end date
+  1500/3000  built=1348 reused=0 skipped=152
+cik=1043509: dropping 1 fact row(s) with unparseable period start/end date
+cik=1845815: dropping 1 fact row(s) with unparseable period start/end date
+cik=1024305: dropping 17 fact row(s) with unparseable period start/end date
+  1550/3000  built=1387 reused=0 skipped=163
+cik=1428205: dropping 92 fact row(s) with unparseable period start/end date
+cik=1400810: dropping 1 fact row(s) with unparseable period start/end date
+cik=1802665: dropping 1 fact row(s) with unparseable period start/end date
+cik=1806837: dropping 1 fact row(s) with unparseable period start/end date
+cik=1469367: dropping 1 fact row(s) with unparseable period start/end date
+cik=1596993: dropping 16 fact row(s) with unparseable period start/end date
+  1600/3000  built=1426 reused=0 skipped=174
+cik=1336917: dropping 1 fact row(s) with unparseable period start/end date
+cik=1798100: dropping 1 fact row(s) with unparseable period start/end date
+cik=1052752: dropping 1 fact row(s) with unparseable period start/end date
+cik=1811210: dropping 1 fact row(s) with unparseable period start/end date
+cik=1739566: dropping 1 fact row(s) with unparseable period start/end date
+cik=1564902: dropping 1 fact row(s) with unparseable period start/end date
+  1650/3000  built=1469 reused=0 skipped=181
+cik=903651: dropping 2 fact row(s) with unparseable period start/end date
+cik=1083446: dropping 2 fact row(s) with unparseable period start/end date
+cik=1857816: dropping 1 fact row(s) with unparseable period start/end date
+cik=789460: dropping 24 fact row(s) with unparseable period start/end date
+cik=2007919: dropping 1 fact row(s) with unparseable period start/end date
+cik=1534675: dropping 1 fact row(s) with unparseable period start/end date
+  1700/3000  built=1514 reused=0 skipped=186
+cik=1559865: dropping 1 fact row(s) with unparseable period start/end date
+cik=1569345: dropping 1 fact row(s) with unparseable period start/end date
+cik=819793: dropping 1 fact row(s) with unparseable period start/end date
+cik=1883313: dropping 1 fact row(s) with unparseable period start/end date
+  1750/3000  built=1558 reused=0 skipped=192
+cik=1509991: dropping 1 fact row(s) with unparseable period start/end date
+cik=1677576: dropping 20 fact row(s) with unparseable period start/end date
+cik=731012: dropping 1 fact row(s) with unparseable period start/end date
+cik=1632790: dropping 10 fact row(s) with unparseable period start/end date
+cik=1514416: dropping 1 fact row(s) with unparseable period start/end date
+  1800/3000  built=1596 reused=0 skipped=204
+cik=752642: dropping 1 fact row(s) with unparseable period start/end date
+cik=752642: dropping 5 fact row(s) with unparseable period start/end date
+cik=37785: dropping 1 fact row(s) with unparseable period start/end date
+  1850/3000  built=1634 reused=0 skipped=216
+cik=1591588: dropping 17 fact row(s) with unparseable period start/end date
+cik=1860543: dropping 1 fact row(s) with unparseable period start/end date
+cik=1823239: dropping 1 fact row(s) with unparseable period start/end date
+cik=895419: dropping 1 fact row(s) with unparseable period start/end date
+cik=895419: dropping 1 fact row(s) with unparseable period start/end date
+cik=895419: dropping 1 fact row(s) with unparseable period start/end date
+cik=895419: dropping 1 fact row(s) with unparseable period start/end date
+cik=895419: dropping 1 fact row(s) with unparseable period start/end date
+cik=1680247: dropping 1 fact row(s) with unparseable period start/end date
+cik=69633: dropping 1 fact row(s) with unparseable period start/end date
+cik=357173: dropping 5 fact row(s) with unparseable period start/end date
+  1900/3000  built=1676 reused=0 skipped=224
+cik=1334978: dropping 2 fact row(s) with unparseable period start/end date
+cik=1622194: dropping 1 fact row(s) with unparseable period start/end date
+cik=799167: dropping 1 fact row(s) with unparseable period start/end date
+  1950/3000  built=1717 reused=0 skipped=233
+cik=1734342: dropping 9 fact row(s) with unparseable period start/end date
+cik=1275168: dropping 2 fact row(s) with unparseable period start/end date
+cik=1042729: dropping 1 fact row(s) with unparseable period start/end date
+cik=1227654: dropping 2 fact row(s) with unparseable period start/end date
+  2000/3000  built=1756 reused=0 skipped=244
+cik=1956744: dropping 2 fact row(s) with unparseable period start/end date
+cik=1792849: dropping 1 fact row(s) with unparseable period start/end date
+cik=1698991: dropping 1 fact row(s) with unparseable period start/end date
+cik=799233: dropping 1 fact row(s) with unparseable period start/end date
+  2050/3000  built=1796 reused=0 skipped=254
+cik=1846069: dropping 1 fact row(s) with unparseable period start/end date
+cik=1840572: dropping 6 fact row(s) with unparseable period start/end date
+cik=1597033: dropping 1 fact row(s) with unparseable period start/end date
+cik=1831481: dropping 1 fact row(s) with unparseable period start/end date
+cik=1424929: dropping 1 fact row(s) with unparseable period start/end date
+cik=726601: dropping 1 fact row(s) with unparseable period start/end date
+cik=880117: dropping 19 fact row(s) with unparseable period start/end date
+  2100/3000  built=1837 reused=0 skipped=263
+cik=1810019: dropping 1 fact row(s) with unparseable period start/end date
+cik=1833197: dropping 1 fact row(s) with unparseable period start/end date
+cik=902791: dropping 1 fact row(s) with unparseable period start/end date
+cik=1687187: dropping 1 fact row(s) with unparseable period start/end date
+  2150/3000  built=1878 reused=0 skipped=272
+cik=1490281: dropping 1 fact row(s) with unparseable period start/end date
+cik=1538379: dropping 1 fact row(s) with unparseable period start/end date
+cik=1185348: dropping 1 fact row(s) with unparseable period start/end date
+  2200/3000  built=1916 reused=0 skipped=284
+cik=1561032: dropping 1 fact row(s) with unparseable period start/end date
+cik=1501989: dropping 1 fact row(s) with unparseable period start/end date
+cik=1829864: dropping 1 fact row(s) with unparseable period start/end date
+cik=1124105: dropping 3 fact row(s) with unparseable period start/end date
+cik=1759774: dropping 1 fact row(s) with unparseable period start/end date
+cik=1820721: dropping 1 fact row(s) with unparseable period start/end date
+cik=1682745: dropping 1 fact row(s) with unparseable period start/end date
+cik=1755953: dropping 1 fact row(s) with unparseable period start/end date
+  2250/3000  built=1955 reused=0 skipped=295
+  2300/3000  built=1991 reused=0 skipped=309
+cik=1341317: dropping 1 fact row(s) with unparseable period start/end date
+cik=1341317: dropping 1 fact row(s) with unparseable period start/end date
+cik=1590976: dropping 2 fact row(s) with unparseable period start/end date
+  2350/3000  built=2032 reused=0 skipped=318
+cik=1710350: dropping 2 fact row(s) with unparseable period start/end date
+cik=1710350: dropping 5 fact row(s) with unparseable period start/end date
+cik=1288403: dropping 2 fact row(s) with unparseable period start/end date
+cik=1030192: dropping 1 fact row(s) with unparseable period start/end date
+cik=43196: dropping 1 fact row(s) with unparseable period start/end date
+cik=1662579: dropping 1 fact row(s) with unparseable period start/end date
+cik=2007587: dropping 1 fact row(s) with unparseable period start/end date
+cik=1349436: dropping 1 fact row(s) with unparseable period start/end date
+cik=1308208: dropping 1 fact row(s) with unparseable period start/end date
+cik=1158324: dropping 21 fact row(s) with unparseable period start/end date
+  2400/3000  built=2073 reused=0 skipped=327
+cik=1720420: dropping 1 fact row(s) with unparseable period start/end date
+cik=1635282: dropping 2 fact row(s) with unparseable period start/end date
+cik=1133869: dropping 1 fact row(s) with unparseable period start/end date
+cik=49754: dropping 16 fact row(s) with unparseable period start/end date
+  2450/3000  built=2113 reused=0 skipped=337
+cik=1963685: dropping 1 fact row(s) with unparseable period start/end date
+cik=1494904: dropping 3 fact row(s) with unparseable period start/end date
+  2500/3000  built=2154 reused=0 skipped=346
+cik=69733: dropping 13 fact row(s) with unparseable period start/end date
+cik=1315399: dropping 2 fact row(s) with unparseable period start/end date
+cik=1423869: dropping 2 fact row(s) with unparseable period start/end date
+cik=835011: dropping 11 fact row(s) with unparseable period start/end date
+  2550/3000  built=2195 reused=0 skipped=355
+cik=863110: dropping 1 fact row(s) with unparseable period start/end date
+cik=1537054: dropping 1 fact row(s) with unparseable period start/end date
+cik=1850270: dropping 1 fact row(s) with unparseable period start/end date
+cik=1576873: dropping 2 fact row(s) with unparseable period start/end date
+cik=1871509: dropping 1 fact row(s) with unparseable period start/end date
+cik=727273: dropping 1 fact row(s) with unparseable period start/end date
+cik=1590584: dropping 4 fact row(s) with unparseable period start/end date
+cik=1538716: dropping 1 fact row(s) with unparseable period start/end date
+  2600/3000  built=2233 reused=0 skipped=367
+  2650/3000  built=2274 reused=0 skipped=376
+cik=1760689: dropping 1 fact row(s) with unparseable period start/end date
+cik=1009829: dropping 1 fact row(s) with unparseable period start/end date
+cik=1826681: dropping 1 fact row(s) with unparseable period start/end date
+  2700/3000  built=2310 reused=0 skipped=390
+cik=2018064: dropping 1 fact row(s) with unparseable period start/end date
+  2750/3000  built=2349 reused=0 skipped=401
+cik=1826600: dropping 2 fact row(s) with unparseable period start/end date
+cik=1734750: dropping 1 fact row(s) with unparseable period start/end date
+cik=1734750: dropping 1 fact row(s) with unparseable period start/end date
+cik=275053: dropping 17 fact row(s) with unparseable period start/end date
+cik=1371489: dropping 1 fact row(s) with unparseable period start/end date
+cik=1140102: dropping 24 fact row(s) with unparseable period start/end date
+cik=935419: dropping 1 fact row(s) with unparseable period start/end date
+cik=1664710: dropping 2 fact row(s) with unparseable period start/end date
+  2800/3000  built=2390 reused=0 skipped=410
+cik=874396: dropping 15 fact row(s) with unparseable period start/end date
+  2850/3000  built=2425 reused=0 skipped=425
+cik=1549346: dropping 1 fact row(s) with unparseable period start/end date
+cik=1529628: dropping 1 fact row(s) with unparseable period start/end date
+cik=919864: dropping 1 fact row(s) with unparseable period start/end date
+  2900/3000  built=2467 reused=0 skipped=433
+cik=1419275: dropping 1 fact row(s) with unparseable period start/end date
+cik=1952976: dropping 5 fact row(s) with unparseable period start/end date
+cik=885508: dropping 1 fact row(s) with unparseable period start/end date
+  2950/3000  built=2503 reused=0 skipped=447
+cik=1632127: dropping 2 fact row(s) with unparseable period start/end date
+cik=34067: dropping 1 fact row(s) with unparseable period start/end date
+cik=95953: dropping 4 fact row(s) with unparseable period start/end date
+  3000/3000  built=2543 reused=0 skipped=457
+
+built 2543 / 3000   (0 reused, 2543 recomputed)   skipped 457
+-> /Users/bilaa/Sites/bilaalraja/pipeline/r3k_panel_full.json
