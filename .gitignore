@@ -14,3 +14,6 @@ pipeline/*.bak
 # under docs/r/ MUST be committed or Cloudflare never receives them and every
 # tracked link 404s. They contain only the slug, no names.
 contacts.txt
+
+# 471 tiny per-company address files, regenerable and noisy in diffs.
+pipeline/addresses/
