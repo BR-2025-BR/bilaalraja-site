@@ -44,6 +44,21 @@ def rewrite_links(html: str) -> tuple[str, int]:
     return html, n
 
 
+PWA_HEAD = """
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#000000">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="R3000">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="icon" href="/icon-192.png" type="image/png">
+<script>
+if("serviceWorker" in navigator)
+  addEventListener("load",()=>navigator.serviceWorker.register("/sw.js").catch(e=>e));
+</script>
+"""
+
 LANDING = """<!doctype html>
 <html lang="en-GB"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -63,6 +78,7 @@ LANDING = """<!doctype html>
 <meta name="twitter:title" content="Bilaal Raja | Equity Research and Quantitative Analysis">
 <meta name="twitter:description" content="Cross-sectional equity screening built from primary SEC EDGAR filings.">
 <meta name="twitter:image" content="https://bilaalraja.com/og.png">
+""" + PWA_HEAD + """
 <script type="application/ld+json">
 {{"@context":"https://schema.org","@type":"Person","name":"Bilaal Raja",
 "url":"https://bilaalraja.com/","image":"https://bilaalraja.com/og.png",
@@ -311,7 +327,7 @@ def inject_meta(html: str, path: str, domain: str) -> str:
 <meta name="twitter:title" content="{title}">
 <meta name="twitter:description" content="{desc}">
 <meta name="twitter:image" content="https://{domain}/og.png">
-"""
+""" + PWA_HEAD
     # insert straight after the existing <title>...</title>
     i = html.find("</title>")
     return html[:i + 8] + tags + html[i + 8:] if i != -1 else tags + html
@@ -380,6 +396,7 @@ METHODOLOGY = """<!doctype html>
 <meta property="og:url" content="https://{domain}/methodology">
 <meta property="og:image" content="https://{domain}/og.png">
 <meta name="twitter:card" content="summary_large_image">
+""" + PWA_HEAD + """
 <style>
 :root{{--bg:#ffffff;--panel:#f4f4f4;--ink:#000000;--ink2:#3d3d3d;--ink3:#7a7a7a;
  --rule:#d8d8d8;--rule2:#ececec;--s1:#ff9900;
@@ -597,6 +614,64 @@ mistyped.</p>
 """
 
 
+# ---------------------------------------------------------------------- PWA
+# iOS has honoured web app manifests since 16.4, so this installs as a real
+# standalone app rather than a bookmark. The apple-* tags stay for older iOS.
+
+MANIFEST = """{{
+  "name": "Bilaal Raja \u2014 Russell 3000 Cross-Section",
+  "short_name": "R3000",
+  "description": "Cross-sectional screening for the Russell 3000, built from SEC EDGAR filings.",
+  "start_url": "/russell3000",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "icons": [
+    {{"src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"}},
+    {{"src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"}},
+    {{"src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}}
+  ]
+}}"""
+
+# The commentary page is 12MB and is deliberately not precached; caching it
+# would blow past what iOS is willing to keep for a web app.
+SW = """const V="r3k-{built}";
+const SHELL=["/","/russell3000","/methodology","/manifest.webmanifest",
+             "/icon-192.png","/icon-512.png","/apple-touch-icon.png"];
+
+self.addEventListener("install",e=>{{
+  e.waitUntil(caches.open(V).then(c=>c.addAll(SHELL)).then(()=>self.skipWaiting()));
+}});
+
+self.addEventListener("activate",e=>{{
+  e.waitUntil(caches.keys()
+    .then(ks=>Promise.all(ks.filter(k=>k!==V).map(k=>caches.delete(k))))
+    .then(()=>self.clients.claim()));
+}});
+
+self.addEventListener("fetch",e=>{{
+  const r=e.request;
+  if(r.method!=="GET") return;
+  const u=new URL(r.url);
+  if(u.origin!==location.origin) return;
+  if(u.pathname.startsWith("/commentary")) return;   // too large to cache
+
+  // Stale while revalidate: instant from cache, refreshed in the background,
+  // so a rebuilt dashboard is picked up on the next open rather than never.
+  e.respondWith(caches.match(r).then(hit=>{{
+    const net=fetch(r).then(res=>{{
+      if(res && res.status===200)
+        caches.open(V).then(c=>c.put(r,res.clone()));
+      return res;
+    }}).catch(()=>hit);
+    return hit || net;
+  }}));
+}});
+"""
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--no-build", action="store_true",
@@ -646,6 +721,8 @@ def main():
         "/*\n  X-Content-Type-Options: nosniff\n"
         "  Referrer-Policy: strict-origin-when-cross-origin\n")
     (SITE / ".nojekyll").write_text("")
+    (SITE / "manifest.webmanifest").write_text(MANIFEST.format())
+    (SITE / "sw.js").write_text(SW.format(built=meta["built"]))
     # Without this, Cloudflare Pages answers unknown paths with the landing page
     # and a 200, which Google reads as a soft 404 and may index as a duplicate.
     (SITE / "404.html").write_text(NOT_FOUND.format())

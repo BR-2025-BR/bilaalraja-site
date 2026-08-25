@@ -17,6 +17,19 @@
 <meta name="twitter:description" content="Management's own discussion of results, parsed from 10-Q and 10-K filings for thousands of US listed companies and matched to the reported figures.">
 <meta name="twitter:image" content="https://bilaalraja.com/og.png">
 
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#000000">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="R3000">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="icon" href="/icon-192.png" type="image/png">
+<script>
+if("serviceWorker" in navigator)
+  addEventListener("load",()=>navigator.serviceWorker.register("/sw.js").catch(e=>e));
+</script>
+
 <style>
 :root{
   --bg:#f5f6f4;--card:#fff;--ink:#15181a;--ink2:#464c4e;--ink3:#828886;--rule:#e0e3de;
