@@ -17,3 +17,7 @@ contacts.txt
 
 # 471 tiny per-company address files, regenerable and noisy in diffs.
 pipeline/addresses/
+
+# ...but the state file is the baseline the checks compare against, and is
+# small enough to keep as a record of what was last published.
+!pipeline/refresh_state.json
