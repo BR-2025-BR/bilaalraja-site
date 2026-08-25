@@ -1,6 +1,7 @@
 UNDO POINTS
 
   pre-palette   06e2399   before black/orange
+  pre-pwa       cb85604   before the installable app
   pre-icons     ac061b6   before the card icons
   pre-polish    f258e38   before entrance animation + stat strip
 
@@ -12,3 +13,6 @@ To go back wholesale to before the polish:
 
 To undo the icons only:
   git revert --no-edit ac061b6..2af99b3 && git push
+
+To undo the PWA only:
+  git revert --no-edit cb85604..b0e71cb && git push
