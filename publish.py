@@ -619,7 +619,7 @@ mistyped.</p>
 # standalone app rather than a bookmark. The apple-* tags stay for older iOS.
 
 MANIFEST = """{{
-  "name": "Bilaal Raja \u2014 Russell 3000 Cross-Section",
+  "name": "Russell 3000 Cross-Section",
   "short_name": "R3000",
   "description": "Cross-sectional screening for the Russell 3000, built from SEC EDGAR filings.",
   "start_url": "/russell3000",
