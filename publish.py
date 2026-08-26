@@ -157,7 +157,7 @@ company facts rather than a vendor feed.</p>
   </svg></span><h2>Russell 3000 Cross-Section</h2></div>
   <p>{n} companies with computable trailing-twelve-month fundamentals, screened on
   35 metrics with sector-neutral percentile ranking and a composite score.</p>
-  <div class="m">data through {latest_filing} &middot; rebuilt {built_human}</div>
+  <div class="m">filings to {latest_filing} &middot; prices {price_date} &middot; rebuilt {built_human}</div>
 </a>
 
 <a class="card" href="/commentary">
@@ -167,7 +167,7 @@ company facts rather than a vendor feed.</p>
   </svg></span><h2>Results Commentary</h2></div>
   <p>Management's own discussion of results, extracted from 10-Q and 10-K
   filings and matched to the reported figures.</p>
-  <div class="m">data through {latest_filing} &middot; rebuilt {built_human}</div>
+  <div class="m">filings to {latest_filing} &middot; prices {price_date} &middot; rebuilt {built_human}</div>
 </a>
 
 <a class="card" href="/methodology">
@@ -442,8 +442,8 @@ footer{{margin-top:52px;padding-top:20px;border-top:1px solid var(--rule);
 <h1>How this was built</h1>
 <p class="lede">The universe, the point-in-time discipline, the metric definitions,
 and the defects I found along the way.</p>
-<div class="stamp">{n} companies &middot; data through {latest_filing} &middot;
-rebuilt {built_human}</div>
+<div class="stamp">{n} companies &middot; filings to {latest_filing} &middot;
+prices {price_date} &middot; rebuilt {built_human}</div>
 
 <h2>What this is, and what it is not</h2>
 <p>It is a <strong>reconstruction</strong>, not the licensed index. Constituents are
@@ -774,8 +774,8 @@ def main():
             print(f"   https://{DOMAIN}/r/{slug:<10}  {who}")
 
     print(f"\nstaged {total:.2f} MB in {SITE}")
-    print(f"data through {meta['latest_filing']} · rebuilt {meta['built_human']}"
-          f" · {meta['n']} companies")
+    print(f"filings to {meta['latest_filing']} · prices {meta['price_date']}"
+          f" · rebuilt {meta['built_human']} · {meta['n']} companies")
     print(f"\nlive at  https://{DOMAIN}/russell3000  once pushed")
     print("next:    git add -A && git commit -m 'refresh' && git push")
 
