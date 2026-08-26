@@ -106,12 +106,9 @@ HTML = """<meta charset="utf-8">
   button,select,input[type=search],.panel,.updated,.warn,.sm figure,.tscroll,
   a[href*="commentary"],.tip,canvas{corner-shape:squircle}
 }
-.updated{margin:0;padding:9px 15px;align-self:stretch;border:1px solid var(--rule);
-  border-left:3px solid var(--s1);background:var(--panel);border-radius:12px;
-  font-size:12.5px;color:var(--ink2);font-family:var(--mono)}
 body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.5;
   -webkit-font-smoothing:antialiased}
-.wrap{max-width:1180px;margin:0 auto;padding:26px 18px 64px;display:flex;flex-direction:column;gap:18px}
+.wrap{max-width:1180px;margin:0 auto;padding:20px 18px 64px;display:flex;flex-direction:column;gap:13px}
 header{border-bottom:2px solid var(--ink);padding-bottom:12px;display:flex;
   justify-content:space-between;align-items:flex-end;gap:14px;flex-wrap:wrap}
 h1{font-size:clamp(21px,4vw,30px);letter-spacing:-.02em;line-height:1.08;font-weight:650}
@@ -200,7 +197,6 @@ footer{font-size:11.5px;color:var(--ink3);font-family:var(--mono);border-top:1px
 
 </header>
 
-<div class="updated" id="updated"></div>
 <div class="warn" id="warnbox"></div>
 
 <section class="panel" style="display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap">
@@ -564,15 +560,13 @@ const COLS=[["t","Ticker"],["n","Company"],["s","Sector"],["score","Score"],["mc
 })();
 
 $("stamp").innerHTML=`prices ${META.price_date}<br>${META.n} companies<br>median quarter ${META.median_end}`;
-$("meth").innerHTML=`Universe, factors and validation: own construction from SEC filings`
-  +` &middot; data through ${META.latest_filing} &middot; rebuilt ${META.built_human}`;
-$("updated").innerHTML=`Database last updated <b>${META.built_human}</b>`
-  +` &middot; latest filing incorporated ${META.latest_filing}`
-  +` &middot; latest period end ${META.latest_end}`;
-$("warnbox").innerHTML=`<b>Reconstruction, not the licensed index.</b> Constituents are the top 3,000 US
-  companies by market cap on ${META.price_date}, rebuilt from SEC filings — Russell's own rule for the
-  R3000 — not a licensed membership list. ${META.n} of ${META.universe} carry enough filed data to
-  compute a TTM; the other ${META.universe-META.n} are absent, not zero.`;
+$("meth").innerHTML=`Own construction from SEC filings`
+  +` &middot; data through <b>${META.latest_filing}</b>`
+  +` &middot; latest period end ${META.latest_end}`
+  +` &middot; rebuilt ${META.built_human}`;
+$("warnbox").innerHTML=`<b>Reconstruction, not the licensed index.</b> Top 3,000 US companies by
+  market cap on ${META.price_date}, rebuilt from filings using Russell's own rule.
+  ${META.n} carry enough filed data for a TTM; the other ${META.universe-META.n} are absent, not zero.`;
 $("method").innerHTML=`
  <p><b>Universe.</b> Every SEC filer with a ticker (7,994) was ranked by market cap. Eligibility follows
    Russell's rules: operating companies on Nasdaq, NYSE or CBOE, US-incorporated — or offshore-chartered
