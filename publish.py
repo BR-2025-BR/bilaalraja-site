@@ -297,7 +297,7 @@ or sell any security.</span>
 DESCRIPTIONS = {
  "russell3000": ("Russell 3000 Cross-Section | Bilaal Raja",
    "Every relevant line item pulled from SEC EDGAR filings for the Russell "
-   "3000, with key financial metrics computed point in time. 2,544 companies, "
+   "3000, with key financial metrics computed point in time. {companies} companies, "
    "35 metrics, sector-neutral percentile ranking."),
  "commentary": ("Russell 3000 Results Commentary | Bilaal Raja",
    "Management's own discussion of results, parsed from 10-Q and 10-K filings "
@@ -305,10 +305,15 @@ DESCRIPTIONS = {
 }
 
 
-def inject_meta(html: str, path: str, domain: str) -> str:
+def inject_meta(html: str, path: str, domain: str, companies: str = "") -> str:
     if path not in DESCRIPTIONS:
         return html
     title, desc = DESCRIPTIONS[path]
+    # the count is the live one, not a number frozen into the template
+    if "{companies}" in desc:
+        if not companies:
+            sys.exit("inject_meta: no company count for the OG description")
+        desc = desc.format(companies=companies)
     url = f"https://{domain}/{path}"
     tags = f"""
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -727,7 +732,7 @@ def main():
         if "dashboard" in src.name:
             meta = meta_from_dashboard(html)
         html, n = rewrite_links(html)
-        html = inject_meta(html, path, DOMAIN)
+        html = inject_meta(html, path, DOMAIN, f"{meta['n']:,}")
         d = SITE / path
         d.mkdir(parents=True, exist_ok=True)
         (d / "index.html").write_text(html)
