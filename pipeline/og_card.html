@@ -1,0 +1,47 @@
+<!doctype html><meta charset="utf-8"><style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{width:1200px;height:630px;background:#000000;color:#ffffff;
+ font-family:"IBM Plex Sans",-apple-system,sans-serif;overflow:hidden;position:relative}
+.grid{position:absolute;inset:0;opacity:.5;
+ background-image:linear-gradient(#242424 1px,transparent 1px),linear-gradient(90deg,#242424 1px,transparent 1px);
+ background-size:60px 60px}
+.dots{position:absolute;inset:0}
+.wrap{position:relative;padding:66px 78px 62px;height:100%;display:flex;flex-direction:column}
+.eyebrow{font-family:"IBM Plex Mono",monospace;font-size:19px;letter-spacing:.16em;
+ text-transform:uppercase;color:#ff9900;margin-bottom:26px}
+h1{font-size:68px;line-height:1.02;letter-spacing:-.028em;font-weight:700;max-width:17ch}
+.sub{font-size:25px;color:#c4c4c4;margin-top:24px;margin-bottom:56px;max-width:34ch;line-height:1.38}
+.foot{margin-top:auto;display:flex;justify-content:space-between;align-items:flex-end}
+.stats{display:flex;gap:52px;font-family:"IBM Plex Mono",monospace}
+.stat b{display:block;font-size:38px;font-weight:500;color:#ffffff;letter-spacing:-.02em}
+.stat span{font-size:16px;color:#8a8a8a;letter-spacing:.05em}
+.who{text-align:right;font-family:"IBM Plex Mono",monospace}
+.who b{display:block;font-size:22px;font-weight:500}
+.who span{font-size:17px;color:#8a8a8a}
+</style>
+<div class="grid"></div><canvas class="dots" id="c" width="1200" height="630"></canvas>
+<div class="wrap">
+  <div class="eyebrow">Cross-sectional screening</div>
+  <h1>The entire Russell 3000, rebuilt from filings</h1>
+  <div class="sub">Every relevant line item pulled from SEC EDGAR, metrics computed point in time, management commentary parsed alongside.</div>
+  <div class="foot">
+    <div class="stats">
+      <div class="stat"><b>__COMPANIES__</b><span>COMPANIES</span></div>
+      <div class="stat"><b>__METRICS__</b><span>METRICS</span></div>
+      <div class="stat"><b>11.3M</b><span>CHARS OF MD&amp;A</span></div>
+    </div>
+    <div class="who"><b>Bilaal Raja</b><span>bilaalraja.com</span></div>
+  </div>
+</div>
+<script>
+// Scatter suggestive of the real chart: log-ish cloud, denser low-left.
+const x=document.getElementById("c").getContext("2d");
+let s=42;const rnd=()=>((s=s*1103515245+12345&0x7fffffff)/0x7fffffff);
+for(let i=0;i<620;i++){
+  const u=rnd(),v=rnd();
+  const px=680+Math.pow(u,.55)*470, py=170+Math.pow(v,1.7)*430;
+  x.fillStyle="rgba(255,255,255,"+(0.05+rnd()*0.16)+")";
+  x.beginPath();x.arc(px,py,1.6+rnd()*2.1,0,7);x.fill();
+}
+</script>
