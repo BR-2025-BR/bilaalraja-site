@@ -6,7 +6,7 @@
 
 Everything under site/ is what gets uploaded. Nothing else does.
 """
-import argparse, json, re, shutil, subprocess, sys
+import argparse, hashlib, json, re, shutil, subprocess, sys
 from datetime import datetime
 from pathlib import Path
 
@@ -757,7 +757,16 @@ def main():
         "  Referrer-Policy: strict-origin-when-cross-origin\n")
     (SITE / ".nojekyll").write_text("")
     (SITE / "manifest.webmanifest").write_text(MANIFEST.format())
-    (SITE / "sw.js").write_text(SW.format(built=meta["built"]))
+    # The cache name used to be the build date alone, which is one value per
+    # day however many times the site is published. Two publishes in a day then
+    # produced a byte-identical sw.js, so the browser saw no update: install
+    # never re-ran, activate never purged, and the shell precached by the first
+    # publish stayed. That is how a refreshed panel could sit behind a stale
+    # cached page. Hash the dashboard so every publish is its own version.
+    digest = hashlib.sha1(
+        (SITE / "russell3000" / "index.html").read_bytes()).hexdigest()[:10]
+    (SITE / "sw.js").write_text(
+        SW.format(built=f"{meta['built']}-{digest}"))
     # Without this, Cloudflare Pages answers unknown paths with the landing page
     # and a 200, which Google reads as a soft 404 and may index as a duplicate.
     (SITE / "404.html").write_text(NOT_FOUND.format())
