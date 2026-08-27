@@ -41,17 +41,36 @@ def run(script):
 
 
 # ------------------------------------------------------------ 1. which CIKs
-def filed_since(start: date):
+def filed_since(start: date, retry=()):
     """CIKs with a 10-K or 10-Q in the daily index since `start`.
 
     Refetching 3,000 companyfacts files takes an hour and downloads 3GB. Only
     companies that actually filed can have new fundamentals, and SEC publishes
     exactly that list each weekday.
+
+    `retry` is the days an earlier run could not read. They are re-read here
+    regardless of `start`, because the start date only ever moves forward: a day
+    that 503s while a later day succeeds would otherwise fall behind the window
+    and its filings would never be picked up. The run would still report
+    success, carrying a stale quarter for whoever filed that day. NVDA hit
+    exactly this on 26 August 2026 and only recovered because the failed day
+    happened to be the last one.
+
+    Returns (ciks, days that failed) so the caller can carry the failures.
     """
     ciks, day, today = set(), start, date.today()
+    failed = set()
     sess = requests.Session(); sess.headers.update(UA)
     days = 0
-    while day <= today:
+    todo = []
+    d = start
+    while d <= today:
+        todo.append(d); d += timedelta(days=1)
+    for r_iso in retry:
+        r_day = date.fromisoformat(r_iso)
+        if r_day not in todo and r_day <= today:
+            todo.append(r_day)
+    for day in sorted(todo):
         if day.weekday() < 5:
             q = (day.month - 1) // 3 + 1
             url = (f"https://www.sec.gov/Archives/edgar/daily-index/"
@@ -66,12 +85,16 @@ def filed_since(start: date):
                             ciks.add(int(p[0]))
                 elif r.status_code not in (403, 404):
                     log(f"  {day}: HTTP {r.status_code}")
+                    failed.add(str(day))
             except Exception as e:
                 log(f"  {day}: {type(e).__name__}")
+                failed.add(str(day))
             time.sleep(0.2)
-        day += timedelta(days=1)
     log(f"  {days} index days read, {len(ciks)} CIKs filed a 10-K or 10-Q")
-    return ciks
+    if failed:
+        log(f"  {len(failed)} index day(s) unread, will retry next run: "
+            + ", ".join(sorted(failed)))
+    return ciks, sorted(failed)
 
 
 def fetch_facts(ciks):
@@ -252,6 +275,8 @@ def main():
     a = ap.parse_args()
 
     prev = json.load(open(STATE)) if STATE.exists() else None
+    # carried forward unchanged unless this run actually reads the daily index
+    unread = (prev or {}).get("unread_days", [])
     t0 = time.time()
     log(f"refresh starting {datetime.now():%Y-%m-%d %H:%M}")
     if prev: log(f"  last run {prev.get('built')}  "
@@ -265,8 +290,12 @@ def main():
             log(f"  full refresh: {len(todo)} companies")
         else:
             since = date.fromisoformat(prev["built"]) if prev else date.today()-timedelta(days=7)
+            carried = (prev or {}).get("unread_days", [])
+            if carried:
+                log(f"  retrying {len(carried)} index day(s) an earlier run missed")
             log(f"  reading daily indexes since {since}")
-            todo = filed_since(since) & uni_ciks
+            found, unread = filed_since(since, carried)
+            todo = found & uni_ciks
             log(f"  {len(todo)} of them are in the universe")
         fetch_facts(todo)
 
@@ -313,6 +342,7 @@ def main():
 
     step("7. Checks")
     now = measure()
+    now["unread_days"] = unread
     ok = gates(prev, now, a.force)
 
     step("8. Dashboard")
