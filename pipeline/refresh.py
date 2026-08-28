@@ -340,12 +340,23 @@ def main():
     step("6. Scores")
     log("  " + run("score.py").strip().splitlines()[0])
 
-    step("7. Checks")
+    step("7. Commentary")
+    # This page was rebuilt by hand or not at all, and for four days it was not.
+    # publish.py restages whatever file is here, so a stale one is republished
+    # every time and every run still reports success.
+    if a.prices_only:
+        log("  prices-only: skipping the MD&A fetch, rebuilding for new metrics")
+    else:
+        out = run("fetch_mdna.py")
+        log("  " + (out.strip().splitlines() or ["fetched"])[-1])
+    log("  " + run("make_commentary.py").strip().splitlines()[0])
+
+    step("8. Checks")
     now = measure()
     now["unread_days"] = unread
     ok = gates(prev, now, a.force)
 
-    step("8. Dashboard")
+    step("9. Dashboard")
     run("make_r3k_dash.py")
     log("  rebuilt")
 
