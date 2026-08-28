@@ -1,4 +1,4 @@
-const V="r3k-2026-08-27-19eb9dd860-r2";
+const V="r3k-2026-08-28-0bff2ff8f8-r2";
 
 // Cloudflare Pages 308s /russell3000 to /russell3000/. A response that followed
 // a redirect carries redirected:true, and Safari refuses to accept one of those
@@ -58,5 +58,9 @@ self.addEventListener("fetch",e=>{
   const u=new URL(r.url);
   if(u.origin!==location.origin) return;
   if(u.pathname.startsWith("/commentary")) return;   // 12MB, not worth caching
+  // The freshness check must never be answered from this cache. asset() is
+  // stale-while-revalidate, so serving version.json from here would compare a
+  // stale page against a stale version file and conclude all was well.
+  if(u.pathname==="/version.json"||u.pathname==="/update.js") return;
   e.respondWith(r.mode==="navigate" ? navigate(r) : asset(r));
 });

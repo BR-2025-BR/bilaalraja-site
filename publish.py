@@ -53,10 +53,84 @@ PWA_HEAD = """
 <meta name="apple-mobile-web-app-title" content="R3000">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="icon" href="/icon-192.png" type="image/png">
-<script>
-if("serviceWorker" in navigator)
-  addEventListener("load",()=>navigator.serviceWorker.register("/sw.js").catch(e=>e));
-</script>
+<script src="/update.js" defer></script>
+"""
+
+# Never passed through str.format: it is full of braces, and one stray format
+# call would either raise or silently eat them.
+UPDATE_JS = """// Tells a page that it is out of date, and offers a way out.
+//
+// An installed PWA on iOS can be resumed without ever performing a navigation,
+// so nothing refetches and nothing checks for a new service worker. The page
+// then sits on whatever data it loaded the first time, with no reload control
+// anywhere in the standalone UI. That is how a refreshed panel stayed invisible
+// on a phone while the server had been serving the new numbers for hours.
+//
+// So: compare the build this page was stamped with against the one the server
+// is publishing now, on load and every time the tab or app becomes visible.
+(function(){
+  var el = document.querySelector('meta[name="x-build"]');
+  var mine = el ? el.content : "";
+  var shown = false;
+
+  function offerReload(){
+    if (shown) return;
+    shown = true;
+    var bar = document.createElement("div");
+    bar.setAttribute("role", "status");
+    bar.style.cssText =
+      "position:fixed;left:0;right:0;bottom:0;z-index:99999;background:#111;" +
+      "color:#fff;font:14px/1.4 -apple-system,system-ui,sans-serif;" +
+      "padding:12px 14px;display:flex;gap:12px;align-items:center;" +
+      "justify-content:center;box-shadow:0 -2px 12px rgba(0,0,0,.35)";
+    var msg = document.createElement("span");
+    msg.textContent = "Newer data is available.";
+    var btn = document.createElement("button");
+    btn.textContent = "Reload";
+    btn.style.cssText =
+      "background:#ff9900;color:#000;border:0;border-radius:6px;padding:7px 14px;" +
+      "font:600 14px -apple-system,system-ui,sans-serif;cursor:pointer";
+    btn.onclick = function(){
+      btn.disabled = true;
+      btn.textContent = "Reloading";
+      var go = function(){ location.reload(); };
+      // Drop every cache first, or the service worker just serves the same page
+      // back and the banner returns.
+      if (window.caches) {
+        caches.keys().then(function(keys){
+          return Promise.all(keys.map(function(k){ return caches.delete(k); }));
+        }).then(go, go);
+      } else { go(); }
+    };
+    bar.appendChild(msg);
+    bar.appendChild(btn);
+    document.body.appendChild(bar);
+  }
+
+  function check(){
+    if (!mine) return;
+    fetch("/version.json", {cache: "no-store"})
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(v){ if (v && v.build && v.build !== mine) offerReload(); })
+      .catch(function(){});
+  }
+
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("/sw.js").then(function(reg){
+      if (reg.update) reg.update();
+      document.addEventListener("visibilitychange", function(){
+        if (!document.hidden && reg.update) reg.update();
+      });
+    }).catch(function(){});
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", check);
+  } else { check(); }
+  document.addEventListener("visibilitychange", function(){
+    if (!document.hidden) check();
+  });
+})();
 """
 
 LANDING = """<!doctype html>
@@ -305,7 +379,8 @@ DESCRIPTIONS = {
 }
 
 
-def inject_meta(html: str, path: str, domain: str, companies: str = "") -> str:
+def inject_meta(html: str, path: str, domain: str, companies: str = "",
+                build: str = "") -> str:
     if path not in DESCRIPTIONS:
         return html
     title, desc = DESCRIPTIONS[path]
@@ -319,6 +394,7 @@ def inject_meta(html: str, path: str, domain: str, companies: str = "") -> str:
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="{desc}">
 <meta name="author" content="Bilaal Raja">
+<meta name="x-build" content="{build}">
 <link rel="canonical" href="{url}">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Bilaal Raja">
@@ -702,6 +778,10 @@ self.addEventListener("fetch",e=>{{
   const u=new URL(r.url);
   if(u.origin!==location.origin) return;
   if(u.pathname.startsWith("/commentary")) return;   // 12MB, not worth caching
+  // The freshness check must never be answered from this cache. asset() is
+  // stale-while-revalidate, so serving version.json from here would compare a
+  // stale page against a stale version file and conclude all was well.
+  if(u.pathname==="/version.json"||u.pathname==="/update.js") return;
   e.respondWith(r.mode==="navigate" ? navigate(r) : asset(r));
 }});
 """
@@ -722,6 +802,13 @@ def main():
             sys.stderr.write(r.stderr)
             sys.exit("build failed — nothing staged, site/ left untouched")
 
+    # One id per set of data, taken from the source dashboard before staging so
+    # it is not a hash of a file that ends up containing it. Everything that has
+    # to agree on "which build is this" uses this value: the page's own meta tag,
+    # version.json, and the service worker cache name.
+    BUILD = hashlib.sha1(
+        (SRC / "r3k_dashboard.html").read_bytes()).hexdigest()[:10]
+
     SITE.mkdir(exist_ok=True)
     meta, total = {}, 0
     for src, path, title in PAGES:
@@ -732,7 +819,7 @@ def main():
         if "dashboard" in src.name:
             meta = meta_from_dashboard(html)
         html, n = rewrite_links(html)
-        html = inject_meta(html, path, DOMAIN, f"{meta['n']:,}")
+        html = inject_meta(html, path, DOMAIN, f"{meta['n']:,}", BUILD)
         d = SITE / path
         d.mkdir(parents=True, exist_ok=True)
         (d / "index.html").write_text(html)
@@ -754,7 +841,11 @@ def main():
     (SITE / "CNAME").write_text(DOMAIN + "\n")
     (SITE / "_headers").write_text(
         "/*\n  X-Content-Type-Options: nosniff\n"
-        "  Referrer-Policy: strict-origin-when-cross-origin\n")
+        "  Referrer-Policy: strict-origin-when-cross-origin\n"
+        # a cached sw.js or version.json is a stale page nobody can clear
+        "/sw.js\n  Cache-Control: no-store\n"
+        "/version.json\n  Cache-Control: no-store\n"
+        "/update.js\n  Cache-Control: no-store\n")
     (SITE / ".nojekyll").write_text("")
     (SITE / "manifest.webmanifest").write_text(MANIFEST.format())
     # The cache name used to be the build date alone, which is one value per
@@ -763,10 +854,12 @@ def main():
     # never re-ran, activate never purged, and the shell precached by the first
     # publish stayed. That is how a refreshed panel could sit behind a stale
     # cached page. Hash the dashboard so every publish is its own version.
-    digest = hashlib.sha1(
-        (SITE / "russell3000" / "index.html").read_bytes()).hexdigest()[:10]
     (SITE / "sw.js").write_text(
-        SW.format(built=f"{meta['built']}-{digest}"))
+        SW.format(built=f"{meta['built']}-{BUILD}"))
+    (SITE / "version.json").write_text(json.dumps(
+        {"build": BUILD, "built": meta["built"],
+         "price_date": meta["price_date"]}) + "\n")
+    (SITE / "update.js").write_text(UPDATE_JS)
     # Without this, Cloudflare Pages answers unknown paths with the landing page
     # and a 200, which Google reads as a soft 404 and may index as a duplicate.
     (SITE / "404.html").write_text(NOT_FOUND.format())
