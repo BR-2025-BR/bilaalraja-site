@@ -351,12 +351,23 @@ def main():
         log("  " + (out.strip().splitlines() or ["fetched"])[-1])
     log("  " + run("make_commentary.py").strip().splitlines()[0])
 
-    step("8. Checks")
+    step("8. Market context and insiders")
+    log("  " + run("fetch_rates.py").strip().splitlines()[-1])
+    if a.prices_only:
+        log("  prices-only: keeping the existing Form 4 record")
+    else:
+        log("  " + run("fetch_form4.py").strip().splitlines()[-1])
+
+    step("9. Checks")
     now = measure()
     now["unread_days"] = unread
     ok = gates(prev, now, a.force)
+    # An independent read of the same filings. Cheap, and the only check here
+    # that can catch this pipeline being confidently wrong rather than merely
+    # inconsistent with its own previous run.
+    log("  " + run("validate_frames.py").strip().splitlines()[-1])
 
-    step("9. Dashboard")
+    step("10. Dashboard")
     run("make_r3k_dash.py")
     log("  rebuilt")
 

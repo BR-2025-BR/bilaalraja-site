@@ -21,6 +21,24 @@ import pandas as pd
 
 HERE = Path(__file__).resolve().parent
 rows = json.load(open(HERE/"r3k_scored.json"))
+
+# Optional inputs. The page must still build without them rather than fail, but
+# say so, because a column silently full of blanks looks like missing data
+# rather than a missing file.
+def _optional(name):
+    f = HERE / name
+    if not f.exists():
+        print(f"  note: {name} absent, its column will be blank")
+        return None
+    try:
+        return json.loads(f.read_text())
+    except json.JSONDecodeError:
+        # These files are checkpointed by long-running fetchers, so a build
+        # started mid-write can catch a truncated one. Better a blank column
+        # and a warning than a failed build.
+        print(f"  WARNING: {name} is not valid JSON (mid-write?), skipping it")
+        return None
+
 skipped = json.load(open(HERE/"r3k_skipped_full.json"))
 uni = pd.read_json(HERE/"r3k_universe.json")
 
@@ -37,8 +55,49 @@ METRICS = [
   ("score","Composite score"),("p_value","· Value percentile"),("p_quality","· Quality percentile"),
   ("p_cash","· Cash percentile"),("p_balance","· Balance-sheet percentile"),
   ("p_growth","· Growth percentile"),("roce","Return on capital employed (%)"),
+  ("eyp","Earnings yield vs 10-yr (pp)"),
+  ("insider_net","Insider net buying, 90d ($m)"),
 ]
+
+def _drop_metric(key):
+    """Remove a metric from the selectable list.
+
+    A column that is mostly blank reads as broken data rather than as data not
+    gathered yet, so a partially-filled input is worse than an absent one.
+    """
+    global METRICS, KEYS
+    METRICS = [m for m in METRICS if m[0] != key]
+    KEYS = [k for k, _ in METRICS]
+
 KEYS = [k for k,_ in METRICS]
+
+_form4 = _optional("form4.json") or {}
+_frames = _optional("frames_check.json") or {}
+_rates = _optional("rates.json") or {}
+_y10 = _rates.get("y10")
+
+# Insider coverage has to be broad before the column is worth showing: the
+# fetch walks every filer's Form 4s and takes hours, so a build during it would
+# otherwise ship a column that is blank for most of the market.
+_f4_cov = sum(1 for _x in rows if str(_x.get("cik")) in _form4) / max(len(rows), 1)
+if _f4_cov < 0.8:
+    print(f"  note: Form 4 coverage {_f4_cov:.0%}, holding the insider column back")
+    _form4 = {}
+    _drop_metric("insider_net")
+else:
+    print(f"  Form 4 coverage {_f4_cov:.0%}")
+
+for _x in rows:
+    # Earnings yield against the risk-free rate. Computed from net income and
+    # market cap rather than by inverting P/E, so a loss-making company gets a
+    # negative yield instead of being dropped.
+    _ni, _mc = _x.get("ni"), _x.get("mcap")
+    _x["eyp"] = (round(_ni / _mc * 100 - _y10, 2)
+                 if _y10 and _ni is not None and _mc else None)
+    _f = _form4.get(str(_x.get("cik")))
+    _x["insider_net"] = round(_f["net"] / 1e6, 2) if _f and _f.get("net") is not None else None
+    _x["insider_buyers"]  = _f.get("buyers")  if _f else None
+    _x["insider_sellers"] = _f.get("sellers") if _f else None
 SECTORS = ["Technology","Healthcare","Financials","Industrials","Consumer Disc",
            "Consumer Staples","Energy","Utilities","Materials","Real Estate",
            "Communication Svcs","Unclassified"]
@@ -56,6 +115,7 @@ for x in rows:
        "rk":x["rank"],"bank":1 if x.get("rev_src","").startswith("bank") else 0,
        "m":"F" if x.get("model")=="financial" else "O", "nf":x.get("nfac")}
     for k in KEYS: d[k]=r(x.get(k))
+    d["ib"]=x.get("insider_buyers"); d["is_"]=x.get("insider_sellers")
     data.append(d)
 data.sort(key=lambda d:-(d.get("mcap") or 0))
 
@@ -75,6 +135,10 @@ meta={
  "built":_dt.datetime.now().strftime("%Y-%m-%d"),
  "built_human":_dt.datetime.now().strftime("%-d %B %Y"),
  "metrics":len(METRICS),
+ "y10":_y10, "rates_date":_rates.get("date"),
+ "fchk_n":_frames.get("compared"), "fchk_bad":_frames.get("disagreed"),
+ "insiders":sum(1 for v in _form4.values() if v and v.get("bought",0)>0),
+ "insider_window":90,
  "sectors":len(SECTORS),
 }
 
@@ -582,6 +646,37 @@ $("method").innerHTML=`
    year-to-date cumulatives. 52/53-week filers produce twin quarters, which are de-duplicated.
    ${META.banks} banks carry no revenue tag at all and use net interest income plus non-interest income,
    which is what "total revenue" means on a bank income statement.</p>
+ <p><b>Insider buying.</b> Officers and directors must report trades in their own
+   company to the SEC within two business days, on Form 4. Most of what lands there is
+   pay rather than opinion: shares granted, options exercised, or stock sold automatically
+   to cover the tax on a vest. Counting all of it makes almost every company look like
+   heavy insider selling, which is why the raw figure is close to useless. Only open-market
+   purchases and sales are counted here &mdash; the two cases where somebody chose to put
+   their own money in or take it out. The column is purchases minus sales over the last
+   ${META.insider_window} days, in millions of dollars. The asymmetry is the point: an
+   executive buying their own shares has few motives beyond expecting them to rise,
+   whereas selling has many innocent explanations, from a divorce to a house.
+   ${META.insiders} companies show any open-market buying at all.</p>
+ <p><b>Earnings yield against the risk-free rate.</b> A multiple on its own cannot tell you
+   whether something is dear. Turn it the other way up: a company on 28 times earnings
+   returns about 3.6p a year for every pound of its share price. A 10-year US Treasury note
+   pays ${META.y10}% for no equity risk whatsoever. This column is the gap between the two,
+   in percentage points. Positive means the business earns you more per pound than lending
+   to the US government does; negative means it earns less, and you are paying up front for
+   growth you have not been given yet. That is not an argument against owning it &mdash;
+   plenty of the best businesses sit well below the line &mdash; but it makes the size of
+   the bet explicit. Computed from net income and market cap rather than by inverting P/E,
+   so companies losing money show a negative yield instead of quietly dropping out.</p>
+ <p><b>Checked against SEC's own arithmetic.</b> Everything above is this pipeline reading
+   filings and deciding what each number means, which is exactly the kind of process that can
+   be confidently wrong. SEC separately publishes "frames": every filer that reported a given
+   tag for a given period, already gathered up. That is a second, independent route to the
+   same figure. The panel's total assets and shareholders' equity are compared against it at
+   each build &mdash; balance sheet items, because they are a single value at a single date
+   and need no reconstruction to compare. At the last run ${META.fchk_n} figures were checked
+   and ${META.fchk_bad} disagreed, all of those by rounding in the third decimal of a billion
+   on companies worth a few million. It does not prove the rest is right, but it means the
+   foundations are not quietly off.</p>
  <p><b>The composite score</b> ranks each company against its own sector on five factors — cheap
    EV/EBIT, high return on capital employed, high FCF yield, net cash relative to market value, and
    revenue growth — weighted 25/20/25/20/10 to tilt toward cash generation and balance sheet, which is
