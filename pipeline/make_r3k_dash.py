@@ -187,6 +187,9 @@ h2{font-size:15px;font-weight:650;letter-spacing:-.01em}
 .count{font-family:var(--mono);font-size:11.5px;color:var(--ink3);white-space:nowrap}
 .ctrls{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end;margin:4px 0 12px}
 .fld{display:flex;flex-direction:column;gap:4px;min-width:190px}
+a.tk{color:var(--s1);text-decoration:none;font-weight:600}
+a.tk:hover{text-decoration:underline}
+.tip .go{color:var(--s1)}
 label{font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--ink3);font-weight:600}
 select,input[type=search]{font:inherit;font-size:13.5px;padding:7px 9px;border:1px solid var(--rule);
   border-radius:10px;background:var(--panel);color:var(--ink);width:100%}
@@ -563,14 +566,20 @@ $("cv").addEventListener("mousemove",ev=>{
       `<div class="kv"><span>${lab(st.x)}</span><span>${d[st.x]==null?"—":fmt(d[st.x])}</span></div>`+
       `<div class="kv"><span>${lab(st.y)}</span><span>${d[st.y]==null?"—":fmt(d[st.y])}</span></div>`+
       `<div class="kv"><span>Quarter end</span><span>${d.e}</span></div>`+
-      (best.off?`<div class="kv"><span></span><span>pinned at edge</span></div>`:"");
+      (best.off?`<div class="kv"><span></span><span>pinned at edge</span></div>`:"")+
+      `<div class="kv"><span></span><span class="go">click for ${d.t} &rarr;</span></div>`;
+    st.hit=d.t; cv.style.cursor="pointer";
     tip.classList.add("on");
     const px=best.x/sx, py=best.y/sy;
     tip.style.left=Math.min(px+14,r.width-192)+"px";
     tip.style.top=Math.max(py-14,0)+"px";
-  } else tip.classList.remove("on");
+  } else { tip.classList.remove("on"); st.hit=null; cv.style.cursor="default"; }
 });
-$("cv").addEventListener("mouseleave",()=>$("tip").classList.remove("on"));
+$("cv").addEventListener("mouseleave",()=>{
+  $("tip").classList.remove("on"); st.hit=null; $("cv").style.cursor="default";
+});
+// The tooltip offers a click, so it has to lead somewhere.
+$("cv").addEventListener("click",()=>{ if(st.hit) location.href=`/c/${st.hit}/`; });
 
 const counts={}; for(const d of D) counts[d.s]=(counts[d.s]||0)+1;
 const leg=$("leg");
@@ -595,6 +604,9 @@ const COLS=[["t","Ticker"],["n","Company"],["s","Sector"],["score","Score"],["mc
   th.innerHTML="<tr>"+COLS.map(c=>`<th>${c[1]}</th>`).join("")+"</tr>";
   tb.innerHTML=D.slice(0,400).map(d=>"<tr>"+COLS.map(([k])=>{
     const v=d[k]; const num=typeof v==="number";
+    // The ticker is the way into a company's own page. Without this the
+    // per-company pages exist but nothing on the site points at them.
+    if(k==="t") return `<td><a class="tk" href="/c/${v}/">${v}</a></td>`;
     return `<td class="${num?"num":""}">${v==null?"":num?fmt(v):v}</td>`;
   }).join("")+"</tr>").join("");
   $("tcnt").textContent=`showing top 400 of ${D.length} by market cap`;
@@ -608,7 +620,7 @@ const COLS=[["t","Ticker"],["n","Company"],["s","Sector"],["score","Score"],["mc
     el.querySelector("thead").innerHTML="<tr>"+C.map(c=>`<th>${c[1]}</th>`).join("")+"</tr>";
     el.querySelector("tbody").innerHTML=rows.map((d,i)=>"<tr>"+C.map(([k])=>{
       const v=d[k], num=typeof v==="number";
-      if(k==="t") return `<td><b>${v}</b></td>`;
+      if(k==="t") return `<td><a class="tk" href="/c/${v}/"><b>${v}</b></a></td>`;
       const txt = v==null ? "—"
         : !num ? v
         : k==="nf"    ? String(v)
