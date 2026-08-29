@@ -371,6 +371,12 @@ def main():
     run("make_r3k_dash.py")
     log("  rebuilt")
 
+    step("11. Archive")
+    # Runs last, after the gates: only a build that passed gets into the
+    # point-in-time record. A bad snapshot is worse than a missing one, because
+    # it silently poisons every study that later reads the archive.
+    log("  " + run("snapshot.py").strip().splitlines()[0])
+
     json.dump(now, open(STATE,"w"), indent=1)
     log(f"\ndone in {(time.time()-t0)/60:.1f} minutes")
     log(f"  {now['n']} companies  ${now['total_mcap']/1000:.2f}tn  "

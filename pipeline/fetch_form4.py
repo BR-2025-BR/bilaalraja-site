@@ -34,13 +34,21 @@ done = json.loads(OUT.read_text()) if OUT.exists() else {}
 
 sess = requests.Session(); sess.headers.update(UA)
 
+THROTTLED = [0]          # counted so a throttled run is visible, not silent
+
 def get(url, timeout=45):
     for a in range(3):
         try:
             r = sess.get(url, timeout=timeout)
             if r.status_code == 200: return r
             if r.status_code == 404: return None
-            time.sleep(20 if r.status_code == 429 else 2 * (a + 1))
+            if r.status_code == 429:
+                # A silent 20s sleep per rejection is how a run ends up taking
+                # eleven hours while looking merely slow. Count them, and say so.
+                THROTTLED[0] += 1
+                time.sleep(20)
+            else:
+                time.sleep(2 * (a + 1))
         except Exception:
             time.sleep(2 * (a + 1))
     return None
@@ -102,7 +110,7 @@ def one(rec):
     for i in idx[:60]:                        # a few filers run to hundreds
         acc = r["accessionNumber"][i].replace("-", "")
         doc = raw_xml_path(r["primaryDocument"][i])
-        time.sleep(0.18)
+        time.sleep(0.30)
         d = get(f"https://www.sec.gov/Archives/edgar/data/{cik}/{acc}/{doc}")
         if d is None: continue
         p = parse(d.content)
@@ -121,14 +129,15 @@ todo = list(uni.itertuples())
 print(f"{len(todo)} companies · Form 4s filed since {CUT} · {len(done)} cached",
       flush=True)
 n = 0
-with ThreadPoolExecutor(max_workers=6) as ex:
+with ThreadPoolExecutor(max_workers=3) as ex:
     for key, rec in ex.map(one, todo):
         if rec: done[key] = rec
         n += 1
-        if n % 100 == 0:
+        if n % 25 == 0:
             OUT.write_text(json.dumps(done))
             withbuy = sum(1 for v in done.values() if v and v.get("bought", 0) > 0)
-            print(f"  {n}/{len(todo)}  cached={len(done)}  with buying={withbuy}",
+            print(f"  {n}/{len(todo)}  cached={len(done)}  with buying={withbuy}"
+                  + (f"  [throttled {THROTTLED[0]}x]" if THROTTLED[0] else ""),
                   flush=True)
 OUT.write_text(json.dumps(done))
 wb = sum(1 for v in done.values() if v and v.get("bought", 0) > 0)
