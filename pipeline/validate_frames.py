@@ -79,6 +79,27 @@ def main():
         for diff, tk, mine, theirs in worst[:5]:
             print(f"      {tk:6} panel ${mine:,.2f}bn  vs SEC ${theirs:,.2f}bn"
                   f"  ({diff*100:.1f}%)")
+    # A company can also be wrong by being absent. JPM sat in the skipped list
+    # at rank 13 for weeks: the frames check never saw it, because it only
+    # compares what made it into the panel. Anything large enough to matter
+    # that did not make it should be loud.
+    big = []
+    skf = HERE / "r3k_skipped_full.json"
+    unif = HERE / "r3k_universe.json"
+    if skf.exists() and unif.exists():
+        import pandas as pd
+        uni = pd.read_json(unif).set_index("ticker")
+        for r in json.loads(skf.read_text()):
+            tk = r.get("ticker")
+            if tk in uni.index and float(uni.loc[tk, "mcap"]) >= 50.0:
+                big.append((float(uni.loc[tk, "mcap"]), tk, r.get("why", "?")))
+    big.sort(reverse=True)
+    summary["large_skipped"] = [{"ticker": t, "mcap_bn": round(m, 1), "why": w}
+                                for m, t, w in big]
+    print(f"  large companies skipped (>=$50bn): {len(big)}")
+    for m, t, w in big[:8]:
+        print(f"      {t:6} ${m:>8,.1f}bn  {w[:56]}")
+
     from datetime import date as _d
     summary["asof"] = str(_d.today())
     summary["compared"] = sum(c["compared"] for c in summary["checks"].values())

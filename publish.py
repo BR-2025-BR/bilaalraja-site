@@ -866,10 +866,25 @@ def main():
     (SITE / "methodology").mkdir(parents=True, exist_ok=True)
     (SITE / "methodology" / "index.html").write_text(METHODOLOGY.format(**pretty))
     print(f"  /methodology   {len(METHODOLOGY)/1e3:6.2f} KB")
+    # Company pages are generated here rather than by hand: 2,500 pages that
+    # only refresh when someone remembers is the commentary problem again.
+    r = subprocess.run([PY, str(SRC / "make_company_pages.py")],
+                       capture_output=True, text=True, cwd=SRC)
+    sys.stdout.write(r.stdout)
+    if r.returncode:
+        sys.stderr.write(r.stderr)
+        sys.exit("company pages failed - nothing further staged")
+
+    # Every company page in the sitemap. Without this they are unreachable
+    # except by guessing the URL, which wastes the entire point of having them.
+    tickers = sorted(d.name for d in (SITE / "c").iterdir() if d.is_dir()) \
+              if (SITE / "c").exists() else []
     write_sitemap(SITE, DOMAIN,
                   [("", "1.0"), ("russell3000", "0.9"), ("commentary", "0.8"),
-                   ("methodology", "0.85")],
+                   ("methodology", "0.85")]
+                  + [(f"c/{t}", "0.6") for t in tickers],
                   meta["built"])
+    print(f"  sitemap: {len(tickers) + 4} URLs")
     (SITE / "robots.txt").write_text(
         "User-agent: *\nDisallow: /r/\nAllow: /\n"
         f"Sitemap: https://{DOMAIN}/sitemap.xml\n")

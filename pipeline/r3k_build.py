@@ -40,6 +40,9 @@ def num(x):
         return v if np.isfinite(v) else None
     except Exception: return None
 
+STALE_BEFORE = "2025-09-30"   # a cross-section cannot carry older than this
+
+
 def bank_revenue(facts, cik):
     """Total revenue for a depository: net interest income + non-interest income.
 
@@ -70,9 +73,20 @@ def one(rec):
 
     rev_q = flow(facts, cik, "revenue")
     rev_src = "standard"
-    if rev_q is None or len(rev_q) < 4:
-        rev_q = bank_revenue(facts, cik)          # depositories tag no Revenues
-        rev_src = "bank NII + non-interest income"
+    # The fallback used to trigger only on a short series, which meant a filer
+    # holding plenty of quarters from a tag it abandoned years ago never reached
+    # it. JPM carried 25 quarters from a Revenues tag it stopped using in 2014
+    # and was dropped as stale at rank 13, while its bank series ran to
+    # 2026-06-30. So try the bank route when the standard series is short OR
+    # stale, and keep whichever actually reaches further forward.
+    thin  = rev_q is None or len(rev_q) < 4
+    stale = (not thin) and str(rev_q["end_dt"].max())[:10] < STALE_BEFORE
+    if thin or stale:
+        bank_q = bank_revenue(facts, cik)         # depositories tag no Revenues
+        if bank_q is not None and len(bank_q) >= 4 and (
+                thin or bank_q["end_dt"].max() > rev_q["end_dt"].max()):
+            rev_q = bank_q
+            rev_src = "bank NII + non-interest income"
     if rev_q is None or len(rev_q) < 4: return None, "no revenue series"
     rev_t = ttm(rev_q)
     if rev_t.empty: return None, "revenue TTM not reconstructible"
@@ -95,7 +109,7 @@ def one(rec):
     # Recency floor. A cross-section that claims to show the index now cannot
     # carry a company whose most recent reconstructible TTM ended years ago
     # (Nelnet resolved to 2017-12-31 on a sparse series).
-    if str(end)[:10] < "2025-09-30": return None, f"stale: latest TTM ends {str(end)[:10]}"
+    if str(end)[:10] < STALE_BEFORE: return None, f"stale: latest TTM ends {str(end)[:10]}"
 
     row = {"ticker": tic, "cik": cik, "name": rec["name"], "sector": rec["sector"],
            "sic": int(rec["sic"]), "end": str(end)[:10],
