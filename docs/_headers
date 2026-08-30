@@ -7,3 +7,5 @@
   Cache-Control: no-store
 /update.js
   Cache-Control: no-store
+/api/*
+  Cache-Control: no-store

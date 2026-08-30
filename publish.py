@@ -416,9 +416,10 @@ def _brandify(html: str) -> str:
     The templates run through str.format, and CSS is nothing but braces, so the
     palette is carried as a placeholder and swapped in here instead.
     """
-    return (html.replace("__TOKENS__", brand.TOKENS + brand.MASTHEAD_CSS)
+    return (html.replace("__TOKENS__", brand.TOKENS + brand.MASTHEAD_CSS + brand.TICKER_CSS)
                 .replace("__FONTS__", brand.FONTS)
-                .replace("__MASTHEAD__", brand.masthead()))
+                .replace("__MASTHEAD__", brand.masthead() + brand.TICKER_HTML)
+                .replace("__TICKERJS__", brand.TICKER_JS))
 
 
 def write_sitemap(site: Path, domain: str, paths, lastmod: str):
@@ -660,7 +661,7 @@ and code are my own work and are not licensed for reuse. The underlying SEC
 filing data is public domain. Published as a personal project; nothing here is
 investment advice or a recommendation to buy or sell any security.
 </footer>
-</div></body></html>
+__TICKERJS__</div></body></html>
 """
 
 
@@ -686,7 +687,7 @@ a{{color:var(--ember);font-family:var(--mono);font-size:12.5px}}
 <p>That page does not exist. It may have been renamed, or the link may have been
 mistyped.</p>
 <a href="/">&larr; BILAALRAJA.COM</a>
-</div></body></html>
+__TICKERJS__</div></body></html>
 """
 
 
@@ -840,7 +841,8 @@ def main():
         # a cached sw.js or version.json is a stale page nobody can clear
         "/sw.js\n  Cache-Control: no-store\n"
         "/version.json\n  Cache-Control: no-store\n"
-        "/update.js\n  Cache-Control: no-store\n")
+        "/update.js\n  Cache-Control: no-store\n"
+        "/api/*\n  Cache-Control: no-store\n")
     (SITE / ".nojekyll").write_text("")
     (SITE / "manifest.webmanifest").write_text(MANIFEST.format())
     # The cache name used to be the build date alone, which is one value per
@@ -855,6 +857,16 @@ def main():
         {"build": BUILD, "built": meta["built"],
          "price_date": meta["price_date"]}) + "\n")
     (SITE / "update.js").write_text(UPDATE_JS)
+
+    # The ticker gets raw filings from SEC and has to work out which are ours.
+    # Shipping the lookup as a static file keeps the edge function stateless.
+    scored = json.loads((SRC / "r3k_scored.json").read_text())
+    ciks = {str(int(r["cik"])): [r["ticker"], r.get("name") or r["ticker"],
+                                 round(float(r.get("mcap") or 0), 1)]
+            for r in scored if r.get("cik") and r.get("ticker")}
+    (SITE / "ciks.json").write_text(json.dumps(ciks, separators=(",", ":")))
+    print(f"  ciks.json: {len(ciks)} companies "
+          f"({(SITE / 'ciks.json').stat().st_size/1024:.0f} KB)")
     # Without this, Cloudflare Pages answers unknown paths with the landing page
     # and a 200, which Google reads as a soft 404 and may index as a duplicate.
     (SITE / "404.html").write_text(_brandify(NOT_FOUND.format()))

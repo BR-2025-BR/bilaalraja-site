@@ -84,3 +84,70 @@ def masthead(current=""):
         for href, key, label in items)
     return (f'<header class="mast"><a class="wm" href="/">Bilaal<i>.</i>Raja</a>'
             f'<nav>{nav}</nav></header>')
+
+
+# ---------------------------------------------------------------- live ticker
+# A strip of 8-K filings by companies in the panel, straight from SEC. It stays
+# hidden unless something actually matches, so a failed fetch or a quiet
+# afternoon leaves no empty furniture on the page.
+
+TICKER_CSS = """
+.tkr{border-bottom:1px solid var(--rule);overflow:hidden;display:none;
+  margin-bottom:22px;position:relative}
+.tkr.on{display:block}
+.tkr-i{font-family:var(--mono);font-size:10px;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--ink3);padding:0 0 6px}
+.tkr-i b{color:var(--ember);font-weight:500}
+.tkr-w{overflow:hidden;padding-bottom:10px}
+.tkr-t{display:flex;gap:30px;width:max-content;
+  animation:tkr 70s linear infinite}
+.tkr:hover .tkr-t{animation-play-state:paused}
+@keyframes tkr{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.tkr a{display:inline-flex;align-items:baseline;gap:8px;text-decoration:none;
+  white-space:nowrap;font-size:13px}
+.tkr a .s{font-family:var(--mono);font-weight:500;color:var(--ember)}
+.tkr a .n{color:var(--ink2)}
+.tkr a .t{font-family:var(--mono);font-size:11px;color:var(--ink3)}
+.tkr a:hover .n{color:var(--ink)}
+@media (prefers-reduced-motion:reduce){
+  .tkr-t{animation:none}
+  .tkr-w{overflow-x:auto}
+}
+"""
+
+TICKER_HTML = ('<div class="tkr" id="tkr"><div class="tkr-i">'
+               '<b>Live</b> &middot; 8-K filings by companies in the panel</div>'
+               '<div class="tkr-w"><div class="tkr-t" id="tkrt"></div></div></div>')
+
+TICKER_JS = """<script>
+(function(){
+  var strip=document.getElementById("tkr"), track=document.getElementById("tkrt");
+  if(!strip||!track) return;
+  function ago(iso){
+    var s=(Date.now()-new Date(iso).getTime())/1000;
+    if(!isFinite(s)||s<0) return "";
+    if(s<3600) return Math.max(1,Math.round(s/60))+"m ago";
+    if(s<86400) return Math.round(s/3600)+"h ago";
+    return Math.round(s/86400)+"d ago";
+  }
+  Promise.all([
+    fetch("/api/filings").then(function(r){return r.ok?r.json():null;}),
+    fetch("/ciks.json").then(function(r){return r.ok?r.json():null;})
+  ]).then(function(res){
+    var feed=res[0], map=res[1];
+    if(!feed||!map||!feed.items) return;
+    var out=[];
+    for(var i=0;i<feed.items.length;i++){
+      var f=feed.items[i], m=map[String(f.cik)];
+      if(!m) continue;                       // not one of ours, skip it
+      out.push('<a href="/c/'+m[0]+'/"><span class="s">'+m[0]+'</span>'+
+               '<span class="n">'+m[1]+'</span>'+
+               '<span class="t">8-K &middot; '+ago(f.filed)+'</span></a>');
+    }
+    if(!out.length) return;                  // nothing matched: leave it hidden
+    // the list is laid down twice so the loop has no visible seam
+    track.innerHTML=out.join("")+out.join("");
+    strip.classList.add("on");
+  }).catch(function(){});
+})();
+</script>"""

@@ -258,17 +258,7 @@ details .body ul{margin-left:17px;display:flex;flex-direction:column;gap:5px}
 footer{font-size:11.5px;color:var(--ink3);font-family:var(--mono);border-top:1px solid var(--rule);
   padding-top:11px;line-height:1.7}
 
-.mast{display:flex;align-items:baseline;justify-content:space-between;gap:16px;
-  padding-bottom:13px;border-bottom:1.5px solid var(--ink);margin-bottom:26px}
-.mast .wm{font-family:var(--serif);font-size:20px;font-weight:600;
-  letter-spacing:-.014em;text-decoration:none;line-height:1}
-.mast .wm i{font-style:normal;color:var(--ember)}
-.mast nav{display:flex;gap:17px;font-family:var(--mono);font-size:11px;
-  letter-spacing:.09em;text-transform:uppercase}
-.mast nav a{color:var(--ink3);text-decoration:none;padding-bottom:2px;
-  border-bottom:1px solid transparent}
-.mast nav a:hover{color:var(--ink);border-bottom-color:var(--ember)}
-.mast nav a[aria-current]{color:var(--ink);border-bottom-color:var(--ember)}
+__BRANDCSS__
 </style>
 
 <div class="wrap">
@@ -771,9 +761,12 @@ if(ENTER<1){
   })(t0);
 }
 </script>
+__TICKERJS__
 """
 
-out = (HTML.replace("__MASTHEAD__", brand.masthead("russell3000"))
+out = (HTML.replace("__BRANDCSS__", brand.MASTHEAD_CSS + brand.TICKER_CSS)
+           .replace("__MASTHEAD__", brand.masthead("russell3000") + brand.TICKER_HTML)
+           .replace("__TICKERJS__", brand.TICKER_JS)
            .replace("__DATA__", json.dumps(data, separators=(",",":")))
            .replace("__META__", json.dumps(meta))
            .replace("__METRICS__", json.dumps(METRICS))

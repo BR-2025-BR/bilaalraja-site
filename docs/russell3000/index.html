@@ -3,7 +3,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="Every relevant line item pulled from SEC EDGAR filings for the Russell 3000, with key financial metrics computed point in time. 2,581 companies, 35 metrics, sector-neutral percentile ranking.">
 <meta name="author" content="Bilaal Raja">
-<meta name="x-build" content="4c88455269">
+<meta name="x-build" content="679af558b9">
 <link rel="canonical" href="https://bilaalraja.com/russell3000">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Bilaal Raja">
@@ -141,6 +141,7 @@ details .body ul{margin-left:17px;display:flex;flex-direction:column;gap:5px}
 footer{font-size:11.5px;color:var(--ink3);font-family:var(--mono);border-top:1px solid var(--rule);
   padding-top:11px;line-height:1.7}
 
+
 .mast{display:flex;align-items:baseline;justify-content:space-between;gap:16px;
   padding-bottom:13px;border-bottom:1.5px solid var(--ink);margin-bottom:26px}
 .mast .wm{font-family:var(--serif);font-size:20px;font-weight:600;
@@ -152,10 +153,33 @@ footer{font-size:11.5px;color:var(--ink3);font-family:var(--mono);border-top:1px
   border-bottom:1px solid transparent}
 .mast nav a:hover{color:var(--ink);border-bottom-color:var(--ember)}
 .mast nav a[aria-current]{color:var(--ink);border-bottom-color:var(--ember)}
+
+.tkr{border-bottom:1px solid var(--rule);overflow:hidden;display:none;
+  margin-bottom:22px;position:relative}
+.tkr.on{display:block}
+.tkr-i{font-family:var(--mono);font-size:10px;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--ink3);padding:0 0 6px}
+.tkr-i b{color:var(--ember);font-weight:500}
+.tkr-w{overflow:hidden;padding-bottom:10px}
+.tkr-t{display:flex;gap:30px;width:max-content;
+  animation:tkr 70s linear infinite}
+.tkr:hover .tkr-t{animation-play-state:paused}
+@keyframes tkr{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.tkr a{display:inline-flex;align-items:baseline;gap:8px;text-decoration:none;
+  white-space:nowrap;font-size:13px}
+.tkr a .s{font-family:var(--mono);font-weight:500;color:var(--ember)}
+.tkr a .n{color:var(--ink2)}
+.tkr a .t{font-family:var(--mono);font-size:11px;color:var(--ink3)}
+.tkr a:hover .n{color:var(--ink)}
+@media (prefers-reduced-motion:reduce){
+  .tkr-t{animation:none}
+  .tkr-w{overflow-x:auto}
+}
+
 </style>
 
 <div class="wrap">
-<header class="mast"><a class="wm" href="/">Bilaal<i>.</i>Raja</a><nav><a href="/russell3000" aria-current="page">Cross-section</a><a href="/commentary">Commentary</a><a href="/learn">Case study</a><a href="/methodology">Method</a></nav></header>
+<header class="mast"><a class="wm" href="/">Bilaal<i>.</i>Raja</a><nav><a href="/russell3000" aria-current="page">Cross-section</a><a href="/commentary">Commentary</a><a href="/learn">Case study</a><a href="/methodology">Method</a></nav></header><div class="tkr" id="tkr"><div class="tkr-i"><b>Live</b> &middot; 8-K filings by companies in the panel</div><div class="tkr-w"><div class="tkr-t" id="tkrt"></div></div></div>
 <header>
   <div>
     <h1>Russell 3000 &mdash; Cross-Section</h1>
@@ -653,4 +677,36 @@ if(ENTER<1){
     if(ENTER<1) requestAnimationFrame(step);
   })(t0);
 }
+</script>
+<script>
+(function(){
+  var strip=document.getElementById("tkr"), track=document.getElementById("tkrt");
+  if(!strip||!track) return;
+  function ago(iso){
+    var s=(Date.now()-new Date(iso).getTime())/1000;
+    if(!isFinite(s)||s<0) return "";
+    if(s<3600) return Math.max(1,Math.round(s/60))+"m ago";
+    if(s<86400) return Math.round(s/3600)+"h ago";
+    return Math.round(s/86400)+"d ago";
+  }
+  Promise.all([
+    fetch("/api/filings").then(function(r){return r.ok?r.json():null;}),
+    fetch("/ciks.json").then(function(r){return r.ok?r.json():null;})
+  ]).then(function(res){
+    var feed=res[0], map=res[1];
+    if(!feed||!map||!feed.items) return;
+    var out=[];
+    for(var i=0;i<feed.items.length;i++){
+      var f=feed.items[i], m=map[String(f.cik)];
+      if(!m) continue;                       // not one of ours, skip it
+      out.push('<a href="/c/'+m[0]+'/"><span class="s">'+m[0]+'</span>'+
+               '<span class="n">'+m[1]+'</span>'+
+               '<span class="t">8-K &middot; '+ago(f.filed)+'</span></a>');
+    }
+    if(!out.length) return;                  // nothing matched: leave it hidden
+    // the list is laid down twice so the loop has no visible seam
+    track.innerHTML=out.join("")+out.join("");
+    strip.classList.add("on");
+  }).catch(function(){});
+})();
 </script>

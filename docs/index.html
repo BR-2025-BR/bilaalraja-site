@@ -86,6 +86,28 @@ a{color:inherit}
 .mast nav a:hover{color:var(--ink);border-bottom-color:var(--ember)}
 .mast nav a[aria-current]{color:var(--ink);border-bottom-color:var(--ember)}
 
+.tkr{border-bottom:1px solid var(--rule);overflow:hidden;display:none;
+  margin-bottom:22px;position:relative}
+.tkr.on{display:block}
+.tkr-i{font-family:var(--mono);font-size:10px;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--ink3);padding:0 0 6px}
+.tkr-i b{color:var(--ember);font-weight:500}
+.tkr-w{overflow:hidden;padding-bottom:10px}
+.tkr-t{display:flex;gap:30px;width:max-content;
+  animation:tkr 70s linear infinite}
+.tkr:hover .tkr-t{animation-play-state:paused}
+@keyframes tkr{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.tkr a{display:inline-flex;align-items:baseline;gap:8px;text-decoration:none;
+  white-space:nowrap;font-size:13px}
+.tkr a .s{font-family:var(--mono);font-weight:500;color:var(--ember)}
+.tkr a .n{color:var(--ink2)}
+.tkr a .t{font-family:var(--mono);font-size:11px;color:var(--ink3)}
+.tkr a:hover .n{color:var(--ink)}
+@media (prefers-reduced-motion:reduce){
+  .tkr-t{animation:none}
+  .tkr-w{overflow-x:auto}
+}
+
 #dots{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
 .wrap{position:relative;z-index:1}
 @supports (corner-shape: squircle){.card{corner-shape:squircle}}
@@ -123,7 +145,7 @@ footer a{color:var(--s1)}
 .rights{display:block;margin-top:12px;padding-top:12px;border-top:1px solid var(--rule);
  max-width:76ch;line-height:1.7;font-size:11.5px}
 </style></head><body><div class="wrap">
-<header class="mast"><a class="wm" href="/">Bilaal<i>.</i>Raja</a><nav><a href="/russell3000">Cross-section</a><a href="/commentary">Commentary</a><a href="/learn">Case study</a><a href="/methodology">Method</a></nav></header>
+<header class="mast"><a class="wm" href="/">Bilaal<i>.</i>Raja</a><nav><a href="/russell3000">Cross-section</a><a href="/commentary">Commentary</a><a href="/learn">Case study</a><a href="/methodology">Method</a></nav></header><div class="tkr" id="tkr"><div class="tkr-i"><b>Live</b> &middot; 8-K filings by companies in the panel</div><div class="tkr-w"><div class="tkr-t" id="tkrt"></div></div></div>
 <canvas id="dots" aria-hidden="true"></canvas>
 <h1>Bilaal Raja</h1>
 <div class="sub">Equity research &middot; quantitative analysis</div>
