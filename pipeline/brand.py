@@ -76,6 +76,7 @@ def masthead(current=""):
     """current: '', 'russell3000', 'commentary' or 'methodology'."""
     items = [("/russell3000", "russell3000", "Cross-section"),
              ("/commentary",  "commentary",  "Commentary"),
+             ("/learn",       "learn",       "Case study"),
              ("/methodology", "methodology", "Method")]
     CUR = ' aria-current="page"'
     nav = "".join(

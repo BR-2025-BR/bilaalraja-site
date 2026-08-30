@@ -863,6 +863,13 @@ def main():
     print(f"  /methodology   {len(METHODOLOGY)/1e3:6.2f} KB")
     # Company pages are generated here rather than by hand: 2,500 pages that
     # only refresh when someone remembers is the commentary problem again.
+    r = subprocess.run([PY, str(SRC / "make_case_study.py")],
+                       capture_output=True, text=True, cwd=SRC)
+    sys.stdout.write(r.stdout)
+    if r.returncode:
+        sys.stderr.write(r.stderr)
+        sys.exit("case study failed - nothing further staged")
+
     r = subprocess.run([PY, str(SRC / "make_company_pages.py")],
                        capture_output=True, text=True, cwd=SRC)
     sys.stdout.write(r.stdout)
@@ -876,10 +883,11 @@ def main():
               if (SITE / "c").exists() else []
     write_sitemap(SITE, DOMAIN,
                   [("", "1.0"), ("russell3000", "0.9"), ("commentary", "0.8"),
-                   ("methodology", "0.85")]
+                   ("methodology", "0.85"), ("learn", "0.85")]
                   + [(f"c/{t}", "0.6") for t in tickers],
                   meta["built"])
-    print(f"  sitemap: {len(tickers) + 4} URLs")
+    n_urls = (SITE / "sitemap.xml").read_text().count("<url>")
+    print(f"  sitemap: {n_urls} URLs")
     (SITE / "robots.txt").write_text(
         "User-agent: *\nDisallow: /r/\nAllow: /\n"
         f"Sitemap: https://{DOMAIN}/sitemap.xml\n")

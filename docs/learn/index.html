@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en-GB"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Reading a company's accounts, end to end | Bilaal Raja</title>
+<meta name="description" content="A worked case study in financial accounting using The Home Depot's own filed statements: the income statement, balance sheet and cash flow, how the three tie together, and what the ratios drawn from them do and do not tell you.">
+<link rel="canonical" href="https://bilaalraja.com/learn/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Reading a company's accounts, end to end">
+<meta property="og:description" content="A worked case study in financial accounting from The Home Depot's own filed statements.">
+<meta property="og:url" content="https://bilaalraja.com/learn/">
+<meta property="og:image" content="https://bilaalraja.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  /* paper and ink, both warm, so neither reads as a default */
+  --paper:#FBFAF7; --raise:#F3F0E9; --ink:#14110E; --ink2:#4A443C; --ink3:#8A8177;
+  --rule:#E3DED3; --rule2:#EFEBE2;
+  /* one accent, used sparingly; semantic colours stay separate from it */
+  --ember:#B4531E; --ember2:#8F3F14;
+  --pos:#1F6F4A; --neg:#A32B1F;
+  /* aliases: the older pages address these names, so they map onto the new
+     palette rather than every rule being rewritten and risking a miss */
+  --bg:#FBFAF7; --panel:#F3F0E9; --s1:#B4531E;
+  --serif:"Newsreader",Georgia,"Times New Roman",serif;
+  --sans:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#12100E; --raise:#1C1917; --ink:#F5F2EC; --ink2:#C0B8AC; --ink3:#8A8177;
+  --rule:#2E2A26; --rule2:#232019;
+  --ember:#E0762F; --ember2:#F0A268;
+  --pos:#5FBE8C; --neg:#E8705F;
+  --bg:#12100E; --panel:#1C1917; --s1:#E0762F;
+}}
+:root[data-theme="dark"]{
+  --paper:#12100E; --raise:#1C1917; --ink:#F5F2EC; --ink2:#C0B8AC; --ink3:#8A8177;
+  --rule:#2E2A26; --rule2:#232019;
+  --ember:#E0762F; --ember2:#F0A268;
+  --pos:#5FBE8C; --neg:#E8705F;
+  --bg:#12100E; --panel:#1C1917; --s1:#E0762F;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);
+  font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;
+  font-feature-settings:"kern" 1}
+a{color:inherit}
+.num,.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+.mast{display:flex;align-items:baseline;justify-content:space-between;gap:16px;
+  padding-bottom:13px;border-bottom:1.5px solid var(--ink);margin-bottom:26px}
+.mast .wm{font-family:var(--serif);font-size:20px;font-weight:600;
+  letter-spacing:-.014em;text-decoration:none;line-height:1}
+.mast .wm i{font-style:normal;color:var(--ember)}
+.mast nav{display:flex;gap:17px;font-family:var(--mono);font-size:11px;
+  letter-spacing:.09em;text-transform:uppercase}
+.mast nav a{color:var(--ink3);text-decoration:none;padding-bottom:2px;
+  border-bottom:1px solid transparent}
+.mast nav a:hover{color:var(--ink);border-bottom-color:var(--ember)}
+.mast nav a[aria-current]{color:var(--ink);border-bottom-color:var(--ember)}
+
+body{padding:30px 20px 80px}
+.wrap{max-width:900px;margin:0 auto}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--ink3)}
+h1{font-family:var(--serif);font-size:44px;font-weight:600;letter-spacing:-.022em;
+  line-height:1.05;margin:12px 0 0;text-wrap:balance}
+.lede{font-family:var(--serif);font-size:19px;line-height:1.55;color:var(--ink2);
+  margin-top:16px;max-width:64ch}
+h2{font-family:var(--serif);font-size:27px;font-weight:600;letter-spacing:-.018em;
+  margin:52px 0 4px;text-wrap:balance}
+h2 .no{font-family:var(--mono);font-size:12px;font-weight:500;color:var(--ember);
+  letter-spacing:.1em;display:block;margin-bottom:9px}
+p{max-width:68ch;margin-top:13px;color:var(--ink2)}
+p strong{color:var(--ink);font-weight:600}
+.stmt{margin-top:22px;border:1px solid var(--rule);border-radius:6px;overflow:hidden}
+.sthead{display:flex;justify-content:space-between;align-items:baseline;
+  padding:12px 16px;background:var(--raise);border-bottom:1px solid var(--rule)}
+.sthead h3{font-family:var(--sans);font-size:14px;font-weight:600;letter-spacing:-.005em}
+.sthead span{font-family:var(--mono);font-size:11px;color:var(--ink3)}
+.stmt table{width:100%;border-collapse:collapse;font-size:14px}
+.stmt td{padding:7px 16px;vertical-align:baseline}
+.stmt td.l{color:var(--ink2)}
+.stmt td.v{font-family:var(--mono);text-align:right;white-space:nowrap;
+  font-variant-numeric:tabular-nums;width:104px;color:var(--ink)}
+.stmt td.n{font-size:12.5px;color:var(--ink3);padding-left:20px;width:44%}
+.stmt tr.top td{padding-top:13px}
+.stmt tr.sub td{border-top:1px solid var(--rule);font-weight:600}
+.stmt tr.sub td.l,.stmt tr.sub td.v{color:var(--ink)}
+.stmt tr.tot td{border-top:1px solid var(--ink);border-bottom:3px double var(--ink);
+  font-weight:600;background:var(--raise)}
+.stmt tr.tot td.l,.stmt tr.tot td.v{color:var(--ink)}
+.tie{background:var(--raise);border:1px solid var(--rule);border-radius:6px;
+  padding:16px 18px;margin-top:20px;font-family:var(--mono);font-size:13px;
+  line-height:1.9;overflow-x:auto}
+.tie b{color:var(--ember);font-weight:500}
+.rgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));
+  gap:14px;margin-top:22px}
+.rc{border:1px solid var(--rule);border-radius:6px;padding:14px 15px}
+.rk{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink3)}
+.rv{font-family:var(--mono);font-size:25px;font-weight:500;margin:5px 0 7px;
+  color:var(--ember);font-variant-numeric:tabular-nums}
+.rc p{font-size:12.5px;margin:0;color:var(--ink2)}
+.lesson{border-left:2px solid var(--ember);padding:4px 0 4px 18px;margin-top:26px}
+.lesson h4{font-family:var(--serif);font-size:19px;font-weight:600;margin-bottom:3px}
+.warn{background:var(--raise);border:1px solid var(--rule);border-radius:6px;
+  padding:17px 19px;margin-top:22px}
+.warn h4{font-size:14px;font-weight:600;margin-bottom:7px}
+.warn p{margin-top:8px;font-size:14px}
+footer{margin-top:56px;padding-top:16px;border-top:1px solid var(--rule);
+  font-size:12.5px;color:var(--ink3)}
+footer a{color:var(--ember);text-decoration:none}
+</style></head><body><div class="wrap">
+<header class="mast"><a class="wm" href="/">Bilaal<i>.</i>Raja</a><nav><a href="/russell3000">Cross-section</a><a href="/commentary">Commentary</a><a href="/learn">Case study</a><a href="/methodology">Method</a></nav></header>
+<div class="eyebrow">Case study &middot; financial accounting</div>
+<h1>Reading a company's accounts, end to end</h1>
+<p class="lede">Every figure below is The Home Depot's own, taken from the accounts it
+filed for the year ended 2026-02-01. Nothing is rounded into tidiness and nothing is
+invented, because the point is to read a real set of statements rather than a
+clean example that never existed.</p>
+
+<h2><span class="no">01</span>Why there are three statements</h2>
+<p>A company could tell you one number: how much money it made. It does not,
+because that single number cannot answer three different questions that all
+matter, and answering them separately is what the three statements are for.</p>
+<p><strong>Did it trade profitably?</strong> That is the income statement.
+<strong>What does it own and owe?</strong> That is the balance sheet.
+<strong>Where did the cash actually go?</strong> That is the cash flow
+statement. A business can be profitable and run out of money. It can be losing
+money and be awash with cash. Only reading all three together tells you which
+you are looking at.</p>
+
+<h2><span class="no">02</span>The income statement</h2>
+<p>This one covers a period, in the way a video does: it records what happened
+over the twelve months. It works downwards, starting with everything customers
+paid and subtracting each layer of cost until what is left belongs to the
+owners.</p>
+<div class="stmt"><div class="sthead"><h3>Income statement</h3><span>year ended 2026-02-01 &middot; $bn</span></div><table><tr class="r top"><td class="l">Net sales</td><td class="v">164.683</td><td class="n">what customers paid, once the sale is earned</td></tr><tr class="r "><td class="l">Cost of sales</td><td class="v">(109.818)</td><td class="n">what the goods themselves cost</td></tr><tr class="r sub"><td class="l">Gross profit</td><td class="v">54.865</td><td class="n">33.3% of sales</td></tr><tr class="r "><td class="l">Selling, general &amp; administrative</td><td class="v">(30.702)</td><td class="n">staff, stores, advertising</td></tr><tr class="r "><td class="l">Depreciation &amp; amortisation</td><td class="v">(3.273)</td><td class="n">this year's slice of past capex</td></tr><tr class="r sub"><td class="l">Operating income</td><td class="v">20.890</td><td class="n">12.7% of sales</td></tr><tr class="r "><td class="l">Interest expense, net</td><td class="v">(2.288)</td><td class="n">the cost of borrowing</td></tr><tr class="r sub"><td class="l">Pre-tax income</td><td class="v">18.602</td><td class="n"></td></tr><tr class="r "><td class="l">Income tax</td><td class="v">(4.446)</td><td class="n">effective rate 23.9%</td></tr><tr class="r tot"><td class="l">Net income</td><td class="v">14.160</td><td class="n">8.6% of sales</td></tr><tr class="r "><td class="l">Diluted earnings per share</td><td class="v">$14.23</td><td class="n">net income divided across the shares</td></tr></table></div>
+<p>Read it as a series of survivals. Of $164.7bn taken from customers, the goods
+themselves consumed most of it. Running the stores took another slice. Lenders
+and the taxman took theirs. <strong>$14.2bn survived to the bottom</strong>,
+which is a little under nine pence in every pound.</p>
+<p>One line deserves suspicion: depreciation and amortisation. No money left the
+business this year for it. It is this year's share of cash spent building stores
+in earlier years, spread across the period they will be used. That is accrual
+accounting doing its job, and it is also the first place profit and cash part
+company.</p>
+
+<h2><span class="no">03</span>The balance sheet</h2>
+<p>Where the income statement is a video, this is a photograph: everything owned
+and owed at one instant, the last day of the year. It cannot help but balance,
+and that is not a coincidence but an identity.</p>
+<div class="stmt"><div class="sthead"><h3>Balance sheet</h3><span>as at 2026-02-01 &middot; $bn</span></div><table><tr class="r top"><td class="l">Cash and equivalents</td><td class="v">1.389</td><td class="n"></td></tr><tr class="r "><td class="l">Receivables</td><td class="v">5.597</td><td class="n">sales made but not yet collected</td></tr><tr class="r "><td class="l">Merchandise inventory</td><td class="v">25.817</td><td class="n">stock sitting in stores and depots</td></tr><tr class="r sub"><td class="l">Total current assets</td><td class="v">34.391</td><td class="n">expected to turn into cash within a year</td></tr><tr class="r sub"><td class="l">Total assets</td><td class="v">105.095</td><td class="n">everything the company controls</td></tr><tr class="r top"><td class="l">Accounts payable</td><td class="v">11.491</td><td class="n">bills owed to suppliers</td></tr><tr class="r sub"><td class="l">Total current liabilities</td><td class="v">32.424</td><td class="n">due within a year</td></tr><tr class="r "><td class="l">Long-term debt and leases</td><td class="v">46.341</td><td class="n"></td></tr><tr class="r sub"><td class="l">Total liabilities</td><td class="v">92.282</td><td class="n">everything the company owes</td></tr><tr class="r tot"><td class="l">Shareholders' equity</td><td class="v">12.813</td><td class="n">assets less liabilities &mdash; 12.2% of assets</td></tr></table></div>
+<div class="tie">assets <b>105.1</b> = liabilities <b>92.3</b> +
+equity <b>12.8</b></div>
+<p>Everything a company controls was funded by somebody: either by people it
+owes (liabilities) or by its owners (equity). There is no third source. So
+<strong>equity is not a valuation</strong>. It is a residual, whatever remains
+once every obligation is met, and here it is just 12.2% of the assets. That
+figure is going to matter shortly.</p>
+
+<h2><span class="no">04</span>The cash flow statement</h2>
+<p>The one hardest to argue with. Profit involves judgement about when a sale is
+earned and how quickly a building wears out. Cash either arrived or it did not.</p>
+<div class="stmt"><div class="sthead"><h3>Cash flow statement</h3><span>year ended 2026-02-01 &middot; $bn</span></div><table><tr class="r top"><td class="l">Net income</td><td class="v">14.160</td><td class="n">the starting point, taken from above</td></tr><tr class="r "><td class="l">Depreciation &amp; amortisation</td><td class="v">3.514</td><td class="n">added back: no cash left the business</td></tr><tr class="r sub"><td class="l">Cash from operations</td><td class="v">16.325</td><td class="n">115% of net income</td></tr><tr class="r top"><td class="l">Capital expenditure</td><td class="v">(3.679)</td><td class="n">cash spent on new stores and kit</td></tr><tr class="r sub"><td class="l">Cash used in investing</td><td class="v">(8.980)</td><td class="n"></td></tr><tr class="r top"><td class="l">Dividends paid</td><td class="v">(9.152)</td><td class="n"></td></tr><tr class="r "><td class="l">Share buybacks</td><td class="v">&mdash;</td><td class="n">none this year</td></tr><tr class="r sub"><td class="l">Cash used in financing</td><td class="v">(7.714)</td><td class="n"></td></tr><tr class="r tot"><td class="l">Free cash flow</td><td class="v">12.646</td><td class="n">operations less the capex needed to stay in business</td></tr></table></div>
+<p>Notice where it starts: <strong>net income, carried down from the income
+statement</strong>. Then the non-cash charges are added back, depreciation
+first, because that cost never left the bank. What emerges is
+<strong>$16.3bn of cash from operations, 115% of reported profit</strong>.
+Above 100% is generally a good sign: the profits are real and arriving.</p>
+<p>Then the money that keeps the business alive is subtracted: $3.7bn of
+capital expenditure on new stores and equipment. What remains,
+<strong>$12.6bn</strong>, is free cash flow, the amount genuinely available for
+dividends, buybacks and debt repayment. It is the number most investors care
+about most.</p>
+
+<h2><span class="no">05</span>How the three lock together</h2>
+<p>They are not three documents. They are one system, and each links into the
+next at fixed points.</p>
+<div class="tie">
+net income <b>14.2</b> &rarr; top of the cash flow statement<br>
+net income &rarr; retained earnings, inside equity <b>12.8</b><br>
+capex <b>3.7</b> &rarr; property and equipment on the balance sheet<br>
+depreciation <b>3.514</b> &rarr; reduces that same asset, and reduces profit<br>
+closing cash &rarr; the first line of the balance sheet
+</div>
+<p>This is why a made-up set of accounts falls apart under inspection. Change
+one figure and it must move in three places at once. It is also why the small
+discrepancy here is worth pointing at: depreciation is
+<strong>$3.273bn on the income statement and $3.514bn in the cash
+flow</strong>. Not an error. The two statements are capturing slightly
+different scopes, and noticing the gap is the difference between reading
+accounts and glancing at them.</p>
+
+<h2><span class="no">06</span>The ratios, and what each is really asking</h2>
+<p>Ratios are not separate data. Every one below is two numbers from the
+statements above, divided.</p>
+<div class="rgrid"><div class="rc"><div class="rk">Gross margin</div><div class="rv">33.3%</div><p>Of every pound taken, this much survives the cost of the goods.</p></div><div class="rc"><div class="rk">Operating margin</div><div class="rv">12.7%</div><p>What survives after running the shops as well.</p></div><div class="rc"><div class="rk">Net margin</div><div class="rv">8.6%</div><p>What is left for owners after lenders and the taxman.</p></div><div class="rc"><div class="rk">Return on equity</div><div class="rv">110.5%</div><p>Profit against the owners' stake. Flattered here, and the next section explains why.</p></div><div class="rc"><div class="rk">Inventory turns</div><div class="rv">4.3&times;</div><p>The shelves empty and refill this many times a year. Retail lives or dies on it.</p></div><div class="rc"><div class="rk">Current ratio</div><div class="rv">1.06</div><p>Short-term assets against short-term bills.</p></div><div class="rc"><div class="rk">Interest cover</div><div class="rv">9.1&times;</div><p>Operating profit against the interest bill.</p></div><div class="rc"><div class="rk">Cash conversion</div><div class="rv">115%</div><p>Cash from operations against reported profit.</p></div></div>
+
+<h2><span class="no">07</span>What this particular company teaches</h2>
+<div class="lesson"><h4>A spectacular return that is mostly borrowed</h4>
+<p>Return on equity is <strong>110.5%</strong>. That looks extraordinary until
+you notice the denominator: equity is only 12.2% of assets. A small
+denominator makes any ratio large. The business is genuinely good, but ROE here
+measures the financing as much as the operations, which is exactly why return on
+capital is the more honest cousin.</p></div>
+<div class="lesson"><h4>Growing sales, shrinking profit</h4>
+<p>Revenue rose +3.2% while net income fell -4.4%. Costs grew faster
+than sales. One line up from the bottom would never have shown you that; you
+have to read the statement as a whole.</p></div>
+<div class="lesson"><h4>Inventory is the business</h4>
+<p>$25.8bn sits in stock, turning over 4.3 times a year. For a retailer
+that single figure drives everything: buy the wrong things and it becomes cash
+you cannot get back.</p></div>
+
+<h2><span class="no">08</span>Where accounts mislead</h2>
+<div class="warn">
+<h4>Three cautions worth carrying</h4>
+<p><strong>They look backwards.</strong> Every figure describes a year already
+finished. Nothing here promises the next one.</p>
+<p><strong>Judgement is embedded throughout.</strong> How long a building lasts,
+when a sale counts as earned, what a lease is worth. All estimates, all made by
+the company, all within the rules and all capable of flattering.</p>
+<p><strong>Comparison needs care.</strong> These statements are consistent with
+themselves, not necessarily with a rival's. Different fiscal years, accounting
+choices and definitions of the same word are the reason like-for-like is harder
+than it looks.</p>
+</div>
+
+<footer>Figures taken from The Home Depot's filings for the years ended 2026-02-01 and
+2025-02-02, as filed and not restated &middot; the arithmetic on this page is
+checked against itself before publication &middot;
+<a href="/c/HD/">see HD in the cross-section</a> &middot;
+<a href="/methodology">method</a> &middot; <a href="/">bilaalraja.com</a></footer>
+</div></body></html>
