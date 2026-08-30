@@ -112,3 +112,79 @@ The holdout is run on specification 1 only.
 Nothing here establishes causation, and a positive result would not constitute
 investment advice or a strategy. It would establish only that a measurable
 relationship existed in a sample, subject to every limitation above.
+
+---
+
+# Amendment 1 — 2026-08-30, before any return data was touched
+
+A three-company smoke test of the extraction (NVDA, AAPL, GOOG; 105 filings)
+exposed two defects in the specification above. **No price or return data has
+been fetched, loaded or examined at the time of writing.** The amendment is
+therefore pre-outcome. It is recorded here rather than made silently.
+
+## Defect A — the baseline mixed filing forms
+
+10-K tone is systematically below 10-Q tone, because annual reports carry more
+risk and legal discussion:
+
+| | 10-K median | 10-Q median | gap |
+|---|---|---|---|
+| NVDA | -0.182 | -0.124 | -0.058 |
+| AAPL | -0.247 | -0.105 | -0.142 |
+| GOOG | -0.378 | -0.309 | -0.069 |
+| all | -0.250 | -0.200 | -0.050 |
+
+Filings alternate 10-Q, 10-Q, 10-Q, 10-K. A baseline of "the previous four
+filings" is therefore mostly 10-Qs when scoring a 10-K, and contains a 10-K when
+scoring the next 10-Q. Every annual report would have shown deteriorating tone
+and every following quarter improving tone, on the calendar alone. That artefact
+would likely have dominated the result.
+
+**Change.** `baseline(c,t)` is now the mean tone of the company's previous four
+filings **of the same form**. A 10-K is compared with 10-Ks, a 10-Q with 10-Qs.
+
+## Defect B — extraction length drives tone
+
+Correlation between MD&A word count and tone, within company:
+
+| | word range | ratio | corr(words, tone) |
+|---|---|---|---|
+| NVDA | 3,352-6,240 | 1.9x | -0.35 |
+| AAPL | 2,152-33,561 | 15.6x | -0.49 |
+| GOOG | 5,064-36,079 | 7.1x | -0.54 |
+
+Consistent in sign and material in size: a longer extraction is a more negative
+one, because it captures more risk boilerplate. GOOG's 2023 10-K extracted at
+5,064 words against a company median of 14,930 and scored -0.012 against a norm
+near -0.31 — a +0.30 swing produced by truncation, not by management. Quintile
+sorting would have concentrated precisely these failures in the extreme buckets.
+
+**Change, two parts.**
+
+1. **Extraction-quality filter.** A filing is excluded if its word count is
+   below 50% or above 200% of that company's median word count for that form.
+   Excluded filings are counted and reported, not silently dropped.
+2. **Length control.** The primary signal is now tone residualised on
+   `log(words)` within company and form, so `dtone` measures a change in
+   language rather than a change in how much of it was captured.
+
+## Effect on the specification list
+
+Section 8 permitted five specifications. Amended, still five, holdout still
+tested on specification 1 only:
+
+1. Primary: form-matched baseline, quality filter, length-residualised.
+2. Form-matched baseline, quality filter, **without** length residualisation
+   (to show what the control is doing).
+3. 10-K filings only.
+4. Excluding companies below $1bn market capitalisation.
+5. Tone level rather than tone change (the straw man, unchanged).
+
+Specification 2 in the original list (eight-filing baseline) is dropped: with
+form matching, eight prior 10-Ks would require eight years of history and would
+gut the sample.
+
+## Standing
+
+Sections 1 to 7 and 9 to 10 are otherwise unchanged. The holdout
+(2023-01-01 onward) remains sealed and untouched.
