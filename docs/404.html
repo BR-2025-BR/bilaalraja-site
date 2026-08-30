@@ -3,22 +3,64 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Not found | Bilaal Raja</title>
 <meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
-:root{--bg:#ffffff;--ink:#000000;--ink3:#7a7a7a;--s1:#ff9900;
- --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
- --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;}
+
+:root{
+  /* paper and ink, both warm, so neither reads as a default */
+  --paper:#FBFAF7; --raise:#F3F0E9; --ink:#14110E; --ink2:#4A443C; --ink3:#8A8177;
+  --rule:#E3DED3; --rule2:#EFEBE2;
+  /* one accent, used sparingly; semantic colours stay separate from it */
+  --ember:#B4531E; --ember2:#8F3F14;
+  --pos:#1F6F4A; --neg:#A32B1F;
+  /* aliases: the older pages address these names, so they map onto the new
+     palette rather than every rule being rewritten and risking a miss */
+  --bg:#FBFAF7; --panel:#F3F0E9; --s1:#B4531E;
+  --serif:"Newsreader",Georgia,"Times New Roman",serif;
+  --sans:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
- --bg:#000000;--ink:#ffffff;--ink3:#8a8a8a;}}
-:root[data-theme="dark"]{--bg:#000000;--ink:#ffffff;--ink3:#8a8a8a;}
+  --paper:#12100E; --raise:#1C1917; --ink:#F5F2EC; --ink2:#C0B8AC; --ink3:#8A8177;
+  --rule:#2E2A26; --rule2:#232019;
+  --ember:#E0762F; --ember2:#F0A268;
+  --pos:#5FBE8C; --neg:#E8705F;
+  --bg:#12100E; --panel:#1C1917; --s1:#E0762F;
+}}
+:root[data-theme="dark"]{
+  --paper:#12100E; --raise:#1C1917; --ink:#F5F2EC; --ink2:#C0B8AC; --ink3:#8A8177;
+  --rule:#2E2A26; --rule2:#232019;
+  --ember:#E0762F; --ember2:#F0A268;
+  --pos:#5FBE8C; --neg:#E8705F;
+  --bg:#12100E; --panel:#1C1917; --s1:#E0762F;
+}
 *{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);
+  font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;
+  font-feature-settings:"kern" 1}
+a{color:inherit}
+.num,.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+.mast{display:flex;align-items:baseline;justify-content:space-between;gap:16px;
+  padding-bottom:13px;border-bottom:1.5px solid var(--ink);margin-bottom:26px}
+.mast .wm{font-family:var(--serif);font-size:20px;font-weight:600;
+  letter-spacing:-.014em;text-decoration:none;line-height:1}
+.mast .wm i{font-style:normal;color:var(--ember)}
+.mast nav{display:flex;gap:17px;font-family:var(--mono);font-size:11px;
+  letter-spacing:.09em;text-transform:uppercase}
+.mast nav a{color:var(--ink3);text-decoration:none;padding-bottom:2px;
+  border-bottom:1px solid transparent}
+.mast nav a:hover{color:var(--ink);border-bottom-color:var(--ember)}
+.mast nav a[aria-current]{color:var(--ink);border-bottom-color:var(--ember)}
+
 body{background:var(--bg);color:var(--ink);font-family:var(--sans);
  min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
 .c{max-width:38ch}
-h1{font-size:26px;letter-spacing:-.015em;margin-bottom:8px}
+h1{font-family:var(--serif);font-size:30px;font-weight:600;letter-spacing:-.02em;margin-bottom:9px}
 p{color:var(--ink3);font-size:15px;line-height:1.6;margin-bottom:20px}
-.n{font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;color:var(--s1);
+.n{font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;color:var(--ember);
  margin-bottom:14px}
-a{color:var(--s1);font-family:var(--mono);font-size:12.5px}
+a{color:var(--ember);font-family:var(--mono);font-size:12.5px}
 </style></head><body><div class="c">
 <div class="n">404</div>
 <h1>Nothing here</h1>

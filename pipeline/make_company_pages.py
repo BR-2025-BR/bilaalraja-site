@@ -14,6 +14,8 @@ smaller than the request that would fetch it.
 import json, re, sys
 from pathlib import Path
 
+import brand
+
 HERE = Path(__file__).resolve().parent
 OUT  = HERE.parent / "docs" / "c"
 DOMAIN = "bilaalraja.com"
@@ -33,46 +35,44 @@ def money_bn(v):
     f = float(v)
     return f"${f:,.1f}bn" if abs(f) >= 1 else f"${f*1000:,.0f}m"
 
-CSS = """*{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#fff;--panel:#f4f4f4;--ink:#000;--ink2:#3d3d3d;--ink3:#7a7a7a;
---rule:#d8d8d8;--acc:#ff9900;--good:#0a7d3f;--bad:#b3261e;
---mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
---sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
-@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#000;--panel:#1b1b1b;
---ink:#fff;--ink2:#c4c4c4;--ink3:#8a8a8a;--rule:#2f2f2f;--acc:#ff9900;
---good:#4ade80;--bad:#ff6b6b}}
-:root[data-theme=dark]{--bg:#000;--panel:#1b1b1b;--ink:#fff;--ink2:#c4c4c4;
---ink3:#8a8a8a;--rule:#2f2f2f;--acc:#ff9900;--good:#4ade80;--bad:#ff6b6b}
-body{background:var(--bg);color:var(--ink);font-family:var(--sans);
-line-height:1.5;padding:28px 20px 60px}
-.wrap{max-width:860px;margin:0 auto}
-a{color:inherit}
-.back{font:600 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;
-color:var(--ink3);text-decoration:none;display:inline-block;margin-bottom:22px}
-.back:hover{color:var(--acc)}
-h1{font-size:31px;letter-spacing:-.02em;line-height:1.1}
-h1 .tk{font-family:var(--mono);color:var(--acc)}
-.sub{color:var(--ink2);font-size:14px;margin-top:5px}
-.badge{display:inline-block;font:600 10.5px/1 var(--mono);letter-spacing:.1em;
-text-transform:uppercase;background:var(--panel);color:var(--ink2);
-padding:5px 9px;border-radius:4px;margin-top:9px}
-h2{font-size:11px;font-family:var(--mono);letter-spacing:.14em;text-transform:uppercase;
-color:var(--ink3);margin:26px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--rule)}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1px;
-background:var(--rule);border:1px solid var(--rule);border-radius:6px;overflow:hidden}
-.cell{background:var(--bg);padding:11px 13px}
-.k{font-size:10.5px;font-family:var(--mono);letter-spacing:.07em;text-transform:uppercase;
-color:var(--ink3)}
-.v{font-size:19px;font-family:var(--mono);margin-top:3px;font-variant-numeric:tabular-nums}
-.v.pos{color:var(--good)}.v.neg{color:var(--bad)}
-.note{font-size:13px;color:var(--ink2);margin-top:9px}
-blockquote{background:var(--panel);border-left:3px solid var(--acc);padding:13px 15px;
-border-radius:0 5px 5px 0;font-size:14px;color:var(--ink2);margin-top:4px}
-blockquote cite{display:block;margin-top:9px;font-size:11.5px;font-family:var(--mono);
-color:var(--ink3);font-style:normal}
-footer{margin-top:34px;padding-top:14px;border-top:1px solid var(--rule);
-font-size:12px;color:var(--ink3)}
-footer a{color:var(--acc)}"""
+CSS = brand.TOKENS + brand.MASTHEAD_CSS + """
+body{padding:30px 20px 64px}
+.wrap{max-width:880px;margin:0 auto}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--ink3)}
+h1{font-family:var(--serif);font-size:39px;font-weight:600;letter-spacing:-.021em;
+  line-height:1.08;margin:12px 0 0;text-wrap:balance}
+h1 .tk{color:var(--ember)}
+.sub{color:var(--ink2);font-size:14px;margin-top:9px;max-width:62ch}
+.badge{display:inline-block;font-family:var(--mono);font-size:10.5px;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--ink2);
+  background:var(--raise);border:1px solid var(--rule);
+  padding:4px 9px;border-radius:3px;margin-top:13px}
+h2{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink3);margin:34px 0 11px;
+  padding-bottom:7px;border-bottom:1px solid var(--rule)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));
+  border:1px solid var(--rule);border-radius:5px;overflow:hidden;
+  background:var(--paper)}
+/* separators drawn as shadows, not as a background behind 1px gaps: a row that
+   does not divide evenly would otherwise leave a block of rule colour hanging */
+.cell{padding:13px 15px;box-shadow:1px 0 0 var(--rule),0 1px 0 var(--rule)}
+.k{font-family:var(--mono);font-size:10px;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink3)}
+.v{font-family:var(--mono);font-size:20px;font-weight:500;margin-top:4px;
+  font-variant-numeric:tabular-nums;letter-spacing:-.015em}
+.v.pos{color:var(--pos)} .v.neg{color:var(--neg)}
+.note{font-size:13.5px;color:var(--ink2);margin-top:11px;max-width:70ch}
+blockquote{background:var(--raise);border-left:2px solid var(--ember);
+  padding:17px 19px;border-radius:0 4px 4px 0;margin-top:5px;
+  font-family:var(--serif);font-size:16px;line-height:1.6;color:var(--ink2)}
+blockquote cite{display:block;margin-top:12px;font-family:var(--mono);
+  font-size:11px;letter-spacing:.03em;color:var(--ink3);font-style:normal}
+footer{margin-top:44px;padding-top:15px;border-top:1px solid var(--rule);
+  font-size:12.5px;color:var(--ink3)}
+footer a{color:var(--ember);text-decoration:none}
+footer a:hover{text-decoration:underline}
+"""
 
 def cell(k, v, cls=""):
     return f'<div class="cell"><div class="k">{k}</div><div class="v {cls}">{v}</div></div>'
@@ -100,7 +100,7 @@ def page(r, mdna, meta, y10):
         cell("EV / EBITDA", num(r.get("ev_ebitda"), 1)),
         cell("EV / sales", num(r.get("ev_sales"), 1)),
         cell("FCF yield", num(r.get("fcf_yield"), 2, "%")),
-        cell("Earnings yield vs 10-yr", num(eyp, 2, "pp"),
+        cell("Yield vs 10-yr", num(eyp, 2, "pp"),
              "pos" if (eyp or 0) > 0 else "neg" if eyp is not None else ""),
     ])
     qual = "".join([
@@ -149,11 +149,13 @@ period ended {mdna.get('period','&mdash;')}, filed {mdna.get('filed','&mdash;')}
 <meta property="og:image" content="https://{DOMAIN}/og.png">
 <meta name="twitter:card" content="summary_large_image">
 <script type="application/ld+json">{ld}</script>
+{brand.FONTS}
 <style>{CSS}</style></head><body><div class="wrap">
-<a class="back" href="/russell3000?q={tk}">&larr; Russell 3000 cross-section</a>
-<h1><span class="tk">{tk}</span> {esc(nm)}</h1>
-<div class="sub">Trailing twelve months to {r.get('end','&mdash;')} &middot;
-as filed {r.get('filed','&mdash;')}, not restated</div>
+{brand.masthead()}
+<div class="eyebrow">Company record</div>
+<h1><span class="tk">{tk}</span> &nbsp;{esc(nm)}</h1>
+<div class="sub">Trailing twelve months to {r.get('end','&mdash;')}, as filed
+{r.get('filed','&mdash;')} and not restated since.</div>
 <div class="badge">{esc(sector)}</div>
 
 <h2>Scale</h2><div class="grid">{core}</div>
@@ -165,6 +167,7 @@ risk. Negative means you are paying up front for growth not yet delivered.</p>
 {insider}{commentary}
 <footer>Built from SEC EDGAR filings, computed point in time &middot;
 prices {meta.get('price_date','')} &middot;
+<a href="/russell3000?q={tk}">see {tk} in the cross-section</a> &middot;
 <a href="/methodology">method and known defects</a> &middot;
 <a href="/">bilaalraja.com</a></footer>
 </div></body></html>"""

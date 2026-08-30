@@ -7,6 +7,8 @@
 Everything under site/ is what gets uploaded. Nothing else does.
 """
 import argparse, hashlib, json, re, shutil, subprocess, sys
+sys.path.insert(0, str(__import__("pathlib").Path(__file__).resolve().parent / "pipeline"))
+import brand
 from datetime import datetime
 from pathlib import Path
 
@@ -161,24 +163,16 @@ LANDING = """<!doctype html>
 "knowsAbout":["Equity research","Quantitative analysis","SEC EDGAR filings","Factor investing","Financial data engineering"],
 "sameAs":["https://linkedin.com/in/bilaalraja"]}}
 </script>
+__FONTS__
 <style>
-:root{{--bg:#ffffff;--panel:#f4f4f4;--ink:#000000;--ink2:#3d3d3d;--ink3:#7a7a7a;
- --rule:#d8d8d8;--s1:#ff9900;
- --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace;
- --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;}}
-@media (prefers-color-scheme:dark){{:root:not([data-theme="light"]){{
- --bg:#000000;--panel:#1b1b1b;--ink:#ffffff;--ink2:#c4c4c4;--ink3:#8a8a8a;
- --rule:#2f2f2f;--s1:#ff9900;}}}}
-:root[data-theme="dark"]{{--bg:#000000;--panel:#1b1b1b;--ink:#ffffff;--ink2:#c4c4c4;
- --ink3:#8a8a8a;--rule:#2f2f2f;--s1:#ff9900;}}
-*{{box-sizing:border-box;margin:0;padding:0}}
+__TOKENS__
 #dots{{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}}
 .wrap{{position:relative;z-index:1}}
 @supports (corner-shape: squircle){{.card{{corner-shape:squircle}}}}
 body{{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;
  line-height:1.55;-webkit-font-smoothing:antialiased}}
 .wrap{{max-width:760px;margin:0 auto;padding:64px 22px 80px}}
-h1{{font-size:26px;letter-spacing:-.01em;margin-bottom:4px}}
+h1{{font-family:var(--serif);font-size:34px;font-weight:600;letter-spacing:-.021em;line-height:1.08;margin-bottom:6px;text-wrap:balance}}
 .sub{{color:var(--ink3);font-family:var(--mono);font-size:12.5px;margin-bottom:30px}}
 .lede{{color:var(--ink2);margin-bottom:34px;max-width:60ch}}
 .stats{{display:flex;flex-wrap:wrap;gap:34px;margin:4px 0 30px;
@@ -188,9 +182,10 @@ h1{{font-size:26px;letter-spacing:-.01em;margin-bottom:4px}}
 .stats span{{font-family:var(--mono);font-size:10.5px;letter-spacing:.13em;
  text-transform:uppercase;color:var(--ink3)}}
 .card{{display:block;text-decoration:none;color:inherit;background:var(--panel);
- border:1px solid var(--rule);border-left:3px solid var(--s1);border-radius:14px;
+ border:1px solid var(--rule);border-radius:10px;
+ transition:border-color .18s ease,background .18s ease;
  padding:18px 20px;margin-bottom:12px}}
-.card:hover{{border-left-color:var(--ink)}}
+.card:hover{{border-color:var(--ember);background:var(--raise)}}
 .card h2{{font-size:16.5px;margin-bottom:4px}}
 .chead{{display:flex;align-items:center;gap:11px;margin-bottom:4px}}
 .chead h2{{margin-bottom:0}}
@@ -208,6 +203,7 @@ footer a{{color:var(--s1)}}
 .rights{{display:block;margin-top:12px;padding-top:12px;border-top:1px solid var(--rule);
  max-width:76ch;line-height:1.7;font-size:11.5px}}
 </style></head><body><div class="wrap">
+__MASTHEAD__
 <canvas id="dots" aria-hidden="true"></canvas>
 <h1>Bilaal Raja</h1>
 <div class="sub">Equity research &middot; quantitative analysis</div>
@@ -250,7 +246,7 @@ company facts rather than a vendor feed.</p>
     <path d="M3 12.5 12 17l9-4.5"/><path d="M3 17.5 12 22l9-4.5"/>
   </svg></span><h2>How this was built</h2></div>
   <p>Universe construction, point-in-time discipline, metric definitions, and the
-  thirteen defects found by checking output against reality.</p>
+  fourteen defects found by checking output against reality.</p>
   <div class="m">methodology</div>
 </a>
 
@@ -414,6 +410,17 @@ def inject_meta(html: str, path: str, domain: str, companies: str = "",
     return html[:i + 8] + tags + html[i + 8:] if i != -1 else tags + html
 
 
+def _brandify(html: str) -> str:
+    """Insert the shared tokens after formatting.
+
+    The templates run through str.format, and CSS is nothing but braces, so the
+    palette is carried as a placeholder and swapped in here instead.
+    """
+    return (html.replace("__TOKENS__", brand.TOKENS + brand.MASTHEAD_CSS)
+                .replace("__FONTS__", brand.FONTS)
+                .replace("__MASTHEAD__", brand.masthead()))
+
+
 def write_sitemap(site: Path, domain: str, paths, lastmod: str):
     urls = "".join(
         f"  <url><loc>https://{domain}/{p}</loc><lastmod>{lastmod}</lastmod>"
@@ -473,22 +480,14 @@ METHODOLOGY = """<!doctype html>
 <link rel="canonical" href="https://{domain}/methodology">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Methodology | Bilaal Raja">
-<meta property="og:description" content="How the cross-section is built, and the thirteen defects found by checking output against reality.">
+<meta property="og:description" content="How the cross-section is built, and the fourteen defects found by checking output against reality.">
 <meta property="og:url" content="https://{domain}/methodology">
 <meta property="og:image" content="https://{domain}/og.png">
 <meta name="twitter:card" content="summary_large_image">
 """ + PWA_HEAD + """
+__FONTS__
 <style>
-:root{{--bg:#ffffff;--panel:#f4f4f4;--ink:#000000;--ink2:#3d3d3d;--ink3:#7a7a7a;
- --rule:#d8d8d8;--rule2:#ececec;--s1:#ff9900;
- --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace;
- --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;}}
-@media (prefers-color-scheme:dark){{:root:not([data-theme="light"]){{
- --bg:#000000;--panel:#1b1b1b;--ink:#ffffff;--ink2:#c4c4c4;--ink3:#8a8a8a;
- --rule:#2f2f2f;--rule2:#212121;--s1:#ff9900;}}}}
-:root[data-theme="dark"]{{--bg:#000000;--panel:#1b1b1b;--ink:#ffffff;--ink2:#c4c4c4;
- --ink3:#8a8a8a;--rule:#2f2f2f;--rule2:#212121;--s1:#ff9900;}}
-*{{box-sizing:border-box;margin:0;padding:0}}
+__TOKENS__
 body{{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;
  line-height:1.68;-webkit-font-smoothing:antialiased}}
 .wrap{{max-width:760px;margin:0 auto;padding:56px 22px 90px}}
@@ -519,6 +518,7 @@ ol.defects p{{margin:0;font-size:14.5px}}
 footer{{margin-top:52px;padding-top:20px;border-top:1px solid var(--rule);
  font-family:var(--mono);font-size:11.5px;color:var(--ink3);line-height:1.7}}
 </style></head><body><div class="wrap">
+__MASTHEAD__
 <a class="back" href="/">&larr; BILAALRAJA.COM</a>
 <h1>How this was built</h1>
 <p class="lede">The universe, the point-in-time discipline, the metric definitions,
@@ -669,22 +669,17 @@ NOT_FOUND = """<!doctype html>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Not found | Bilaal Raja</title>
 <meta name="robots" content="noindex">
+__FONTS__
 <style>
-:root{{--bg:#ffffff;--ink:#000000;--ink3:#7a7a7a;--s1:#ff9900;
- --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
- --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;}}
-@media (prefers-color-scheme:dark){{:root:not([data-theme="light"]){{
- --bg:#000000;--ink:#ffffff;--ink3:#8a8a8a;}}}}
-:root[data-theme="dark"]{{--bg:#000000;--ink:#ffffff;--ink3:#8a8a8a;}}
-*{{box-sizing:border-box;margin:0;padding:0}}
+__TOKENS__
 body{{background:var(--bg);color:var(--ink);font-family:var(--sans);
  min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}}
 .c{{max-width:38ch}}
-h1{{font-size:26px;letter-spacing:-.015em;margin-bottom:8px}}
+h1{{font-family:var(--serif);font-size:30px;font-weight:600;letter-spacing:-.02em;margin-bottom:9px}}
 p{{color:var(--ink3);font-size:15px;line-height:1.6;margin-bottom:20px}}
-.n{{font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;color:var(--s1);
+.n{{font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;color:var(--ember);
  margin-bottom:14px}}
-a{{color:var(--s1);font-family:var(--mono);font-size:12.5px}}
+a{{color:var(--ember);font-family:var(--mono);font-size:12.5px}}
 </style></head><body><div class="c">
 <div class="n">404</div>
 <h1>Nothing here</h1>
@@ -833,7 +828,7 @@ def main():
                   universe=f"{meta['universe']:,}", skipped=f"{meta['skipped']:,}",
                   mcap=f"{meta['total_mcap']/1000:.1f}",
                   banks=f"{meta['banks']:,}")
-    (SITE / "index.html").write_text(LANDING.format(**pretty))
+    (SITE / "index.html").write_text(_brandify(LANDING.format(**pretty)))
     print(f"  /              {len(LANDING)/1e3:6.2f} KB   landing page")
 
     # CNAME: GitHub Pages custom domain.  _headers: Netlify/Cloudflare.
@@ -862,9 +857,9 @@ def main():
     (SITE / "update.js").write_text(UPDATE_JS)
     # Without this, Cloudflare Pages answers unknown paths with the landing page
     # and a 200, which Google reads as a soft 404 and may index as a duplicate.
-    (SITE / "404.html").write_text(NOT_FOUND.format())
+    (SITE / "404.html").write_text(_brandify(NOT_FOUND.format()))
     (SITE / "methodology").mkdir(parents=True, exist_ok=True)
-    (SITE / "methodology" / "index.html").write_text(METHODOLOGY.format(**pretty))
+    (SITE / "methodology" / "index.html").write_text(_brandify(METHODOLOGY.format(**pretty)))
     print(f"  /methodology   {len(METHODOLOGY)/1e3:6.2f} KB")
     # Company pages are generated here rather than by hand: 2,500 pages that
     # only refresh when someone remembers is the commentary problem again.
