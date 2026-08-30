@@ -155,6 +155,7 @@ HTML = """<meta charset="utf-8">
   --bg:#FBFAF7; --panel:#F3F0E9; --ink:#14110E; --ink2:#4A443C; --ink3:#8A8177;
   --rule:#E3DED3; --rule2:#EFEBE2; --grid:#EAE5DA;
   --s1:#B4531E; --s2:#14110E; --s3:#2C5670; --s4:#9A9086;
+  --ember:#B4531E; --ember2:#8F3F14; --raise:#F3F0E9;
   --dot:#A9A096; --accentbg:#F6EADF;
   --pos:#1F6F4A; --neg:#A32B1F;
   --serif:"Newsreader",Georgia,"Times New Roman",serif;
@@ -165,6 +166,7 @@ HTML = """<meta charset="utf-8">
   --bg:#12100E; --panel:#1C1917; --ink:#F5F2EC; --ink2:#C0B8AC; --ink3:#8A8177;
   --rule:#2E2A26; --rule2:#232019; --grid:#262220;
   --s1:#E0762F; --s2:#F5F2EC; --s3:#7FA8C4; --s4:#8A8177;
+  --ember:#E0762F; --ember2:#F0A268; --raise:#1C1917;
   --dot:#6B635B; --accentbg:#2A1C10;
   --pos:#5FBE8C; --neg:#E8705F;
 }}
@@ -172,6 +174,7 @@ HTML = """<meta charset="utf-8">
   --bg:#12100E; --panel:#1C1917; --ink:#F5F2EC; --ink2:#C0B8AC; --ink3:#8A8177;
   --rule:#2E2A26; --rule2:#232019; --grid:#262220;
   --s1:#E0762F; --s2:#F5F2EC; --s3:#7FA8C4; --s4:#8A8177;
+  --ember:#E0762F; --ember2:#F0A268; --raise:#1C1917;
   --dot:#6B635B; --accentbg:#2A1C10;
   --pos:#5FBE8C; --neg:#E8705F;
 }
