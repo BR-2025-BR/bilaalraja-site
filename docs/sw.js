@@ -4,7 +4,7 @@ const V="r3k-2026-08-30-4c88455269-r2";
 // a redirect carries redirected:true, and Safari refuses to accept one of those
 // for a navigation request. So: precache the canonical trailing-slash paths, and
 // rebuild every response before it is cached or returned, which clears the flag.
-const SHELL=["/","/russell3000/","/methodology/","/manifest.webmanifest",
+const SHELL=["/","/russell3000/","/learn/","/methodology/","/manifest.webmanifest",
              "/icon-192.png","/icon-512.png","/apple-touch-icon.png"];
 
 async function plain(res){
