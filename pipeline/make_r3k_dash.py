@@ -17,6 +17,7 @@ Design decisions and why:
 """
 import json, math, datetime as _dt
 from pathlib import Path
+import brand
 import pandas as pd
 
 HERE = Path(__file__).resolve().parent
@@ -271,7 +272,7 @@ footer{font-size:11.5px;color:var(--ink3);font-family:var(--mono);border-top:1px
 </style>
 
 <div class="wrap">
-<header class="mast"><a class="wm" href="/">Bilaal<i>.</i>Raja</a><nav><a href="/russell3000" aria-current="page">Cross-section</a><a href="/commentary">Commentary</a><a href="/methodology">Method</a></nav></header>
+__MASTHEAD__
 <header>
   <div>
     <h1>Russell 3000 &mdash; Cross-Section</h1>
@@ -772,7 +773,8 @@ if(ENTER<1){
 </script>
 """
 
-out = (HTML.replace("__DATA__", json.dumps(data, separators=(",",":")))
+out = (HTML.replace("__MASTHEAD__", brand.masthead("russell3000"))
+           .replace("__DATA__", json.dumps(data, separators=(",",":")))
            .replace("__META__", json.dumps(meta))
            .replace("__METRICS__", json.dumps(METRICS))
            .replace("__SECTORS__", json.dumps(SECTORS)))
