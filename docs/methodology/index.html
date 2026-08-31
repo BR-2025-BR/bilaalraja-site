@@ -286,9 +286,17 @@ investment advice or a recommendation to buy or sell any security.
     for(var i=0;i<feed.items.length;i++){
       var f=feed.items[i], m=map[String(f.cik)];
       if(!m) continue;                       // not one of ours, skip it
-      out.push('<a href="/c/'+m[0]+'/"><span class="s">'+m[0]+'</span>'+
+      // Straight to the filing on SEC, not to our own page: if you click an
+      // 8-K you want the 8-K. Only accept a URL that is actually SEC's, since
+      // it arrives from a parsed feed and ends up in an href.
+      var href = (typeof f.href === "string" &&
+                  f.href.indexOf("https://www.sec.gov/") === 0)
+                 ? f.href : ("/c/" + m[0] + "/");
+      var off = href.indexOf("http") === 0;
+      out.push('<a href="'+href+'"'+(off?' target="_blank" rel="noopener"':'')+'>'+
+               '<span class="s">'+m[0]+'</span>'+
                '<span class="n">'+m[1]+'</span>'+
-               '<span class="t">8-K &middot; '+ago(f.filed)+'</span></a>');
+               '<span class="t">8-K &middot; '+ago(f.filed)+(off?' ↗':'')+'</span></a>');
     }
     if(!out.length) return;                  // nothing matched: leave it hidden
     // the list is laid down twice so the loop has no visible seam
