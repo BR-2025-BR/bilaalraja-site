@@ -250,3 +250,70 @@ Consequences, accepted:
 
 Sections 1 to 8 and 10, and Amendment 1, are unchanged. The holdout
 (2023-01-01 onward) remains sealed and untouched.
+
+---
+
+# Amendment 3 — 2026-08-31, scoring model. Still before any return data.
+
+**No price or return data has been fetched, loaded or examined.** Pre-outcome.
+
+## Change
+
+The signal is scored with **FinBERT** (`ProsusAI/finbert`) rather than the
+Loughran-McDonald lexicon. Decided on the grounds that a transformer handles
+negation and context, which a bag-of-words cannot: "not profitable" contains
+"profitable", and LM counts it as positive.
+
+## What FinBERT actually costs, measured not assumed
+
+Benchmarked on this machine (Apple M1, MPS) with proper GPU synchronisation:
+
+| | |
+|---|---|
+| throughput | **8-9 sequences/sec** (~110 ms each, 512 tokens) |
+| MD&A mean length | 8,964 words ≈ 11,400 tokens ≈ 23 chunks |
+| whole-document scoring | 5.2M sequences ≈ **160 hours** |
+
+An initial benchmark reported 2,860/sec. That was wrong: MPS is asynchronous,
+so it timed how fast Python queued work rather than how fast the GPU did it.
+The corrected figure is roughly 300x lower.
+
+## Chunking and aggregation, fixed now
+
+Scoring all 23 chunks is eight days including the re-fetch. Instead:
+
+- Each MD&A is tokenised and the **first and last 512-token chunks** are scored.
+  Rationale: MD&A tone concentrates in the opening overview and the closing
+  outlook; the middle is largely discussion of tables.
+- Document score = **mean of `P(positive) - P(negative)`** across those two
+  chunks, from FinBERT's three-way head (positive / negative / neutral).
+- Where a filing yields only one chunk, that chunk is the score.
+
+This reduces inference to ~14 hours.
+
+## The corpus is now kept
+
+The previous fetcher discarded text and stored only scores, which is why
+changing the model forced a complete re-fetch. **Extracted MD&A text is now
+stored, gzipped, per company.** Re-scoring with a different model, more chunks,
+or a different aggregation becomes an inference job rather than another 35
+hours of downloading.
+
+This makes the chunking choice above reversible, which is the main reason for
+accepting it.
+
+## Loughran-McDonald is retained as specification 6
+
+LM is scored alongside FinBERT at no meaningful cost, since the text is in hand.
+It is not the primary any more, but it is kept because it is the standard in the
+published literature, so a result can be compared with existing work, and
+because disagreement between the two is itself informative about whether any
+finding depends on the instrument.
+
+The permitted specification count rises from five to six. The holdout is still
+tested once, on specification 1 only.
+
+## Standing
+
+Sections 1 to 10 and Amendments 1 and 2 otherwise stand. Development remains
+2018-2022, holdout 2023 onward, still sealed and untouched.
