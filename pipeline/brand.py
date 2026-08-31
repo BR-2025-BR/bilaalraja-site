@@ -109,6 +109,21 @@ TICKER_CSS = """
 .tkr a .n{color:var(--ink2)}
 .tkr a .t{font-family:var(--mono);font-size:11px;color:var(--ink3)}
 .tkr a:hover .n{color:var(--ink)}
+.tkr-l{list-style:none;margin:2px 0 11px;padding:0;display:grid;gap:1px}
+.tkr-l li{display:flex;align-items:baseline;gap:9px;font-size:12.5px;
+  padding:3px 0;min-width:0}
+.tkr-l a{display:flex;align-items:baseline;gap:9px;text-decoration:none;
+  min-width:0;width:100%}
+.tkr-l .s{font-family:var(--mono);font-weight:500;color:var(--ember);
+  flex:0 0 auto;min-width:52px}
+.tkr-l .n{color:var(--ink2);flex:0 1 auto;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap;max-width:31ch}
+.tkr-l .d{color:var(--ink);flex:1 1 auto;min-width:0}
+.tkr-l .d.warn{color:var(--neg);font-weight:500}
+.tkr-l .t{font-family:var(--mono);font-size:10.5px;color:var(--ink3);
+  flex:0 0 auto;margin-left:auto;white-space:nowrap}
+.tkr-l a:hover .n,.tkr-l a:hover .d{color:var(--ink)}
+@media (max-width:640px){.tkr-l .n{display:none}}
 @media (prefers-reduced-motion:reduce){
   .tkr-t{animation:none}
   .tkr-w{overflow-x:auto}
@@ -117,12 +132,45 @@ TICKER_CSS = """
 
 TICKER_HTML = ('<div class="tkr" id="tkr"><div class="tkr-i">'
                '<b>Live</b> &middot; 8-K filings by companies in the panel</div>'
-               '<div class="tkr-w"><div class="tkr-t" id="tkrt"></div></div></div>')
+               '<div class="tkr-w"><div class="tkr-t" id="tkrt"></div></div>'
+               '<ul class="tkr-l" id="tkrl"></ul></div>')
 
 TICKER_JS = """<script>
 (function(){
-  var strip=document.getElementById("tkr"), track=document.getElementById("tkrt");
+  var strip=document.getElementById("tkr"), track=document.getElementById("tkrt"),
+      list=document.getElementById("tkrl");
   if(!strip||!track) return;
+
+  // SEC's own 8-K item numbers, in plain words. This is what separates a
+  // routine press release from a company saying its past accounts were wrong.
+  var ITEM={
+    "1.01":"material agreement",      "1.02":"agreement terminated",
+    "1.03":"bankruptcy",              "2.01":"acquisition or disposal",
+    "2.02":"results announced",       "2.03":"new debt",
+    "2.04":"debt acceleration",       "2.05":"restructuring costs",
+    "2.06":"material impairment",     "3.01":"delisting notice",
+    "3.02":"unregistered share sale", "3.03":"shareholder rights changed",
+    "4.01":"auditor changed",         "4.02":"past accounts not reliable",
+    "5.01":"change of control",       "5.02":"board or executive change",
+    "5.03":"articles amended",        "5.07":"shareholder vote",
+    "7.01":"Reg FD disclosure",       "8.01":"other events",
+    "9.01":"exhibits"
+  };
+  // Ranked by how much it tells you. 9.01 rides along with almost every 8-K
+  // and says nothing, so it sinks; 4.02 is the loudest thing a filer can say.
+  var RANK=["4.02","1.03","3.01","2.04","4.01","2.06","5.01","2.01","2.05",
+            "5.02","2.02","1.01","1.02","2.03","3.02","3.03","5.03","5.07",
+            "7.01","8.01","9.01"];
+  var SEVERE={"4.02":1,"1.03":1,"3.01":1,"2.04":1,"4.01":1,"2.06":1};
+  function describe(codes){
+    if(!codes||!codes.length) return {text:"", severe:false};
+    var best=null;
+    for(var i=0;i<RANK.length;i++) if(codes.indexOf(RANK[i])>=0){ best=RANK[i]; break; }
+    if(!best) best=codes[0];
+    var extra=codes.filter(function(c){return c!==best && c!=="9.01";}).length;
+    return {text:(ITEM[best]||("item "+best))+(extra?" +"+extra:""),
+            severe:!!SEVERE[best]};
+  }
   function ago(iso){
     var s=(Date.now()-new Date(iso).getTime())/1000;
     if(!isFinite(s)||s<0) return "";
@@ -136,7 +184,7 @@ TICKER_JS = """<script>
   ]).then(function(res){
     var feed=res[0], map=res[1];
     if(!feed||!map||!feed.items) return;
-    var out=[];
+    var out=[], rows=[];
     for(var i=0;i<feed.items.length;i++){
       var f=feed.items[i], m=map[String(f.cik)];
       if(!m) continue;                       // not one of ours, skip it
@@ -151,8 +199,20 @@ TICKER_JS = """<script>
                '<span class="s">'+m[0]+'</span>'+
                '<span class="n">'+m[1]+'</span>'+
                '<span class="t">8-K &middot; '+ago(f.filed)+(off?' \u2197':'')+'</span></a>');
+      var d=describe(f.items);
+      rows.push({tk:m[0], name:m[1], desc:d.text||"8-K", severe:d.severe,
+                 href:href, off:off, ago:ago(f.filed)});
     }
     if(!out.length) return;                  // nothing matched: leave it hidden
+    if(list){
+      list.innerHTML = rows.slice(0,7).map(function(r){
+        return '<li><a href="'+r.href+'"'+(r.off?' target="_blank" rel="noopener"':'')+'>'+
+               '<span class="s">'+r.tk+'</span>'+
+               '<span class="n">'+r.name+'</span>'+
+               '<span class="d'+(r.severe?' warn':'')+'">'+r.desc+'</span>'+
+               '<span class="t">'+r.ago+'</span></a></li>';
+      }).join("");
+    }
     // the list is laid down twice so the loop has no visible seam
     track.innerHTML=out.join("")+out.join("");
     strip.classList.add("on");

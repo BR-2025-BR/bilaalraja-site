@@ -52,10 +52,21 @@ export async function onRequest() {
     const form = title.split(" - ")[0].trim();
     if (!cik || form !== "8-K") continue;
     const href = (e.match(/<link[^>]*href="([^"]+)"/) || [])[1] || "";
+    // The summary carries the item numbers the company is reporting under, e.g.
+    // "Item 5.02: Departure of Directors". That is what says whether an 8-K is
+    // an earnings release or a company disowning its own accounts, so it is
+    // pulled through rather than making the reader open every one.
+    const summary = tag(e, "summary")
+      .replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&");
+    const codes = [];
+    const ire = /Item\s+(\d+\.\d+)/g;
+    let im;
+    while ((im = ire.exec(summary))) if (codes.indexOf(im[1]) < 0) codes.push(im[1]);
     items.push({
       cik: Number(cik),
       form,
       filed: tag(e, "updated"),
+      items: codes,
       href: href.startsWith("http") ? href : "https://www.sec.gov" + href,
     });
   }
