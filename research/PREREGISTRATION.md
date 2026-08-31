@@ -188,3 +188,65 @@ gut the sample.
 
 Sections 1 to 7 and 9 to 10 are otherwise unchanged. The holdout
 (2023-01-01 onward) remains sealed and untouched.
+
+---
+
+# Amendment 2 — 2026-08-31, universe. Still before any return data.
+
+**No price or return data has been fetched, loaded or examined.** This remains
+a pre-outcome amendment.
+
+## The finding
+
+Section 9 named survivorship as the most serious limitation and undertook to
+quantify it. Quantified, it is fatal to the original design.
+
+Only 20 of the 3,000 companies in the panel stop filing before 2026 — 0.7%
+attrition over eight and a half years, against a realistic 30-50%. Reading it
+from SEC's own quarterly full-index rather than from the panel:
+
+| | |
+|---|---|
+| companies filing a 10-K or 10-Q in 2018 | 7,329 |
+| of those, present in today's panel | 2,146 (29.3%) |
+| **absent** | **5,183 (70.7%)** |
+| distinct filers 2018-2026 | 12,122 |
+| 10-K/10-Q filings over the period | 225,501 |
+
+Seven in ten companies that were filing in 2018 are missing, because the
+universe was defined as today's constituents and survival is therefore built
+into it.
+
+## Why this specifically destroys this hypothesis
+
+H1 is that deteriorating tone predicts underperformance. The companies where
+that should appear most strongly are those whose language soured and which then
+failed. Every one of them has been excluded by construction. The test is
+stripped of its own best evidence, so a null would be uninformative and a
+positive result would mean only "among companies that survived regardless".
+
+## Change
+
+The universe becomes **every company that filed a 10-K or 10-Q between
+2018-01-01 and 2026-09-30**, taken from SEC's quarterly full-index: 12,122
+filers, including those that later delisted, were acquired or went bankrupt.
+The panel's 3,000 are a subset. 9,123 companies remain to be fetched.
+
+Consequences, accepted:
+
+- The sample roughly quadruples, to an expected ~225,000 filings.
+- The universe is no longer restricted to Russell 3000-scale companies. Many
+  additions are small, illiquid, or both. **Specification 4 (excluding
+  companies below $1bn market capitalisation) therefore becomes the more
+  important robustness check rather than an afterthought**, since any effect
+  concentrated in microcaps is unlikely to be tradeable.
+- Companies without a current market capitalisation, because they no longer
+  exist, are retained for the signal and simply cannot be sorted on size.
+- Delisting returns are not modelled. A company whose price series ends is
+  treated as missing after that date, not as a total loss. This is itself a
+  bias and is stated here rather than discovered later.
+
+## Standing
+
+Sections 1 to 8 and 10, and Amendment 1, are unchanged. The holdout
+(2023-01-01 onward) remains sealed and untouched.
