@@ -114,6 +114,10 @@ TICKER_CSS = """
   padding:3px 0;min-width:0}
 .tkr-l a{display:flex;align-items:baseline;gap:9px;text-decoration:none;
   min-width:0;width:100%}
+.tkr-l .ar{font-family:var(--mono);font-size:12px;flex:0 0 auto;width:12px;
+  text-align:center}
+.tkr-l .ar.dn{color:var(--neg)} .tkr-l .ar.up{color:var(--pos)}
+.tkr-l .ar.fl{color:var(--ink3);opacity:.55}
 .tkr-l .s{font-family:var(--mono);font-weight:500;color:var(--ember);
   flex:0 0 auto;min-width:52px}
 .tkr-l .n{color:var(--ink2);flex:0 1 auto;overflow:hidden;
@@ -162,14 +166,38 @@ TICKER_JS = """<script>
             "5.02","2.02","1.01","1.02","2.03","3.02","3.03","5.03","5.07",
             "7.01","8.01","9.01"];
   var SEVERE={"4.02":1,"1.03":1,"3.01":1,"2.04":1,"4.01":1,"2.06":1};
+
+  // Direction, where the code itself carries one. Most 8-K items do not.
+  // 2.02 "results announced" is deliberately neutral: it says a company
+  // reported, not whether the numbers were good, and guessing would be
+  // inventing a signal the filing does not contain.
+  var DIR={
+    "4.02":-1,  // past accounts not reliable
+    "1.03":-1,  // bankruptcy
+    "3.01":-1,  // delisting notice
+    "2.04":-1,  // debt acceleration
+    "4.01":-1,  // auditor changed, often a resignation
+    "2.06":-1,  // material impairment, writing assets down
+    "2.05":-1,  // exit and disposal costs
+    "3.02":-1,  // unregistered share sale, dilution
+    "5.01": 1   // change of control, usually a bid at a premium
+  };
+  var ARROW={"-1":"\u2193", "1":"\u2191", "0":"\u2013"};
   function describe(codes){
     if(!codes||!codes.length) return {text:"", severe:false};
     var best=null;
     for(var i=0;i<RANK.length;i++) if(codes.indexOf(RANK[i])>=0){ best=RANK[i]; break; }
     if(!best) best=codes[0];
     var extra=codes.filter(function(c){return c!==best && c!=="9.01";}).length;
+    // If any listed item leans a direction, take the strongest lean present.
+    var dir=0;
+    for(var j=0;j<codes.length;j++){
+      var v=DIR[codes[j]];
+      if(v===-1){ dir=-1; break; }        // bad news dominates
+      if(v===1) dir=1;
+    }
     return {text:(ITEM[best]||("item "+best))+(extra?" +"+extra:""),
-            severe:!!SEVERE[best]};
+            severe:!!SEVERE[best], dir:dir};
   }
   function ago(iso){
     var s=(Date.now()-new Date(iso).getTime())/1000;
@@ -201,12 +229,17 @@ TICKER_JS = """<script>
                '<span class="t">8-K &middot; '+ago(f.filed)+(off?' \u2197':'')+'</span></a>');
       var d=describe(f.items);
       rows.push({tk:m[0], name:m[1], desc:d.text||"8-K", severe:d.severe,
-                 href:href, off:off, ago:ago(f.filed)});
+                 dir:d.dir, href:href, off:off, ago:ago(f.filed)});
     }
     if(!out.length) return;                  // nothing matched: leave it hidden
     if(list){
       list.innerHTML = rows.slice(0,7).map(function(r){
+        var dcls = r.dir<0 ? "dn" : (r.dir>0 ? "up" : "fl");
+        var dttl = r.dir<0 ? "the filing type itself is negative"
+                 : (r.dir>0 ? "a bid or change of control, usually at a premium"
+                            : "no direction implied by the filing type");
         return '<li><a href="'+r.href+'"'+(r.off?' target="_blank" rel="noopener"':'')+'>'+
+               '<span class="ar '+dcls+'" title="'+dttl+'">'+ARROW[String(r.dir)]+'</span>'+
                '<span class="s">'+r.tk+'</span>'+
                '<span class="n">'+r.name+'</span>'+
                '<span class="d'+(r.severe?' warn':'')+'">'+r.desc+'</span>'+
