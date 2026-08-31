@@ -5,6 +5,8 @@ renders only what matches the current search and paginates the rest.
 """
 import json, re
 from pathlib import Path
+
+import brand
 import pandas as pd
 
 HERE = Path(__file__).resolve().parent
@@ -48,22 +50,15 @@ meta = {"n": len(rows),
 
 HTML = """<meta charset="utf-8">
 <title>Russell 3000 Results Commentary</title>
+__FONTS__
 <style>
-:root{
-  --bg:#f5f6f4;--card:#fff;--ink:#15181a;--ink2:#464c4e;--ink3:#828886;--rule:#e0e3de;
-  --rule2:#eef0ec;--accent:#155e52;--accent-bg:#e7f0ed;--q:#1b6ea8;--a:#8a5a1f;
-  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
-  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#111413;--card:#191d1c;--ink:#eef1ef;--ink2:#b3bab7;--ink3:#7d8482;--rule:#282d2c;
-  --rule2:#1f2423;--accent:#5cbfa9;--accent-bg:#122a26;--q:#5aa9dd;--a:#d3a05c;}}
-:root[data-theme="dark"]{--bg:#111413;--card:#191d1c;--ink:#eef1ef;--ink2:#b3bab7;--ink3:#7d8482;
-  --rule:#282d2c;--rule2:#1f2423;--accent:#5cbfa9;--accent-bg:#122a26;--q:#5aa9dd;--a:#d3a05c;}
+__BRANDCSS__
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15.5px;line-height:1.6}
 .wrap{max-width:940px;margin:0 auto;padding:32px 18px 70px;display:flex;flex-direction:column;gap:20px}
 header{border-bottom:2px solid var(--ink);padding-bottom:13px}
-h1{font-size:clamp(23px,5vw,33px);letter-spacing:-.02em;line-height:1.06;font-weight:650}
+h1{font-family:var(--serif);font-size:clamp(26px,5vw,38px);letter-spacing:-.021em;
+  line-height:1.05;font-weight:600;text-wrap:balance}
 .dek{color:var(--ink2);margin-top:9px;max-width:64ch}
 .stat{display:flex;gap:22px;flex-wrap:wrap;font-family:var(--mono);font-size:11.5px;
   color:var(--ink3);margin-top:11px}
@@ -113,6 +108,7 @@ footer{border-top:1px solid var(--rule);padding-top:13px;font-family:var(--mono)
   color:var(--ink3);line-height:1.75}
 </style>
 <div class="wrap">
+__MASTHEAD__
 <header>
   <h1>What management actually said</h1>
   <p class="dek">Results commentary lifted from each company&rsquo;s own 10-Q and 10-K &mdash;
@@ -235,9 +231,20 @@ $("foot").innerHTML=`Extracted from SEC EDGAR 10-Q and 10-K filings ·
 apply();
 </script>
 """
-out = (HTML.replace("__DATA__", json.dumps(rows, separators=(",",":")))
+out = (HTML.replace("__BRANDCSS__",
+                    brand.TOKENS + brand.TRANSITION_CSS + brand.MASTHEAD_CSS
+                    + """
+/* this page was written against its own names; map them onto the brand tokens
+   rather than rewriting every rule and risking a miss */
+:root{--card:var(--raise);--accent:var(--ember);--accent-bg:var(--raise);
+  --q:var(--ember);--a:var(--ink3)}
+""")
+           .replace("__FONTS__", brand.FONTS)
+           .replace("__MASTHEAD__", brand.masthead("commentary"))
+           .replace("__DATA__", json.dumps(rows, separators=(",",":")))
            .replace("__META__", json.dumps(meta)))
 p = HERE/"commentary.html"
+out = out + brand.NAV_JS
 p.write_text(out)
 print(f"wrote {p}  ({len(out)/1e6:.2f} MB)")
 print(f"  companies {meta['n']} · quarterly {meta['q']} · annual {meta['a']}")
