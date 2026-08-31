@@ -383,3 +383,54 @@ another sweep.
 Sections 1 to 10 and Amendments 1 to 3 otherwise stand, except that FinBERT is
 now applied per sentence rather than per chunk. Development remains 2018-2022,
 holdout 2023 onward, sealed and untouched. Specification count remains six.
+
+---
+
+# Amendment 5 — 2026-08-31, sentence sampling. Still before any returns.
+
+**No price or return data fetched, loaded or examined.** Pre-outcome.
+
+## The defect
+
+Amendment 4 sampled the **first 15 and last 15** sentences, reasoning that tone
+concentrates in the opening overview and the closing outlook. It does — and it
+concentrates *positively*. Those are the most upbeat passages in an MD&A, and
+the middle, where management explains what went wrong, was exactly what the
+sampler excluded.
+
+Measured on six NVIDIA filings, 180 sentences: **not one** classified as
+strongly negative. For a hypothesis about tone *deteriorating*, the instrument
+could barely register bad news.
+
+## The change
+
+Thirty sentences sampled at **even intervals across the whole filing**, so the
+middle is represented. Identical cost, identical sentence count, no extra
+inference.
+
+## Effect, same six filings
+
+| filed | form | head + tail | evenly spaced |
+|---|---|---|---|
+| 2018-02-28 | 10-K | +0.3793, neg 0.00 | +0.1929, neg 0.13 |
+| 2018-05-22 | 10-Q | +0.0579, neg 0.00 | +0.2561, neg 0.07 |
+| 2018-08-16 | 10-Q | +0.0242, neg 0.00 | +0.2189, neg 0.13 |
+| 2018-11-15 | 10-Q | +0.0202, neg 0.00 | +0.2804, neg 0.10 |
+| 2019-02-21 | 10-K | +0.3920, neg 0.00 | +0.1653, neg 0.13 |
+| 2019-05-16 | 10-Q | +0.0254, neg 0.00 | −0.0998, neg 0.30 |
+
+Negative sentences now appear in every filing. The spurious 10-K inflation
+disappears — head-and-tail scored annual reports at +0.38 against +0.02 for
+quarterlies, an artefact that would have fought the form-matched baseline of
+Amendment 1. And the final row changes sign: a quarter the old sampler called
+mildly positive is 30% negative once the middle of the document is visible.
+
+## Throughput correction
+
+Measured in practice at **23.5 sentences/sec**, not the 32 a synthetic
+benchmark suggested. The development window is therefore about **30 hours**.
+
+## Standing
+
+Sections 1 to 10 and Amendments 1 to 4 otherwise stand, except that sampling is
+even rather than head-and-tail. Holdout sealed.
