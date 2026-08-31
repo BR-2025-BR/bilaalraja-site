@@ -11,6 +11,7 @@ from pathlib import Path
 
 import brand
 import extract_case
+import reader
 
 HERE = Path(__file__).resolve().parent
 OUT  = HERE.parent / "docs" / "learn"
@@ -127,7 +128,7 @@ def build():
     return HTML.format(
         # PAGE_CSS goes in as an argument, not through the template: format
         # arguments are substituted, never re-scanned, so its braces are safe.
-        CSS=PAGE_CSS,
+        CSS=PAGE_CSS, READER=reader.READER_HTML, READERJS=reader.READER_JS,
         FONTS=brand.FONTS, TOKENS=brand.TOKENS + brand.MASTHEAD_CSS,
         MAST=brand.masthead(), fy=fy, prior=prior, ticker=TICKER, name=NAME,
         inc=inc, bal=bal, cash=cash, rcards=rcards,
@@ -144,7 +145,7 @@ def build():
     )
 
 
-PAGE_CSS = """
+PAGE_CSS = reader.READER_CSS + """
 body{padding:30px 20px 80px}
 .wrap{max-width:900px;margin:0 auto}
 .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.13em;
@@ -214,6 +215,7 @@ HTML = """<!doctype html>
 {FONTS}
 <style>{TOKENS}{CSS}</style></head><body><div class="wrap">
 {MAST}
+{READER}
 <div class="eyebrow">Case study &middot; financial accounting</div>
 <h1>Reading a company's accounts, end to end</h1>
 <p class="lede">Every figure below is {name}'s own, taken from the accounts it
@@ -334,6 +336,7 @@ than it looks.</p>
 checked against itself before publication &middot;
 <a href="/c/{ticker}/">see {ticker} in the cross-section</a> &middot;
 <a href="/methodology">method</a> &middot; <a href="/">bilaalraja.com</a></footer>
+{READERJS}
 </div></body></html>"""
 
 
