@@ -105,6 +105,11 @@ TICKER_CSS = """
 .tkr-i{font-family:var(--mono);font-size:10px;letter-spacing:.13em;
   text-transform:uppercase;color:var(--ink3);padding:0 0 6px}
 .tkr-i b{color:var(--ember);font-weight:500}
+.tkr-i .dot{display:inline-block;width:7px;height:7px;border-radius:50%;
+  background:var(--neg);margin-right:7px;
+  animation:tkrblink 1.5s ease-in-out infinite}
+@keyframes tkrblink{0%,100%{opacity:1}50%{opacity:.2}}
+@media (prefers-reduced-motion:reduce){.tkr-i .dot{animation:none;opacity:1}}
 .tkr-w{overflow:hidden;padding-bottom:10px}
 .tkr-t{display:flex;gap:30px;width:max-content;
   animation:tkr 70s linear infinite}
@@ -142,6 +147,7 @@ TICKER_CSS = """
 """
 
 TICKER_HTML = ('<div class="tkr" id="tkr"><div class="tkr-i">'
+               '<span class="dot" aria-hidden="true"></span>'
                '<b>Live</b> &middot; 8-K filings by companies in the panel</div>'
                '<div class="tkr-w"><div class="tkr-t" id="tkrt"></div></div>'
                '<ul class="tkr-l" id="tkrl"></ul></div>')
