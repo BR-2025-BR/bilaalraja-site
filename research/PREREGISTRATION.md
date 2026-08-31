@@ -317,3 +317,69 @@ tested once, on specification 1 only.
 
 Sections 1 to 10 and Amendments 1 and 2 otherwise stand. Development remains
 2018-2022, holdout 2023 onward, still sealed and untouched.
+
+---
+
+# Amendment 4 — 2026-08-31, sentence-level scoring. Still before any returns.
+
+**No price or return data fetched, loaded or examined.** Pre-outcome.
+
+## Change
+
+FinBERT is applied to **sentences**, not to 512-token chunks.
+
+FinBERT was fine-tuned on the Financial PhraseBank, a corpus of individual
+financial sentences. Feeding it long slabs of continuous prose asks it to do
+something it was not trained for. Scoring sentences uses it as intended, and
+yields a *distribution* per document rather than one blended figure.
+
+## Sampling, and why it is necessary
+
+Measured on this machine: **32 sentences/sec** (M1, MPS, batch 64). Throughput
+does not improve with larger batches — 30/sec at 128 — which indicates the
+backend is dispatch-overhead-bound rather than compute-bound. CPU is slower
+still at 12.6/sec, so the GPU is the ceiling.
+
+A 5,187-word MD&A yields 188 usable sentences, so the 8,964-word mean gives
+about 325. Across 225,000 filings that is 73 million sentences, or **26 days**.
+
+Therefore: the **first 15 and last 15 sentences** of each MD&A are scored.
+Chosen because tone concentrates in the opening overview and the closing
+outlook, while the middle is largely discussion of tables. A sentence qualifies
+if it is between 40 and 600 characters, which excludes headings, fragments and
+table debris.
+
+## Document score
+
+For the sampled sentences of filing *i*:
+
+- `tone(i)` = **mean of `P(positive) - P(negative)`** across sampled sentences,
+  from FinBERT's three-way head.
+- Also recorded, since sentence-level scoring makes them available and they
+  cost nothing extra: **share of sentences classified negative**, and the
+  **standard deviation** of sentence scores. Neither is the primary signal.
+  They are logged for the specification list and for diagnostics.
+
+Everything downstream is unchanged: `dtone` against a form-matched baseline of
+four prior filings, the word-count quality filter, quintile sorting, and the
+same decision rule.
+
+## Order of work
+
+The **development window (filings before 2023-01-01) is scored first**. The
+holdout is sealed until the development analysis is frozen, so there is no
+reason to spend inference on it beforehand, and if development returns a clear
+null the holdout may never need scoring at all. This halves the immediate cost
+to roughly **23 hours**.
+
+## Reversibility
+
+Because the corpus retains full text, the sampling is not a one-way door.
+Scoring every sentence for a subset of companies later is a targeted job, not
+another sweep.
+
+## Standing
+
+Sections 1 to 10 and Amendments 1 to 3 otherwise stand, except that FinBERT is
+now applied per sentence rather than per chunk. Development remains 2018-2022,
+holdout 2023 onward, sealed and untouched. Specification count remains six.
