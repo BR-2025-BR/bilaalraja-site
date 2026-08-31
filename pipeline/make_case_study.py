@@ -128,8 +128,8 @@ def build():
     return HTML.format(
         # PAGE_CSS goes in as an argument, not through the template: format
         # arguments are substituted, never re-scanned, so its braces are safe.
-        CSS=PAGE_CSS, READER=reader.READER_HTML, READERJS=reader.READER_JS,
-        FONTS=brand.FONTS, TOKENS=brand.TOKENS + brand.MASTHEAD_CSS,
+        CSS=PAGE_CSS, READER=reader.READER_HTML, READERJS=reader.READER_JS, NAVJS=brand.NAV_JS,
+        FONTS=brand.FONTS, TOKENS=brand.TOKENS + brand.TRANSITION_CSS + brand.MASTHEAD_CSS,
         MAST=brand.masthead(), fy=fy, prior=prior, ticker=TICKER, name=NAME,
         inc=inc, bal=bal, cash=cash, rcards=rcards,
         rev=f"{g('revenue')/B:,.1f}", ni=f"{g('ni')/B:,.1f}",
@@ -336,7 +336,7 @@ than it looks.</p>
 checked against itself before publication &middot;
 <a href="/c/{ticker}/">see {ticker} in the cross-section</a> &middot;
 <a href="/methodology">method</a> &middot; <a href="/">bilaalraja.com</a></footer>
-{READERJS}
+{READERJS}{NAVJS}
 </div></body></html>"""
 
 

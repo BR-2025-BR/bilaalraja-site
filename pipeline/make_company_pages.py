@@ -35,7 +35,7 @@ def money_bn(v):
     f = float(v)
     return f"${f:,.1f}bn" if abs(f) >= 1 else f"${f*1000:,.0f}m"
 
-CSS = brand.TOKENS + brand.MASTHEAD_CSS + """
+CSS = brand.TOKENS + brand.TRANSITION_CSS + brand.MASTHEAD_CSS + """
 body{padding:30px 20px 64px}
 .wrap{max-width:880px;margin:0 auto}
 .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.13em;
@@ -170,7 +170,7 @@ prices {meta.get('price_date','')} &middot;
 <a href="/russell3000?q={tk}">see {tk} in the cross-section</a> &middot;
 <a href="/methodology">method and known defects</a> &middot;
 <a href="/">bilaalraja.com</a></footer>
-</div></body></html>"""
+</div>{brand.NAV_JS}</body></html>"""
 
 
 def main():

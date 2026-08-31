@@ -74,6 +74,26 @@ body{background:var(--paper);color:var(--ink);font-family:var(--sans);
 a{color:inherit}
 .num,.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
 
+@view-transition{navigation:auto}
+@keyframes vt-in-right{from{transform:translateX(100%)}to{transform:translateX(0)}}
+@keyframes vt-out-left{from{transform:translateX(0)}to{transform:translateX(-28%)}}
+@keyframes vt-in-left{from{transform:translateX(-28%)}to{transform:translateX(0)}}
+@keyframes vt-out-right{from{transform:translateX(0)}to{transform:translateX(100%)}}
+@keyframes vt-dim{from{opacity:1}to{opacity:.55}}
+@keyframes vt-undim{from{opacity:.55}to{opacity:1}}
+::view-transition-group(root){animation-duration:.34s;
+  animation-timing-function:cubic-bezier(.32,.72,0,1)}
+::view-transition-old(root),::view-transition-new(root){
+  animation-duration:.34s;animation-timing-function:cubic-bezier(.32,.72,0,1)}
+::view-transition-new(root){animation-name:vt-in-right}
+::view-transition-old(root){animation-name:vt-out-left,vt-dim}
+html[data-nav="traverse"]::view-transition-new(root){animation-name:vt-in-left,vt-undim}
+html[data-nav="traverse"]::view-transition-old(root){animation-name:vt-out-right}
+@media (prefers-reduced-motion:reduce){
+  ::view-transition-group(root),::view-transition-old(root),
+  ::view-transition-new(root){animation:none!important}
+}
+
 .mast{display:flex;align-items:baseline;justify-content:space-between;gap:16px;
   padding-bottom:13px;border-bottom:1.5px solid var(--ink);margin-bottom:26px}
 .mast .wm{font-family:var(--serif);font-size:20px;font-weight:600;
@@ -200,7 +220,7 @@ company facts rather than a vendor feed.</p>
   </svg></span><h2>Russell 3000 Cross-Section</h2></div>
   <p>2,581 companies with computable trailing-twelve-month fundamentals, screened on
   35 metrics with sector-neutral percentile ranking and a composite score.</p>
-  <div class="m">filings to 2026-08-26 &middot; prices 2026-08-27 &middot; rebuilt 31 August 2026</div>
+  <div class="m">filings to 2026-08-26 &middot; prices 2026-08-27 &middot; rebuilt 1 September 2026</div>
 </a>
 
 <a class="card" href="/commentary">
@@ -210,7 +230,7 @@ company facts rather than a vendor feed.</p>
   </svg></span><h2>Results Commentary</h2></div>
   <p>Management's own discussion of results, extracted from 10-Q and 10-K
   filings and matched to the reported figures.</p>
-  <div class="m">filings to 2026-08-26 &middot; prices 2026-08-27 &middot; rebuilt 31 August 2026</div>
+  <div class="m">filings to 2026-08-26 &middot; prices 2026-08-27 &middot; rebuilt 1 September 2026</div>
 </a>
 
 <a class="card" href="/methodology">
@@ -329,4 +349,132 @@ or sell any security.</span>
   requestAnimationFrame(n=>{last=n; frame(n);});
 })();
 </script>
-</body></html>
+<script>
+(function(){
+  var strip=document.getElementById("tkr"), track=document.getElementById("tkrt"),
+      list=document.getElementById("tkrl");
+  if(!strip||!track) return;
+
+  // SEC's own 8-K item numbers, in plain words. This is what separates a
+  // routine press release from a company saying its past accounts were wrong.
+  var ITEM={
+    "1.01":"material agreement",      "1.02":"agreement terminated",
+    "1.03":"bankruptcy",              "2.01":"acquisition or disposal",
+    "2.02":"results announced",       "2.03":"new debt",
+    "2.04":"debt acceleration",       "2.05":"restructuring costs",
+    "2.06":"material impairment",     "3.01":"delisting notice",
+    "3.02":"unregistered share sale", "3.03":"shareholder rights changed",
+    "4.01":"auditor changed",         "4.02":"past accounts not reliable",
+    "5.01":"change of control",       "5.02":"board or executive change",
+    "5.03":"articles amended",        "5.07":"shareholder vote",
+    "7.01":"Reg FD disclosure",       "8.01":"other events",
+    "9.01":"exhibits"
+  };
+  // Ranked by how much it tells you. 9.01 rides along with almost every 8-K
+  // and says nothing, so it sinks; 4.02 is the loudest thing a filer can say.
+  var RANK=["4.02","1.03","3.01","2.04","4.01","2.06","5.01","2.01","2.05",
+            "5.02","2.02","1.01","1.02","2.03","3.02","3.03","5.03","5.07",
+            "7.01","8.01","9.01"];
+  var SEVERE={"4.02":1,"1.03":1,"3.01":1,"2.04":1,"4.01":1,"2.06":1};
+
+  // Direction, where the code itself carries one. Most 8-K items do not.
+  // 2.02 "results announced" is deliberately neutral: it says a company
+  // reported, not whether the numbers were good, and guessing would be
+  // inventing a signal the filing does not contain.
+  var DIR={
+    "4.02":-1,  // past accounts not reliable
+    "1.03":-1,  // bankruptcy
+    "3.01":-1,  // delisting notice
+    "2.04":-1,  // debt acceleration
+    "4.01":-1,  // auditor changed, often a resignation
+    "2.06":-1,  // material impairment, writing assets down
+    "2.05":-1,  // exit and disposal costs
+    "3.02":-1,  // unregistered share sale, dilution
+    "5.01": 1   // change of control, usually a bid at a premium
+  };
+  var ARROW={"-1":"↓", "1":"↑", "0":"–"};
+  function describe(codes){
+    if(!codes||!codes.length) return {text:"", severe:false};
+    var best=null;
+    for(var i=0;i<RANK.length;i++) if(codes.indexOf(RANK[i])>=0){ best=RANK[i]; break; }
+    if(!best) best=codes[0];
+    var extra=codes.filter(function(c){return c!==best && c!=="9.01";}).length;
+    // If any listed item leans a direction, take the strongest lean present.
+    var dir=0;
+    for(var j=0;j<codes.length;j++){
+      var v=DIR[codes[j]];
+      if(v===-1){ dir=-1; break; }        // bad news dominates
+      if(v===1) dir=1;
+    }
+    return {text:(ITEM[best]||("item "+best))+(extra?" +"+extra:""),
+            severe:!!SEVERE[best], dir:dir};
+  }
+  function ago(iso){
+    var s=(Date.now()-new Date(iso).getTime())/1000;
+    if(!isFinite(s)||s<0) return "";
+    if(s<3600) return Math.max(1,Math.round(s/60))+"m ago";
+    if(s<86400) return Math.round(s/3600)+"h ago";
+    return Math.round(s/86400)+"d ago";
+  }
+  Promise.all([
+    fetch("/api/filings").then(function(r){return r.ok?r.json():null;}),
+    fetch("/ciks.json").then(function(r){return r.ok?r.json():null;})
+  ]).then(function(res){
+    var feed=res[0], map=res[1];
+    if(!feed||!map||!feed.items) return;
+    var out=[], rows=[];
+    for(var i=0;i<feed.items.length;i++){
+      var f=feed.items[i], m=map[String(f.cik)];
+      if(!m) continue;                       // not one of ours, skip it
+      // Straight to the filing on SEC, not to our own page: if you click an
+      // 8-K you want the 8-K. Only accept a URL that is actually SEC's, since
+      // it arrives from a parsed feed and ends up in an href.
+      var href = (typeof f.href === "string" &&
+                  f.href.indexOf("https://www.sec.gov/") === 0)
+                 ? f.href : ("/c/" + m[0] + "/");
+      var off = href.indexOf("http") === 0;
+      out.push('<a href="'+href+'"'+(off?' target="_blank" rel="noopener"':'')+'>'+
+               '<span class="s">'+m[0]+'</span>'+
+               '<span class="n">'+m[1]+'</span>'+
+               '<span class="t">8-K &middot; '+ago(f.filed)+'</span></a>');
+      var d=describe(f.items);
+      rows.push({tk:m[0], name:m[1], desc:d.text||"8-K", severe:d.severe,
+                 dir:d.dir, href:href, off:off, ago:ago(f.filed)});
+    }
+    if(!out.length) return;                  // nothing matched: leave it hidden
+    if(list){
+      list.innerHTML = rows.slice(0,7).map(function(r){
+        var dcls = r.dir<0 ? "dn" : (r.dir>0 ? "up" : "fl");
+        var dttl = r.dir<0 ? "the filing type itself is negative"
+                 : (r.dir>0 ? "a bid or change of control, usually at a premium"
+                            : "no direction implied by the filing type");
+        return '<li><a href="'+r.href+'"'+(r.off?' target="_blank" rel="noopener"':'')+'>'+
+               '<span class="ar '+dcls+'" title="'+dttl+'">'+ARROW[String(r.dir)]+'</span>'+
+               '<span class="s">'+r.tk+'</span>'+
+               '<span class="n">'+r.name+'</span>'+
+               '<span class="d'+(r.severe?' warn':'')+'">'+r.desc+'</span>'+
+               '<span class="t">'+r.ago+'</span></a></li>';
+      }).join("");
+    }
+    // the list is laid down twice so the loop has no visible seam
+    track.innerHTML=out.join("")+out.join("");
+    strip.classList.add("on");
+  }).catch(function(){});
+})();
+</script><script>
+// Tag the document with how it was reached, so a back gesture animates as a pop
+// rather than another push. Guarded throughout: these APIs are recent and their
+// absence must not break the page.
+(function(){
+  function tag(){
+    try{
+      var t=(window.navigation&&navigation.activation&&
+             navigation.activation.navigationType)||"push";
+      document.documentElement.dataset.nav=t;
+    }catch(e){}
+  }
+  if("onpagereveal" in window) window.addEventListener("pagereveal",tag);
+  if("onpageswap"   in window) window.addEventListener("pageswap",tag);
+  tag();
+})();
+</script></body></html>

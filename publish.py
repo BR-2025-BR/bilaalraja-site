@@ -356,7 +356,7 @@ or sell any security.</span>
   requestAnimationFrame(n=>{{last=n; frame(n);}});
 }})();
 </script>
-</body></html>
+__TICKERJS__</body></html>
 """
 
 
@@ -416,10 +416,10 @@ def _brandify(html: str) -> str:
     The templates run through str.format, and CSS is nothing but braces, so the
     palette is carried as a placeholder and swapped in here instead.
     """
-    return (html.replace("__TOKENS__", brand.TOKENS + brand.MASTHEAD_CSS + brand.TICKER_CSS)
+    return (html.replace("__TOKENS__", brand.TOKENS + brand.TRANSITION_CSS + brand.MASTHEAD_CSS + brand.TICKER_CSS)
                 .replace("__FONTS__", brand.FONTS)
                 .replace("__MASTHEAD__", brand.masthead() + brand.TICKER_HTML)
-                .replace("__TICKERJS__", brand.TICKER_JS))
+                .replace("__TICKERJS__", brand.TICKER_JS + brand.NAV_JS))
 
 
 def write_sitemap(site: Path, domain: str, paths, lastmod: str):

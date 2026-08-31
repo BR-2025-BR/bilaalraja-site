@@ -265,3 +265,53 @@ TICKER_JS = """<script>
   }).catch(function(){});
 })();
 </script>"""
+
+
+# ------------------------------------------------------------ page transitions
+# Cross-document view transitions: the browser snapshots the outgoing page and
+# animates to the new one, so this needs no click interception and leaves the
+# back button working. Browsers without support just navigate, losing the
+# animation and nothing else.
+#
+# Kept separate from TOKENS because the dashboard carries its own palette and
+# does not include the token sheet, but still needs these rules.
+
+TRANSITION_CSS = """
+@view-transition{navigation:auto}
+@keyframes vt-in-right{from{transform:translateX(100%)}to{transform:translateX(0)}}
+@keyframes vt-out-left{from{transform:translateX(0)}to{transform:translateX(-28%)}}
+@keyframes vt-in-left{from{transform:translateX(-28%)}to{transform:translateX(0)}}
+@keyframes vt-out-right{from{transform:translateX(0)}to{transform:translateX(100%)}}
+@keyframes vt-dim{from{opacity:1}to{opacity:.55}}
+@keyframes vt-undim{from{opacity:.55}to{opacity:1}}
+::view-transition-group(root){animation-duration:.34s;
+  animation-timing-function:cubic-bezier(.32,.72,0,1)}
+::view-transition-old(root),::view-transition-new(root){
+  animation-duration:.34s;animation-timing-function:cubic-bezier(.32,.72,0,1)}
+::view-transition-new(root){animation-name:vt-in-right}
+::view-transition-old(root){animation-name:vt-out-left,vt-dim}
+html[data-nav="traverse"]::view-transition-new(root){animation-name:vt-in-left,vt-undim}
+html[data-nav="traverse"]::view-transition-old(root){animation-name:vt-out-right}
+@media (prefers-reduced-motion:reduce){
+  ::view-transition-group(root),::view-transition-old(root),
+  ::view-transition-new(root){animation:none!important}
+}
+"""
+
+NAV_JS = """<script>
+// Tag the document with how it was reached, so a back gesture animates as a pop
+// rather than another push. Guarded throughout: these APIs are recent and their
+// absence must not break the page.
+(function(){
+  function tag(){
+    try{
+      var t=(window.navigation&&navigation.activation&&
+             navigation.activation.navigationType)||"push";
+      document.documentElement.dataset.nav=t;
+    }catch(e){}
+  }
+  if("onpagereveal" in window) window.addEventListener("pagereveal",tag);
+  if("onpageswap"   in window) window.addEventListener("pageswap",tag);
+  tag();
+})();
+</script>"""
