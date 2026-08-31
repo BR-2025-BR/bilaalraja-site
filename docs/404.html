@@ -195,7 +195,7 @@ mistyped.</p>
       out.push('<a href="'+href+'"'+(off?' target="_blank" rel="noopener"':'')+'>'+
                '<span class="s">'+m[0]+'</span>'+
                '<span class="n">'+m[1]+'</span>'+
-               '<span class="t">8-K &middot; '+ago(f.filed)+(off?' ↗':'')+'</span></a>');
+               '<span class="t">8-K &middot; '+ago(f.filed)+'</span></a>');
       var d=describe(f.items);
       rows.push({tk:m[0], name:m[1], desc:d.text||"8-K", severe:d.severe,
                  dir:d.dir, href:href, off:off, ago:ago(f.filed)});

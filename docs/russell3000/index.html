@@ -3,7 +3,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="Every relevant line item pulled from SEC EDGAR filings for the Russell 3000, with key financial metrics computed point in time. 2,581 companies, 35 metrics, sector-neutral percentile ranking.">
 <meta name="author" content="Bilaal Raja">
-<meta name="x-build" content="9a0caa0567">
+<meta name="x-build" content="ea72fd4d4e">
 <link rel="canonical" href="https://bilaalraja.com/russell3000">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Bilaal Raja">
@@ -787,7 +787,7 @@ if(ENTER<1){
       out.push('<a href="'+href+'"'+(off?' target="_blank" rel="noopener"':'')+'>'+
                '<span class="s">'+m[0]+'</span>'+
                '<span class="n">'+m[1]+'</span>'+
-               '<span class="t">8-K &middot; '+ago(f.filed)+(off?' ↗':'')+'</span></a>');
+               '<span class="t">8-K &middot; '+ago(f.filed)+'</span></a>');
       var d=describe(f.items);
       rows.push({tk:m[0], name:m[1], desc:d.text||"8-K", severe:d.severe,
                  dir:d.dir, href:href, off:off, ago:ago(f.filed)});
