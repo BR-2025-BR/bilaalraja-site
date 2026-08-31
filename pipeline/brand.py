@@ -69,6 +69,13 @@ MASTHEAD_CSS = """
   border-bottom:1px solid transparent}
 .mast nav a:hover{color:var(--ink);border-bottom-color:var(--ember)}
 .mast nav a[aria-current]{color:var(--ink);border-bottom-color:var(--ember)}
+@media (max-width:640px){
+  /* wordmark plus four nav items needs ~410px and never wrapped, which is what
+     actually pushed the document past the phone's width */
+  .mast{flex-wrap:wrap;gap:8px 14px;padding-bottom:10px;margin-bottom:18px}
+  .mast .wm{font-size:18px}
+  .mast nav{flex-wrap:wrap;gap:10px 14px;width:100%;font-size:10.5px}
+}
 """
 
 

@@ -201,6 +201,31 @@ h2{font-size:15px;font-weight:650;letter-spacing:-.01em}
 .count{font-family:var(--mono);font-size:11.5px;color:var(--ink3);white-space:nowrap}
 .ctrls{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end;margin:4px 0 12px}
 .fld{display:flex;flex-direction:column;gap:4px;min-width:190px}
+
+/* Narrow screens. There was no breakpoint at all, so long mono strings with
+   white-space:nowrap pushed the page wider than the phone and the whole
+   document scrolled sideways. Nothing here may exceed the viewport. */
+@media (max-width:640px){
+  .wrap{padding:16px 14px 48px;gap:11px}
+  .panel{padding:13px 13px;border-radius:11px}
+  /* these two were the actual overflow: unwrappable single lines */
+  .count{white-space:normal;font-size:12px;line-height:1.5}
+  .stamp{white-space:normal;text-align:left;font-size:11.5px;line-height:1.6}
+  header{align-items:flex-start}
+  /* controls stack full width; the inline min-widths have to be overridden */
+  .ctrls{gap:10px}
+  .fld,.ctrls .fld[style]{min-width:0!important;width:100%}
+  select,input[type=search]{width:100%;font-size:16px}  /* 16px stops iOS zooming on focus */
+  .tip{max-width:78vw}
+  /* anything intrinsically wide scrolls inside itself, never the page */
+  .tscroll{max-width:100%;overflow:auto;-webkit-overflow-scrolling:touch}
+  canvas,img,table{max-width:100%}
+  .note,.sub{font-size:14px}
+  h2{font-size:15px}
+}
+/* No blunt overflow guard here on purpose. Clipping hides the symptom by
+   cutting text off the right edge, which is worse than the sideways scroll it
+   was meant to cure. Anything too wide gets fixed at its cause instead. */
 a.tk{color:var(--s1);text-decoration:none;font-weight:600}
 a.tk:hover{text-decoration:underline}
 .tip .go{color:var(--s1)}
