@@ -25,3 +25,11 @@ pipeline/addresses/
 r3k_universe.prev.json
 
 pipeline/submissions/
+
+# Credentials. Never commit these; the repo is public.
+.env
+.env.*
+*.key
+*.pem
+secrets.json
+t212_key*
