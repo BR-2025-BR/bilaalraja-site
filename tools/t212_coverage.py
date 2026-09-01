@@ -1,74 +1,101 @@
 #!/usr/bin/env python3
 """Check which of the screen's picks Trading 212 actually lists.
 
-The key is read from the environment and never written anywhere. Set it for a
-single command so it does not persist in shell history:
+Trading 212 issues an API key ID and a separate secret, and authenticates with
+HTTP Basic over the pair. Credentials are read from the environment and never
+written anywhere:
 
-    T212_API_KEY='...' python3 tools/t212_coverage.py
+    T212_ID='...' T212_SECRET='...' python3 tools/t212_coverage.py
 
-Use a DEMO key. This script only reads, but a live key in a shell on a machine
-with a public repo is a bad habit to start.
+A leading space on that line keeps both out of your shell history in zsh.
+Use a demo key. This script only reads, but the habit is the point.
 """
-import json, os, sys, time
+import base64, json, os, sys, time, urllib.request, urllib.error
 from pathlib import Path
-import urllib.request, urllib.error
+
+ID  = os.environ.get("T212_ID", "")
+SEC = os.environ.get("T212_SECRET", "")
+if not ID or not SEC:
+    sys.exit("Set T212_ID and T212_SECRET in the environment. Do not hardcode "
+             "them: this repo is public.")
 
 HOST = os.environ.get("T212_HOST", "https://demo.trading212.com")
-KEY  = os.environ.get("T212_API_KEY")
+AUTH = "Basic " + base64.b64encode(f"{ID}:{SEC}".encode()).decode()
 HERE = Path(__file__).resolve().parent
 
-if not KEY:
-    sys.exit("Set T212_API_KEY in the environment. Do not hardcode it, and do "
-             "not paste it into a chat: this repo is public.")
+
+def get(path, tries=4):
+    req = urllib.request.Request(HOST + path, headers={"Authorization": AUTH})
+    for attempt in range(tries):
+        try:
+            with urllib.request.urlopen(req, timeout=60) as r:
+                return json.load(r)
+        except urllib.error.HTTPError as e:
+            if e.code == 401:
+                sys.exit("401: credentials rejected. Check the pair matches the "
+                         f"environment in T212_HOST ({HOST}).")
+            if e.code == 429 and attempt < tries - 1:
+                wait = 30 * (attempt + 1)
+                print(f"  rate limited, waiting {wait}s", flush=True)
+                time.sleep(wait)
+                continue
+            raise
+    raise SystemExit("gave up after repeated rate limiting")
 
 
-def get(path):
-    req = urllib.request.Request(HOST + path, headers={"Authorization": KEY})
-    try:
-        with urllib.request.urlopen(req, timeout=45) as r:
-            return json.load(r)
-    except urllib.error.HTTPError as e:
-        if e.code == 401:
-            sys.exit("401 from Trading 212: the key was rejected. Check it is "
-                     "for the environment named in T212_HOST (demo vs live).")
-        if e.code == 429:
-            print("  rate limited, waiting 60s", flush=True); time.sleep(60)
-            return get(path)
-        raise
+def picks():
+    rows = json.loads((HERE.parent / "pipeline" / "r3k_scored.json").read_text())
+    best = {}
+    for r in rows:
+        if r.get("score") is None or not r.get("sector"):
+            continue
+        cur = best.get(r["sector"])
+        if cur is None or r["score"] > cur["score"]:
+            best[r["sector"]] = r
+    return sorted(best.values(), key=lambda r: -r["score"])
 
 
 def main():
-    picks_file = HERE.parent / "pipeline" / "r3k_scored.json"
-    rows = json.loads(picks_file.read_text())
-    best = {}
-    for r in rows:
-        if r.get("score") is None or not r.get("sector"): continue
-        cur = best.get(r["sector"])
-        if cur is None or r["score"] > cur["score"]: best[r["sector"]] = r
-    picks = sorted(best.values(), key=lambda r: -r["score"])
+    sel = picks()
+    print(f"host {HOST}")
+    cash = get("/api/v0/equity/account/cash")
+    print(f"account: {cash.get('total', 0):,.2f} total, "
+          f"{cash.get('free', 0):,.2f} free\n")
 
-    print(f"host {HOST}\nfetching the tradeable universe ...", flush=True)
-    instruments = get("/api/v0/equity/metadata/instruments")
-    print(f"  {len(instruments):,} instruments listed", flush=True)
+    print("fetching tradeable universe ...", flush=True)
+    ins = get("/api/v0/equity/metadata/instruments")
+    print(f"  {len(ins):,} instruments listed")
 
-    # match on ticker; T212 suffixes many US listings, so compare the stem too
+    # Trading 212 suffixes many tickers (AAPL_US_EQ); index on the stem, and
+    # prefer US listings so a European dual-listing does not mask a real match.
     by_tk = {}
-    for ins in instruments:
-        t = (ins.get("shortName") or ins.get("ticker") or "").upper()
-        by_tk.setdefault(t.split("_")[0], ins)
+    for i in ins:
+        raw = (i.get("ticker") or "").upper()
+        stem = (i.get("shortName") or raw.split("_")[0]).upper()
+        prev = by_tk.get(stem)
+        if prev is None or (i.get("currencyCode") == "USD"
+                            and prev.get("currencyCode") != "USD"):
+            by_tk[stem] = i
 
-    print(f"\n{'sector':22}{'ticker':8}{'score':>7}   listed?")
-    ok = 0
-    for p in picks:
-        ins = by_tk.get(p["ticker"].upper())
-        mark = "yes" if ins else "NO"
-        if ins: ok += 1
-        extra = f"   {ins.get('name','')[:34]}" if ins else ""
-        print(f"{p['sector']:22}{p['ticker']:8}{p['score']:7.1f}   {mark}{extra}")
-    print(f"\ntradeable: {ok} of {len(picks)}")
-    if ok < len(picks):
-        print("The missing names are the point: a paper trade of a portfolio you\n"
-              "cannot actually hold tests something other than the strategy.")
+    print(f"\n{'sector':24}{'ticker':8}{'mcap $m':>10}  listed as")
+    print("-" * 64)
+    ok, missing = 0, []
+    for p in sel:
+        m = by_tk.get(p["ticker"].upper())
+        ok += bool(m)
+        if not m:
+            missing.append(p)
+        mc = p.get("mcap") or 0
+        label = (m.get("ticker") if m else "NOT LISTED")
+        print(f"{p['sector'][:23]:24}{p['ticker']:8}{mc*1000:>10,.0f}  {label}")
+
+    print(f"\ntradeable: {ok} of {len(sel)}")
+    if missing:
+        print("\nnot available on Trading 212:")
+        for p in missing:
+            print(f"  {p['ticker']:8} {p['name'][:40]:42} {p['sector']}")
+        print("\nA paper trade of a portfolio you cannot hold measures the "
+              "broker's inventory, not the strategy.")
 
 
 if __name__ == "__main__":
