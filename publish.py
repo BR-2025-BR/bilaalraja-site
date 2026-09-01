@@ -302,24 +302,13 @@ or sell any security.</span>
     x.setTransform(dpr,0,0,dpr,0,0);
   }}
 
+  // Parallax follows the cursor only. Device orientation was removed: it made
+  // iOS ask for motion access on first tap, which is a poor greeting for a
+  // background effect. On touch devices the drift simply runs untargeted.
   let tx=0,ty=0,cx=0,cy=0;
-  addEventListener("deviceorientation",e=>{{
-    if(e.gamma==null) return;
-    tx=Math.max(-1,Math.min(1,e.gamma/35));
-    ty=Math.max(-1,Math.min(1,((e.beta||0)-45)/35));
-  }},true);
   addEventListener("mousemove",e=>{{
     tx=(e.clientX/w-.5)*2; ty=(e.clientY/h-.5)*2;
   }},{{passive:true}});
-
-  // iOS emits nothing without an explicit grant, and only asks on a gesture.
-  function askOnce(){{
-    const D=window.DeviceOrientationEvent;
-    if(D && typeof D.requestPermission==="function") D.requestPermission().catch(()=>{{}});
-    removeEventListener("touchend",askOnce); removeEventListener("click",askOnce);
-  }}
-  addEventListener("touchend",askOnce,{{passive:true}});
-  addEventListener("click",askOnce);
 
   let last=performance.now(), T=0;
   function frame(now){{
