@@ -114,9 +114,26 @@ def one(rec):
                  "n_scored": len(scored), "filings": scored}
 
 
+class Rec:
+    """Stands in for a universe row. Most historical filers are delisted and
+    have no ticker, so the ticker is optional rather than assumed."""
+    __slots__ = ("cik", "ticker")
+    def __init__(self, cik, ticker=None):
+        self.cik, self.ticker = cik, ticker
+
+
 def main():
-    uni = pd.read_json(HERE.parent / "pipeline" / "r3k_universe.json")
-    todo = list(uni.itertuples())
+    if "--ciks" in sys.argv:
+        path = sys.argv[sys.argv.index("--ciks") + 1]
+        ciks = json.loads(Path(path).read_text())
+        # tickers where the panel knows them, None for the rest
+        uni = pd.read_json(HERE.parent / "pipeline" / "r3k_universe.json")
+        known = {int(r.cik): r.ticker for r in uni.itertuples()}
+        todo = [Rec(int(c), known.get(int(c))) for c in ciks]
+        todo = [r for r in todo if str(r.cik) not in done]   # skip what is held
+    else:
+        uni = pd.read_json(HERE.parent / "pipeline" / "r3k_universe.json")
+        todo = list(uni.itertuples())
     if "--limit" in sys.argv:
         todo = todo[:int(sys.argv[sys.argv.index("--limit") + 1])]
     print(f"{len(todo)} companies, 10-K/10-Q since {SINCE}, {len(done)} cached",
