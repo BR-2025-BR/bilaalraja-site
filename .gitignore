@@ -33,3 +33,6 @@ pipeline/submissions/
 *.pem
 secrets.json
 t212_key*
+
+pipeline/t212_orders.json
+pipeline/t212_plan.json
