@@ -62,10 +62,18 @@ def main():
           flush=True)
 
     done = json.loads(OUT.read_text()) if OUT.exists() else {}
-    files = sorted(CORPUS.glob("*.json.gz"))
+
+    # The corpus on disk is wider than the study: phase 1 unioned the viable set
+    # with the prior tone_history, and Amendment 6 then removed asset-backed
+    # issuers and blank-cheque shells. Scoring the glob would run ~3x the work
+    # and score entities outside the pre-registered universe.
+    universe = {str(c) for c in
+                json.loads((HERE / "universe_final.json").read_text())}
+    files = sorted(p for p in CORPUS.glob("*.json.gz")
+                   if p.stem.split(".")[0] in universe)
     todo = [p for p in files if p.stem.split(".")[0] not in done]
-    print(f"corpus {len(files):,} companies | scored {len(done):,} | to do {len(todo):,}",
-          flush=True)
+    print(f"universe {len(universe):,} | on disk {len(files):,} | "
+          f"scored {len(done):,} | to do {len(todo):,}", flush=True)
 
     t0 = time.time(); nsent = 0; ncompany = 0
     for p in todo:
