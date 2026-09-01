@@ -1,0 +1,367 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Trading 212 Desk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap">
+<style>
+:root{
+  --paper:#FBFAF7; --raise:#F3F0E9; --ink:#14110E; --ink2:#4A443C; --ink3:#8A8177;
+  --rule:#E3DED3; --rule2:#EFEBE2;
+  --ember:#B4531E; --ember2:#8F3F14;
+  --pos:#1F6F4A; --neg:#A32B1F;
+  --posbg:#1F6F4A22; --negbg:#A32B1F22;
+  --serif:"Newsreader",Georgia,"Times New Roman",serif;
+  --sans:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#12100E; --raise:#1C1917; --ink:#F5F2EC; --ink2:#C0B8AC; --ink3:#8A8177;
+  --rule:#2E2A26; --rule2:#232019;
+  --ember:#E0762F; --ember2:#F0A268;
+  --pos:#5FBE8C; --neg:#E8705F;
+  --posbg:#5FBE8C26; --negbg:#E8705F26;
+}}
+:root[data-theme="dark"]{
+  --paper:#12100E; --raise:#1C1917; --ink:#F5F2EC; --ink2:#C0B8AC; --ink3:#8A8177;
+  --rule:#2E2A26; --rule2:#232019;
+  --ember:#E0762F; --ember2:#F0A268;
+  --pos:#5FBE8C; --neg:#E8705F;
+  --posbg:#5FBE8C26; --negbg:#E8705F26;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
+     font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.wrap{max-width:1160px;margin:0 auto;padding:0 20px 64px}
+
+/* masthead ------------------------------------------------------------- */
+.mast{display:flex;align-items:baseline;gap:16px;flex-wrap:wrap;
+      padding:20px 0 14px;border-bottom:1px solid var(--rule);margin-bottom:22px}
+.mast h1{font-family:var(--serif);font-size:21px;font-weight:600;margin:0;letter-spacing:-.01em}
+.mast .env{font-family:var(--mono);font-size:10px;letter-spacing:.09em;text-transform:uppercase;
+     padding:3px 8px;border:1px solid var(--rule);border-radius:3px;color:var(--ink2)}
+.mast .env.live{border-color:var(--neg);color:var(--neg);font-weight:600}
+.mast .spacer{flex:1}
+.pulse{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);
+       font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink3)}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--pos);animation:blink 2s infinite}
+.dot.stale{background:var(--ember);animation:none}
+.dot.dead{background:var(--neg);animation:none}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+@media (prefers-reduced-motion:reduce){.dot{animation:none}}
+
+/* summary tiles -------------------------------------------------------- */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:1px;
+       background:var(--rule);border:1px solid var(--rule);border-radius:5px;
+       overflow:hidden;margin-bottom:26px}
+.tile{background:var(--paper);padding:14px 16px 15px}
+.tile .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;
+         color:var(--ink3);margin-bottom:5px}
+.tile .v{font-family:var(--mono);font-size:23px;font-weight:500;letter-spacing:-.02em;
+         font-variant-numeric:tabular-nums}
+.tile .s{font-family:var(--mono);font-size:11px;color:var(--ink3);margin-top:2px}
+.up{color:var(--pos)} .down{color:var(--neg)}
+
+/* sections ------------------------------------------------------------- */
+h2{font-family:var(--mono);font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;
+   color:var(--ink3);font-weight:500;margin:0 0 10px;display:flex;align-items:baseline;gap:9px}
+h2 .c{color:var(--ink2);font-weight:600}
+section{margin-bottom:32px}
+.scroll{overflow-x:auto;border:1px solid var(--rule);border-radius:5px}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:660px}
+th{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;
+   color:var(--ink3);font-weight:500;text-align:right;padding:9px 12px;
+   background:var(--rule2);border-bottom:1px solid var(--rule);white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+td{padding:9px 12px;text-align:right;border-bottom:1px solid var(--rule2);
+   font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:var(--rule2)}
+.tk{font-weight:600;letter-spacing:-.01em}
+.co{font-family:var(--sans);color:var(--ink3);font-size:12px;text-align:left;
+    max-width:190px;overflow:hidden;text-overflow:ellipsis}
+/* P/L magnitude as form, not only colour: a bar anchored at zero */
+.plcell{position:relative;min-width:132px}
+.bar{position:absolute;top:50%;transform:translateY(-50%);height:15px;border-radius:2px;z-index:0}
+.bar.p{background:var(--posbg)} .bar.n{background:var(--negbg)}
+.plv{position:relative;z-index:1;font-weight:500}
+.mid{position:absolute;top:6px;bottom:6px;width:1px;background:var(--rule);left:50%;z-index:0}
+.empty{padding:22px 14px;color:var(--ink3);font-size:13px;text-align:center;
+       border:1px dashed var(--rule);border-radius:5px}
+
+/* order ticket --------------------------------------------------------- */
+.ticket{border:1px solid var(--rule);border-radius:5px;padding:15px 16px 16px;background:var(--raise)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+label{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;
+      text-transform:uppercase;color:var(--ink3);margin-bottom:4px}
+input,select{font-family:var(--mono);font-size:13px;padding:7px 9px;background:var(--paper);
+     color:var(--ink);border:1px solid var(--rule);border-radius:4px;min-width:0}
+input:focus,select:focus,button:focus-visible{outline:2px solid var(--ember);outline-offset:1px}
+input[type=text]{width:150px;text-transform:uppercase}
+input[type=number]{width:104px;text-align:right}
+button{font-family:var(--mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;
+   padding:8px 15px;border-radius:4px;border:1px solid var(--ember);background:var(--ember);
+   color:#fff;cursor:pointer;font-weight:500}
+button:hover{background:var(--ember2);border-color:var(--ember2)}
+button.ghost{background:transparent;color:var(--ink2);border-color:var(--rule)}
+button.ghost:hover{background:var(--rule2);color:var(--ink)}
+button.sm{padding:4px 9px;font-size:9.5px;letter-spacing:.06em}
+button:disabled{opacity:.45;cursor:not-allowed}
+.note{font-size:12px;color:var(--ink3);margin-top:10px;font-family:var(--sans)}
+.msg{margin-top:11px;padding:9px 11px;border-radius:4px;font-family:var(--mono);
+     font-size:12px;display:none;word-break:break-word}
+.msg.ok{display:block;background:var(--posbg);color:var(--pos)}
+.msg.err{display:block;background:var(--negbg);color:var(--neg)}
+.locked{border:1px dashed var(--rule);border-radius:5px;padding:14px 16px;
+        color:var(--ink3);font-size:13px}
+.locked code{font-family:var(--mono);font-size:12px;color:var(--ink2);
+             background:var(--rule2);padding:1px 5px;border-radius:3px}
+.foot{margin-top:34px;padding-top:14px;border-top:1px solid var(--rule);
+      font-family:var(--mono);font-size:10.5px;color:var(--ink3);
+      display:flex;gap:14px;flex-wrap:wrap}
+</style>
+
+<div class="wrap">
+  <div class="mast">
+    <h1>Trading&nbsp;212 Desk</h1>
+    <span class="env" id="env">…</span>
+    <span class="spacer"></span>
+    <span class="pulse"><span class="dot" id="dot"></span><span id="pulse">connecting</span></span>
+  </div>
+
+  <div class="tiles" id="tiles"></div>
+
+  <section>
+    <h2>Positions <span class="c" id="poscount"></span></h2>
+    <div id="posbox"><div class="empty">loading…</div></div>
+  </section>
+
+  <section>
+    <h2>Open orders <span class="c" id="ordcount"></span></h2>
+    <div id="ordbox"><div class="empty">loading…</div></div>
+  </section>
+
+  <section>
+    <h2>Place order</h2>
+    <div id="ticketbox"></div>
+  </section>
+
+  <section>
+    <h2>Recent fills</h2>
+    <div id="histbox"><div class="empty">loading…</div></div>
+  </section>
+
+  <div class="foot">
+    <span id="foot-host"></span><span id="foot-poll"></span><span>key held server-side</span>
+  </div>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+let META = {}, LAST_OK = 0, CCY = "GBP";
+
+const money = (n, ccy) => (n == null || isNaN(n)) ? "—" :
+  new Intl.NumberFormat("en-GB", {style:"currency", currency: ccy || CCY,
+    minimumFractionDigits:2, maximumFractionDigits:2}).format(n);
+const sign = n => (n > 0 ? "+" : "") + n.toFixed(2);
+const cls  = n => n > 0 ? "up" : n < 0 ? "down" : "";
+
+async function get(path){
+  const r = await fetch(path, {cache:"no-store"});
+  if(!r.ok) throw new Error(path + " → " + r.status);
+  return r.json();
+}
+
+function tiles(cash, port){
+  const inv = Number(cash.invested || 0), ppl = Number(cash.ppl || 0);
+  const pct = inv ? (ppl / inv) * 100 : 0;
+  const mv = port.reduce((a,p) => a + p.quantity * p.currentPrice, 0);
+  const t = [
+    ["Account value", money(cash.total), "free " + money(cash.free)],
+    ["Open P/L", money(ppl), (pct >= 0 ? "+" : "") + pct.toFixed(2) + "% on cost", cls(ppl)],
+    ["Invested", money(inv), "market " + money(mv)],
+    ["Positions", String(port.length), port.length ? "equal weight target" : "none held"],
+  ];
+  $("#tiles").innerHTML = t.map(([k,v,s,c]) =>
+    `<div class="tile"><div class="k">${k}</div>
+     <div class="v ${c||""}">${v}</div><div class="s">${s}</div></div>`).join("");
+}
+
+function positions(port){
+  $("#poscount").textContent = port.length ? port.length : "";
+  if(!port.length){ $("#posbox").innerHTML = '<div class="empty">No open positions.</div>'; return; }
+  const rows = port.map(p => {
+    const val = p.quantity * p.currentPrice;
+    const ppl = Number(p.ppl || 0);
+    const cost = p.quantity * p.averagePrice;
+    const pct = cost ? (ppl / cost) * 100 : 0;
+    return {...p, val, ppl, pct};
+  }).sort((a,b) => b.val - a.val);
+  const peak = Math.max(...rows.map(r => Math.abs(r.ppl)), 0.01);
+
+  $("#posbox").innerHTML = `<div class="scroll"><table>
+   <thead><tr><th>Instrument</th><th>Qty</th><th>Avg</th><th>Last</th>
+   <th>Value</th><th>P/L</th><th>%</th></tr></thead><tbody>` +
+   rows.map(r => {
+     const w = Math.abs(r.ppl) / peak * 46;      // half-width, so ±46% of cell
+     const side = r.ppl >= 0 ? "p" : "n";
+     const style = r.ppl >= 0 ? `left:50%;width:${w}%` : `right:50%;width:${w}%`;
+     return `<tr>
+       <td class="tk">${r.ticker.replace(/_US_EQ$/,"")}</td>
+       <td>${r.quantity.toFixed(2)}</td>
+       <td>${r.averagePrice.toFixed(2)}</td>
+       <td>${r.currentPrice.toFixed(2)}</td>
+       <td>${money(r.val, "USD")}</td>
+       <td class="plcell"><span class="mid"></span>
+           <span class="bar ${side}" style="${style}"></span>
+           <span class="plv ${cls(r.ppl)}">${sign(r.ppl)}</span></td>
+       <td class="${cls(r.ppl)}">${(r.pct>=0?"+":"")+r.pct.toFixed(1)}%</td></tr>`;
+   }).join("") + "</tbody></table></div>";
+}
+
+function orders(list){
+  $("#ordcount").textContent = list.length ? list.length : "";
+  if(!list.length){ $("#ordbox").innerHTML = '<div class="empty">No working orders.</div>'; return; }
+  $("#ordbox").innerHTML = `<div class="scroll"><table>
+    <thead><tr><th>Instrument</th><th>Type</th><th>Qty</th><th>Filled</th>
+    <th>Status</th><th>Created</th><th></th></tr></thead><tbody>` +
+    list.map(o => `<tr>
+      <td class="tk">${(o.ticker||"").replace(/_US_EQ$/,"")}</td>
+      <td>${o.type||"—"}</td><td>${Number(o.quantity||0).toFixed(2)}</td>
+      <td>${Number(o.filledQuantity||0).toFixed(2)}</td>
+      <td>${o.status||"—"}</td>
+      <td>${o.dateCreated ? new Date(o.dateCreated).toLocaleString("en-GB",
+           {day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"}) : "—"}</td>
+      <td>${META.orders_enabled ?
+           `<button class="ghost sm" data-cancel="${o.id}">Cancel</button>` : ""}</td>
+      </tr>`).join("") + "</tbody></table></div>";
+
+  document.querySelectorAll("[data-cancel]").forEach(b => b.onclick = async () => {
+    const id = b.dataset.cancel;
+    if(!confirm("Cancel working order " + id + "?")) return;
+    b.disabled = true;
+    try{
+      const r = await fetch("/api/v0/equity/orders/" + id, {method:"DELETE"});
+      if(!r.ok){ const j = await r.json().catch(()=>({}));
+                 alert("Could not cancel: " + (j.detail || j.error || r.status)); b.disabled = false; }
+      else refresh();
+    }catch(e){ alert(String(e)); b.disabled = false; }
+  });
+}
+
+function history(payload){
+  // Each item wraps an `order` and, once executed, a `fill` carrying the real
+  // cost: net value in account currency, the FX rate applied, and any charges.
+  const items = (payload.items || []).map(i => ({o: i.order || i, f: i.fill}));
+  const done = items.filter(x => x.o.status !== "NEW").slice(0, 16);
+  if(!done.length){ $("#histbox").innerHTML = '<div class="empty">Nothing filled yet.</div>'; return; }
+
+  // FX conversion fees are the one real cost a demo account still charges, and
+  // the one a backtest never models. Total them where they exist.
+  let fees = 0, feeCcy = CCY;
+  for(const {f} of items){
+    for(const t of (f && f.walletImpact && f.walletImpact.taxes) || []){
+      fees += Math.abs(Number(t.quantity) || 0); feeCcy = t.currency || feeCcy;
+    }
+  }
+  const feeLine = fees > 0
+    ? `<div class="note">Charges on these fills: <strong>${money(fees, feeCcy)}</strong>
+       in currency conversion — the cost a backtest does not model.</div>` : "";
+
+  $("#histbox").innerHTML = `<div class="scroll"><table>
+    <thead><tr><th>Instrument</th><th>Side</th><th>Qty</th><th>Fill</th>
+    <th>Net</th><th>FX</th><th>Status</th><th>When</th></tr></thead><tbody>` +
+    done.map(({o, f}) => {
+      const w = f && f.walletImpact;
+      const when = (f && f.filledAt) || o.createdAt;
+      return `<tr>
+        <td class="tk">${(o.ticker||"").replace(/_US_EQ$/,"")}</td>
+        <td class="${o.side === "SELL" ? "down" : ""}">${o.side || "—"}</td>
+        <td>${Number(o.filledQuantity || o.quantity || 0).toFixed(2)}</td>
+        <td>${f ? Number(f.price).toFixed(2) : "—"}</td>
+        <td>${w ? money(Number(w.netValue), w.currency) : "—"}</td>
+        <td>${w && w.fxRate ? Number(w.fxRate).toFixed(4) : "—"}</td>
+        <td>${o.status || "—"}</td>
+        <td>${when ? new Date(when).toLocaleString("en-GB",
+             {day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"}) : "—"}</td>
+        </tr>`;
+    }).join("") + `</tbody></table></div>${feeLine}`;
+}
+
+function ticket(){
+  if(!META.orders_enabled){
+    $("#ticketbox").innerHTML = `<div class="locked">Order placement is off.
+      Restart the server with <code>--allow-orders</code> to enable it.
+      Everything above stays live either way.</div>`;
+    return;
+  }
+  $("#ticketbox").innerHTML = `<div class="ticket">
+    <div class="row">
+      <div><label for="tk">Ticker</label>
+        <input id="tk" type="text" placeholder="AAPL" autocomplete="off"></div>
+      <div><label for="qty">Quantity</label>
+        <input id="qty" type="number" step="0.01" placeholder="0.00"></div>
+      <div><label for="side">Side</label>
+        <select id="side"><option value="buy">Buy</option><option value="sell">Sell</option></select></div>
+      <button id="send">Place market order</button>
+      <button id="fill" class="ghost" title="Copy the ticker of a held position">Clear</button>
+    </div>
+    <div class="note">Market order, executed at the next available price.
+      Sell sends a negative quantity. Two decimal places maximum.</div>
+    <div class="msg" id="msg"></div></div>`;
+
+  $("#fill").onclick = () => { $("#tk").value=""; $("#qty").value=""; $("#msg").className="msg"; };
+  $("#send").onclick = async () => {
+    const raw = $("#tk").value.trim().toUpperCase();
+    const q = parseFloat($("#qty").value);
+    const m = $("#msg");
+    if(!raw || !q){ m.className="msg err"; m.textContent="Ticker and quantity are both required."; return; }
+    const ticker = /_/.test(raw) ? raw : raw + "_US_EQ";
+    const qty = $("#side").value === "sell" ? -Math.abs(q) : Math.abs(q);
+    if(!confirm(`${qty<0?"SELL":"BUY"} ${Math.abs(qty)} ${ticker} at market${META.live?"\n\nTHIS IS A LIVE ACCOUNT.":""}`)) return;
+    $("#send").disabled = true;
+    try{
+      const r = await fetch("/api/v0/equity/orders/market", {
+        method:"POST", headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({ticker, quantity: qty})});
+      const j = await r.json().catch(() => ({}));
+      if(r.ok){ m.className="msg ok"; m.textContent=`Accepted — order ${j.id}, ${ticker} ${qty}`;
+                $("#qty").value=""; refresh(); }
+      else { m.className="msg err";
+             m.textContent = (j.detail || j.error || j.title || ("HTTP " + r.status)); }
+    }catch(e){ m.className="msg err"; m.textContent = String(e); }
+    finally{ $("#send").disabled = false; }
+  };
+}
+
+async function refresh(){
+  try{
+    const [cash, port, ord] = await Promise.all([
+      get("/api/v0/equity/account/cash"),
+      get("/api/v0/equity/portfolio"),
+      get("/api/v0/equity/orders"),
+    ]);
+    tiles(cash, port); positions(port); orders(ord);
+    LAST_OK = Date.now();
+    $("#dot").className = "dot"; $("#pulse").textContent = "live";
+    get("/api/v0/equity/history/orders?limit=30").then(history).catch(()=>{});
+  }catch(e){
+    const age = (Date.now() - LAST_OK) / 1000;
+    $("#dot").className = "dot " + (LAST_OK && age < 90 ? "stale" : "dead");
+    $("#pulse").textContent = LAST_OK ? Math.round(age) + "s stale" : "no data";
+  }
+}
+
+(async function init(){
+  META = await get("/api/meta");
+  $("#env").textContent = META.live ? "live · real money" : "demo";
+  if(META.live) $("#env").classList.add("live");
+  $("#foot-host").textContent = new URL(META.host).host;
+  $("#foot-poll").textContent = "polling 4s · upstream capped at 6s";
+  try{ const info = await get("/api/v0/equity/account/info"); CCY = info.currencyCode || "GBP"; }catch(e){}
+  ticket(); await refresh();
+  setInterval(refresh, 4000);
+  document.addEventListener("visibilitychange", () => { if(!document.hidden) refresh(); });
+})();
+</script>
