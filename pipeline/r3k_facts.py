@@ -15,6 +15,21 @@ from pitquant.fundamentals import (
     SHARES_DEI_TAG)
 from pitquant.prices import split_factor_between
 
+AS_OF = None   # set to a Timestamp to hide anything filed after that date
+
+def _cutoff(df):
+    """Drop facts that had not been filed yet at AS_OF.
+
+    Point-in-time reconstruction depends on this: companyfacts carries every
+    restatement, so without a filing-date filter a backtest silently sees
+    figures that did not exist on the formation date. Off by default.
+    """
+    if AS_OF is None or df is None or len(df) == 0 or "filed" not in df:
+        return df
+    import pandas as _pd
+    return df[_pd.to_datetime(df["filed"], errors="coerce") <= AS_OF]
+
+
 EDGAR = "/Users/bilaa/Downloads/pitquant/data/cache/edgar"
 PRICES = "/Users/bilaa/Downloads/pitquant/data/cache/prices"
 # Legacy output path from the NASDAQ-100 panel this module was lifted
@@ -66,7 +81,7 @@ def flow(facts, cik, concept):
         raw.extend(_extract_tag_rows(facts, "us-gaap", tag))
     if not raw:
         return None
-    df = _as_filed(pd.DataFrame(raw))
+    df = _cutoff(_as_filed(pd.DataFrame(raw)))
     df = _pick_concept(df, CONCEPT_TAGS[concept]["tags"])
     q = _quarterlyize(df, cik=cik)
     if q is None or q.empty:
@@ -82,7 +97,7 @@ def stock(facts, concept):
         raw.extend(_extract_tag_rows(facts, "us-gaap", tag))
     if not raw:
         return None
-    df = _as_filed(pd.DataFrame(raw))
+    df = _cutoff(_as_filed(pd.DataFrame(raw)))
     df = _pick_concept(df, CONCEPT_TAGS[concept]["tags"])
     df = df[["end", "val", "filed"]].copy()
     df["end_dt"] = pd.to_datetime(df["end"], errors="coerce")
@@ -106,7 +121,7 @@ def ytd_to_quarterly(facts, taglist):
         raw.extend(_extract_tag_rows(facts, "us-gaap", t))
     if not raw:
         return None
-    df = _pick_concept(_as_filed(pd.DataFrame(raw)), taglist)
+    df = _pick_concept(_cutoff(_as_filed(pd.DataFrame(raw))), taglist)
     df["s"] = pd.to_datetime(df["start"], errors="coerce")
     df["e"] = pd.to_datetime(df["end"], errors="coerce")
     df["filed"] = pd.to_datetime(df["filed"], errors="coerce")
@@ -193,7 +208,7 @@ def stock_tags(facts, taglist):
         raw.extend(_extract_tag_rows(facts, "us-gaap", tag))
     if not raw:
         return None
-    df = _as_filed(pd.DataFrame(raw))
+    df = _cutoff(_as_filed(pd.DataFrame(raw)))
     df = _pick_concept(df, taglist)
     df = df[["end", "val"]].copy()
     df["end_dt"] = pd.to_datetime(df["end"], errors="coerce")

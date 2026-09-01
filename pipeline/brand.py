@@ -315,3 +315,59 @@ NAV_JS = """<script>
   tag();
 })();
 </script>"""
+
+
+# ------------------------------------------------------- add to home screen
+# iOS has no install prompt of its own: Safari only offers it through the share
+# sheet, and nothing tells the user it is there. This says so, once, and only
+# where it is actually possible.
+
+A2HS_CSS = """
+.a2hs{display:none;align-items:flex-start;gap:11px;margin:0 0 18px;padding:12px 13px;
+  background:var(--raise);border:1px solid var(--rule);border-radius:9px;
+  font-size:13.5px;line-height:1.45;color:var(--ink2)}
+.a2hs.on{display:flex}
+.a2hs svg{flex:0 0 auto;width:19px;height:19px;color:var(--ember);margin-top:1px}
+.a2hs b{color:var(--ink);font-weight:600}
+.a2hs .x{margin-left:auto;flex:0 0 auto;background:none;border:0;cursor:pointer;
+  color:var(--ink3);font-size:17px;line-height:1;padding:2px 4px}
+.a2hs .x:hover{color:var(--ink)}
+.a2hs .g{display:inline-flex;vertical-align:-4px;margin:0 2px}
+.a2hs .g svg{width:15px;height:15px;margin:0}
+"""
+
+# The iOS share glyph: a tray with an arrow leaving through the top.
+_SHARE_SVG = ('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" '
+              'stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" '
+              'aria-hidden="true"><path d="M12 15V3"/><path d="M8.5 6.5 12 3l3.5 3.5"/>'
+              '<path d="M8 9H6.5A1.5 1.5 0 0 0 5 10.5v9A1.5 1.5 0 0 0 6.5 21h11a1.5 1.5 0 0 0 '
+              '1.5-1.5v-9A1.5 1.5 0 0 0 17.5 9H16"/></svg>')
+
+A2HS_HTML = ('<div class="a2hs" id="a2hs">' + _SHARE_SVG +
+             '<div><b>Add this to your home screen.</b> Tap '
+             '<span class="g">' + _SHARE_SVG + '</span> in Safari, then '
+             '<b>Add to Home Screen</b>, and it opens full screen like an app.</div>'
+             '<button class="x" id="a2hsX" aria-label="Dismiss">&times;</button></div>')
+
+A2HS_JS = """<script>
+(function(){
+  var el=document.getElementById("a2hs");
+  if(!el) return;
+  var ua=navigator.userAgent;
+  // iPadOS reports as a Mac, so touch points are the only reliable tell
+  var iOS=/iPad|iPhone|iPod/.test(ua) ||
+          (navigator.platform==="MacIntel" && navigator.maxTouchPoints>1);
+  // only Safari can add to the home screen; Chrome and Firefox on iOS cannot
+  var safari=/^((?!chrome|android|crios|fxios|edgios).)*safari/i.test(ua);
+  var installed = window.navigator.standalone===true ||
+                  (window.matchMedia && matchMedia("(display-mode: standalone)").matches);
+  var hidden=false;
+  try{ hidden = localStorage.getItem("a2hs-dismissed")==="1"; }catch(e){}
+  if(iOS && safari && !installed && !hidden) el.classList.add("on");
+  var x=document.getElementById("a2hsX");
+  if(x) x.addEventListener("click",function(){
+    el.classList.remove("on");
+    try{ localStorage.setItem("a2hs-dismissed","1"); }catch(e){}
+  });
+})();
+</script>"""

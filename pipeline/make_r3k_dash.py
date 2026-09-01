@@ -792,9 +792,10 @@ if(ENTER<1){
 __TICKERJS__
 """
 
-out = (HTML.replace("__BRANDCSS__", brand.TRANSITION_CSS + brand.MASTHEAD_CSS + brand.TICKER_CSS)
-           .replace("__MASTHEAD__", brand.masthead("russell3000") + brand.TICKER_HTML)
-           .replace("__TICKERJS__", brand.TICKER_JS + brand.NAV_JS)
+out = (HTML.replace("__BRANDCSS__", brand.TRANSITION_CSS + brand.MASTHEAD_CSS
+                                  + brand.TICKER_CSS + brand.A2HS_CSS)
+           .replace("__MASTHEAD__", brand.masthead("russell3000") + brand.A2HS_HTML + brand.TICKER_HTML)
+           .replace("__TICKERJS__", brand.TICKER_JS + brand.NAV_JS + brand.A2HS_JS)
            .replace("__DATA__", json.dumps(data, separators=(",",":")))
            .replace("__META__", json.dumps(meta))
            .replace("__METRICS__", json.dumps(METRICS))
