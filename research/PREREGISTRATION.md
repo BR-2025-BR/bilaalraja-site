@@ -434,3 +434,81 @@ benchmark suggested. The development window is therefore about **30 hours**.
 
 Sections 1 to 10 and Amendments 1 to 4 otherwise stand, except that sampling is
 even rather than head-and-tail. Holdout sealed.
+
+---
+
+# Amendment 6 — 2026-09-01, universe. Still before any return data.
+
+**No price or return data fetched, loaded or examined.** Pre-outcome.
+
+## The finding
+
+Phase 1 finished on 2026-09-01 at 06:55: 50,945 MD&A blocks with text, across
+the 4,408-company viable universe. Auditing it before scoring, 990 companies had
+listed 10-K/10-Q filings but yielded no MD&A at all, and 32.6% of all listed
+filings produced nothing.
+
+That first reads as an extraction defect. It is not. Resolving SIC codes for the
+whole universe shows what those companies are:
+
+| SIC | description | companies | filings listed | MD&A kept | yield |
+|---|---|---:|---:|---:|---:|
+| 6189 | Asset-Backed Securities | 516 | 4,297 | 0 | **0.0%** |
+| 6770 | Blank Checks | 587 | 5,706 | 966 | 16.9% |
+
+Asset-backed issuers file under Regulation AB, which prescribes servicing and
+compliance disclosures and **contains no MD&A item**. The 0.0% is not a sampling
+artefact: across 4,297 filings the extractor found an MD&A block zero times. The
+worst single case, Santander Drive Auto Receivables (CIK 1383094), listed 236
+filings; its 10-K is a 9,000-character document in which the strings
+"management's discussion", "item 7" and "results of operations" each appear
+exactly zero times. Blank-cheque shells are the same story with a partial
+exception: a SPAC that has completed a merger sometimes files a real MD&A, which
+is why the yield is 16.9% rather than zero.
+
+## Why this matters to the hypothesis
+
+Neither entity type has tradeable common equity whose forward return the study
+could measure, so both were always going to drop out at the return join. Leaving
+them in the corpus would have meant reporting a 67.4% extraction yield and a
+990-company gap as though they were defects in the instrument, when almost all of
+it is the instrument behaving correctly.
+
+## Change
+
+Exclude SIC **6189** (Asset-Backed Securities) and **6770** (Blank Checks) from
+the universe. Effective for phase 2 scoring and everything downstream.
+
+| | before | after |
+|---|---:|---:|
+| companies | 4,408 | **3,270** |
+| filings listed | 75,531 | 65,228 |
+| MD&A blocks | 50,945 | **49,957** |
+| companies yielding nothing | 990 | 171 |
+| extraction yield | 67.4% | **76.6%** |
+
+The exclusion removes 26% of companies but only **1.9% of the scored data**,
+which is the point: these entities contributed almost nothing but accounted for
+83% of the apparent failure.
+
+Companies with at least one usable filing: **3,099**.
+
+The retained universe is written to `universe_final.json`; the excluded CIKs and
+their SIC descriptions to `excluded_ciks.json`, so the exclusion is auditable
+rather than asserted. SIC codes come from the SEC submissions endpoint and are
+cached in `sic_map.json`; all 4,408 resolved, none unknown.
+
+## What this does not fix
+
+171 retained companies still yield no MD&A, and the retained extraction yield is
+76.6%, not 100%. Those are genuine gaps and are **not** being excluded — doing so
+would be selecting on an outcome of the instrument. They stay in the universe and
+simply contribute no observations. Checked before this amendment and stated here:
+the kept blocks are evenly distributed across filing years (5,343–6,777 per year
+for 2018–2025, 2026 partial) and split 36,543 10-Q to 14,402 10-K, so the loss
+carries no obvious temporal or form bias.
+
+## Standing
+
+Sections 1 to 10 and Amendments 1 to 5 otherwise stand, with the universe as
+amended. Holdout sealed; phase 2 has not been run.
