@@ -64,11 +64,15 @@ Should be pre-registered, like the tone study.
 
 ## 3. Smaller, known items
 
-- **`&amp;` double-escape** on company names containing an ampersand (JPM,
-  P&G). Display only, confined to those names.
+- ~~`&amp;` double-escape on company names~~ — **not a bug.** Checked
+  2026-09-01: `&amp;` in HTML source is the correct encoding for an ampersand
+  and renders as `&`. Zero genuine double-escapes (`&amp;amp;`) across all
+  2,581 company pages and every other page. The original report came from
+  reading raw source and mistaking correct escaping for a fault.
 - **Ticker does not refresh.** It fetches once on load; no polling, no
-  refresh on visibility change. The strip says "Live" and is only live at the
-  moment the page opens.
+  refresh on visibility change. The strip says "Live", with a blinking dot, and
+  is only live at the moment the page opens. Polling plus a refresh on
+  visibilitychange is a handful of lines.
 - **Successor CIKs.** XOM at $644bn, SpaceX, Honeywell Aerospace and Imperial
   Oil are excluded because a new entity lacks four quarters of history while
   the predecessor CIK holds thousands of facts. A real design decision, not a
