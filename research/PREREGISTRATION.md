@@ -512,3 +512,75 @@ carries no obvious temporal or form bias.
 
 Sections 1 to 10 and Amendments 1 to 5 otherwise stand, with the universe as
 amended. Holdout sealed; phase 2 has not been run.
+
+---
+
+# Amendment 7 — 2026-09-02, universe defect. Still before any return data.
+
+**No price or return data fetched, loaded or examined.** Pre-outcome.
+
+## The defect
+
+Amendment 6 built the study universe from `viable_ciks.json`. That file is not
+the universe. `count_filings.py` writes it as `sorted(viable - done)`: a **work
+queue of companies still needing a fetch**, with everything already collected by
+the earlier Loughran-McDonald run subtracted out. `fetch_corpus.py` treats it
+correctly, unioning it back with the prior set before fetching, which is why the
+corpus on disk holds 9,944 companies rather than 4,408.
+
+Amendment 6 read the queue as the universe, wrote `universe_final.json` from it,
+and the phase 2 scorer was then bound to that file. Phase 2 therefore scored
+3,270 companies when it should have scored 8,707.
+
+## Why this is worse than a simple undercount
+
+SEC assigns CIK numbers in registration order, and the already-fetched set was
+the low-CIK end. The omission was therefore **every company registered before
+roughly 2006** — the minimum CIK in the scored set is 1374567. NVIDIA (1045810)
+and Apple (320193) are both absent, along with essentially every long-established
+filer.
+
+The scored sample was not a random 37% of the universe. It was "companies that
+registered with the SEC after 2006": younger, smaller, weighted towards
+technology and biotechnology, and with materially different survival and
+disclosure characteristics. For a study whose universe was rebuilt in Amendment 2
+specifically to defeat survivorship bias, a hidden age filter is the same class
+of error the rebuild existed to prevent.
+
+## Correction
+
+The universe is `(work queue ∪ prior run) ∩ corpus`, with the Amendment 6
+exclusions applied across the whole of it rather than a third of it.
+
+| | Amendment 6 | corrected |
+|---|---:|---:|
+| companies before exclusions | 4,408 | 9,944 |
+| excluded as ABS 6189 / SPAC 6770 | 1,138 | 1,237 |
+| **retained universe** | **3,270** | **8,707** |
+| development filings (<2023) | 29,389 | **106,801** |
+
+104 companies could not be resolved to a SIC code after two passes. They are
+**retained**, not excluded: dropping a company because a metadata lookup failed
+would select on the instrument rather than on the company.
+
+Every one of the 3,270 companies already scored remains inside the corrected
+universe, so no scored observation is discarded and phase 2 resumes rather than
+restarts. 5,437 companies and 77,412 development filings remain, about 22 hours.
+
+## What is unaffected
+
+The distributional checks reported at the end of phase 2 were measured on real
+output and stand as descriptions of that output: tone centred near zero with
+spread in both directions, negative sentences present in most filings, and
+corr(FinBERT, Loughran-McDonald) = +0.41. They were computed on a biased subset
+and will be recomputed on the full universe before any specification is run.
+
+The holdout seal is intact and was never at risk: the defect is in which
+companies were scored, not in which dates.
+
+## Standing
+
+Sections 1 to 10 and Amendments 1 to 6 otherwise stand, with the universe as
+corrected here. Amendment 6's reasoning about asset-backed issuers and
+blank-cheque shells is unchanged and now applies to the full corpus. Holdout
+sealed.
