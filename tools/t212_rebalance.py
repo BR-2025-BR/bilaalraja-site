@@ -24,6 +24,14 @@ HOST = os.environ.get("T212_HOST", "https://demo.trading212.com")
 AUTH = "Basic " + base64.b64encode(f"{ID}:{SEC}".encode()).decode()
 EXECUTE = "--execute" in sys.argv
 
+# --deploy-cash puts free cash to work as part of the rebalance: the target
+# becomes (basket value + cash) / n rather than basket value / n. Topping up an
+# existing basket from cash alone gets this wrong, sizing each name at cash/n as
+# though nothing were held, which under-deploys by whatever is already invested.
+DEPLOY_CASH = "--deploy-cash" in sys.argv
+CASH_USE = 0.97                     # leave a little for price drift between calls
+FX_GBP_USD = float(os.environ.get("T212_FX", "1.3545"))
+
 # Below this the trade is not worth its own currency-conversion charge.
 MIN_TRADE_USD = float(os.environ.get("T212_MIN_TRADE", "5"))
 
@@ -48,13 +56,47 @@ def call(path, payload=None, method="GET"):
     return 599, "gave up"
 
 
-_, port = call("/api/v0/equity/portfolio")
-if not port:
+def target_basket():
+    """The names the basket is defined as: top scorer per sector."""
+    from pathlib import Path
+    rows = json.loads((Path(__file__).resolve().parent.parent /
+                       "pipeline" / "r3k_scored.json").read_text())
+    best = {}
+    for r in rows:
+        if r.get("score") is None or not r.get("sector"):
+            continue
+        c = best.get(r["sector"])
+        if c is None or r["score"] > c["score"]:
+            best[r["sector"]] = r
+    return {r["ticker"] for r in best.values()}
+
+
+_, held = call("/api/v0/equity/portfolio")
+if not held:
     sys.exit("No open positions to rebalance.")
 
+# Rebalance the basket, not the account. Anything else held is somebody else's
+# decision - a legacy position, or something mid-liquidation - and buying more of
+# it to hit an equal weight would be inventing a trade nobody asked for.
+want = target_basket()
+port = [p for p in held if p["ticker"].split("_")[0] in want]
+skipped = [p["ticker"] for p in held if p["ticker"].split("_")[0] not in want]
+if skipped:
+    print(f"outside the basket, left alone: {', '.join(skipped)}")
+if not port:
+    sys.exit("None of the basket names are held.")
+
 total = sum(p["quantity"] * p["currentPrice"] for p in port)
-target = total / len(port)
-print(f"market value ${total:,.2f}  target ${target:,.2f} across {len(port)}")
+deployable = 0.0
+if DEPLOY_CASH:
+    _, cash = call("/api/v0/equity/account/cash")
+    free = float((cash or {}).get("free") or 0)
+    deployable = free * CASH_USE * FX_GBP_USD          # account ccy -> USD
+    print(f"free cash {free:,.2f} -> ${deployable:,.2f} deployable at {FX_GBP_USD}")
+
+target = (total + deployable) / len(port)
+print(f"basket ${total:,.2f}" + (f" + ${deployable:,.2f} cash" if deployable else "") +
+      f"  target ${target:,.2f} across {len(port)}")
 print(f"mode: {'EXECUTE' if EXECUTE else 'dry run'}\n")
 
 plan = []
