@@ -40,3 +40,6 @@ pipeline/t212_plan.json
 # Phase 1 corpus: 2.4 GB of filing text, reproducible from SEC via fetch_corpus.py
 research/corpus/
 research/*.log
+
+# a separate git repository; not part of this site
+streamed-tui/
