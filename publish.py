@@ -795,12 +795,24 @@ def main():
             sys.stderr.write(r.stderr)
             sys.exit("build failed — nothing staged, site/ left untouched")
 
-    # One id per set of data, taken from the source dashboard before staging so
-    # it is not a hash of a file that ends up containing it. Everything that has
-    # to agree on "which build is this" uses this value: the page's own meta tag,
+    # One id per published state, taken from the sources before staging so it is
+    # not a hash of a file that ends up containing it. Everything that has to
+    # agree on "which build is this" uses this value: the page's own meta tag,
     # version.json, and the service worker cache name.
-    BUILD = hashlib.sha1(
-        (SRC / "r3k_dashboard.html").read_bytes()).hexdigest()[:10]
+    #
+    # This used to hash the dashboard alone, which is too narrow. The landing
+    # page, the methodology and the case study are all templated inside this
+    # file, so editing one of them left the dashboard untouched, produced a
+    # byte-identical sw.js, and the browser saw no update: the service worker
+    # went on serving the precached old page while the server held the new one.
+    # A reload then mixes a stale shell with fresh content, which is exactly the
+    # failure the version is supposed to prevent. Hash every page source and
+    # this file, so any change to what gets published moves the id.
+    _h = hashlib.sha1()
+    for _f in sorted({p[0] for p in PAGES} | {Path(__file__).resolve()}):
+        if _f.exists():
+            _h.update(_f.read_bytes())
+    BUILD = _h.hexdigest()[:10]
 
     SITE.mkdir(exist_ok=True)
     meta, total = {}, 0
