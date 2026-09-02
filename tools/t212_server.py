@@ -16,10 +16,11 @@ same path collapse into one upstream call.
 
 Then open http://127.0.0.1:8212 . Ctrl-C to stop.
 """
-import base64, json, os, sys, threading, time, urllib.request, urllib.error
+import base64, hmac, json, os, secrets, socket, sys, threading, time
+import urllib.request, urllib.error
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
-from urllib.parse import urlparse
+from urllib.parse import urlparse, parse_qs
 
 ID  = os.environ.get("T212_ID", "")
 SEC = os.environ.get("T212_SECRET", "")
