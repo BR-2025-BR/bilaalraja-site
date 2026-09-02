@@ -523,26 +523,38 @@ function draw(){
 
   const sel=st.sector, hue=cssv("--s1"), dot=cssv("--dot");
 
-  // On the first paint only, points materialise left to right. It costs
-  // nothing and it makes the volume legible: a static cloud is just there,
-  // whereas watching two and a half thousand points arrive conveys scale.
-  // ENTER runs 0 -> 1; each point's own progress is offset by its x position.
+  // On the first paint only, the cloud is drawn inward: every point starts
+  // flung out beyond the plot and is pulled to where it belongs. A static
+  // cloud is simply there, whereas watching two and a half thousand points get
+  // gathered conveys the scale, and that each one is a company sitting at its
+  // own pair of numbers.
+  //
+  // ENTER runs 0 -> 1. Outer points start earlier and travel further, so the
+  // edges of the cloud land while the middle is still closing.
+  const cx=L+pw/2, cy=T+ph/2;
+  const rmax=Math.hypot(pw,ph)/2 || 1;
+  const ease=t=>1-Math.pow(1-t,3);                  // decelerate into place
+
   const ent=(p)=>{
-    if(ENTER>=1) return 1;
-    const lead=(p.x-L)/Math.max(pw,1);              // 0 at left, 1 at right
-    const t=(ENTER*1.55)-lead*0.55;                 // sweep, then settle
-    return t<=0?0:t>=1?1:t*t*(3-2*t);               // smoothstep
+    if(ENTER>=1) return {e:1,x:p.x,y:p.y};
+    const vx=p.x-cx, vy=p.y-cy;
+    const rad=Math.hypot(vx,vy)/rmax;               // 0 centre, ~1 corner
+    const t=(ENTER*1.45)-(1-rad)*0.42;              // outer points lead
+    if(t<=0) return {e:0,x:p.x,y:p.y};
+    const k=t>=1?1:ease(t);
+    const fling=1.7*(1-k);                          // starts 2.7x out, eases in
+    return {e:k, x:cx+vx*(1+fling), y:cy+vy*(1+fling)};
   };
 
   // background layer first so the highlighted sector always sits on top
   for(const p of pts){ if(sel&&p.d.s===sel) continue;
-    const e=ent(p); if(e<=0) continue;
-    g.globalAlpha=(sel?0.13:0.34)*e; g.fillStyle=dot;
-    g.beginPath(); g.arc(p.x,p.y,(sel?4.4:5.2)*(0.35+0.65*e),0,6.284); g.fill(); }
+    const a=ent(p); if(a.e<=0) continue;
+    g.globalAlpha=(sel?0.13:0.34)*a.e; g.fillStyle=dot;
+    g.beginPath(); g.arc(a.x,a.y,(sel?4.4:5.2)*(0.35+0.65*a.e),0,6.284); g.fill(); }
   if(sel){ for(const p of pts){ if(p.d.s!==sel) continue;
-      const e=ent(p); if(e<=0) continue;
-      g.globalAlpha=0.9*e; g.fillStyle=hue;
-      g.beginPath(); g.arc(p.x,p.y,6.4*(0.35+0.65*e),0,6.284); g.fill(); } }
+      const a=ent(p); if(a.e<=0) continue;
+      g.globalAlpha=0.9*a.e; g.fillStyle=hue;
+      g.beginPath(); g.arc(a.x,a.y,6.4*(0.35+0.65*a.e),0,6.284); g.fill(); } }
   g.globalAlpha=1;
 
   if(st.q){
@@ -781,7 +793,7 @@ if(st.sector){
 let ENTER = matchMedia("(prefers-reduced-motion: reduce)").matches ? 1 : 0;
 draw(); drawSmall();
 if(ENTER<1){
-  const t0=performance.now(), DUR=900;
+  const t0=performance.now(), DUR=1150;   // points travel now, so give it room
   (function step(now){
     ENTER=Math.min(1,(now-t0)/DUR);
     draw();
