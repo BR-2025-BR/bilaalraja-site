@@ -3,7 +3,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="Every relevant line item pulled from SEC EDGAR filings for the Russell 3000, with key financial metrics computed point in time. 2,581 companies, 35 metrics, sector-neutral percentile ranking.">
 <meta name="author" content="Bilaal Raja">
-<meta name="x-build" content="865ac65e49">
+<meta name="x-build" content="012f0a067b">
 <link rel="canonical" href="https://bilaalraja.com/russell3000">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Bilaal Raja">
@@ -136,6 +136,21 @@ canvas{width:100%;height:auto;display:block;border-radius:10px;cursor:crosshair}
   border:1px solid var(--rule);border-radius:999px;cursor:pointer;background:var(--panel);color:var(--ink2)}
 .chip[aria-pressed="true"]{background:var(--accentbg);border-color:var(--s1);color:var(--ink)}
 .chip i{width:9px;height:9px;border-radius:50%;background:var(--dot);display:inline-block}
+/* screen ---------------------------------------------------------------- */
+.screen{display:grid;grid-template-columns:repeat(auto-fit,minmax(232px,1fr));
+        gap:9px 15px;align-items:start}
+.chk{display:flex;gap:9px;align-items:flex-start;padding:9px 11px;border:1px solid var(--rule);
+     border-radius:8px;background:var(--bg);cursor:pointer;font-size:14px;line-height:1.35}
+.chk:hover{border-color:var(--ink3)}
+.chk:has(input:checked){border-color:var(--s1);background:var(--accentbg)}
+.chk input[type=checkbox]{margin:2px 0 0;accent-color:var(--s1);width:15px;height:15px;flex:none}
+.chk span{display:block;color:var(--ink)}
+.chk i{display:block;font-style:normal;font-size:12px;color:var(--ink3);margin-top:2px}
+.chk input[type=number]{width:62px;padding:1px 5px;font-family:var(--mono);font-size:13px;
+     border:1px solid var(--rule);border-radius:5px;background:var(--panel);color:var(--ink)}
+.rst{align-self:center;background:none;border:1px solid var(--rule);color:var(--ink2);
+     border-radius:8px;padding:9px 14px;cursor:pointer;font:inherit;font-size:13px}
+.rst:hover{border-color:var(--ink3);color:var(--ink)}
 .chip[aria-pressed="true"] i{background:var(--s1)}
 .chip small{font-family:var(--mono);font-size:10.5px;color:var(--ink3)}
 .sm{display:grid;grid-template-columns:repeat(auto-fill,minmax(178px,1fr));gap:12px;margin-top:6px}
@@ -299,6 +314,33 @@ html[data-nav="traverse"]::view-transition-old(root){animation-name:vt-out-right
 
 <section class="panel">
   <div class="phead">
+    <div><h2>Screen</h2>
+      <p class="sub">Quality gates applied to the chart and the table below.</p></div>
+    <span class="count" id="scnt"></span>
+  </div>
+  <div class="screen" id="screen">
+    <label class="chk"><input type="checkbox" id="f_growth" checked>
+      <span>Revenue growing<i>YoY &gt; 0</i></span></label>
+    <label class="chk"><input type="checkbox" id="f_ni" checked>
+      <span>Profitable<i>net income &gt; 0</i></span></label>
+    <label class="chk"><input type="checkbox" id="f_fcf" checked>
+      <span>Cash generative<i>free cash flow &gt; 0</i></span></label>
+    <label class="chk"><input type="checkbox" id="f_roic">
+      <span>ROIC at least <input type="number" id="v_roic" value="10" step="1" min="-100" max="100">%
+        <i>returns above the cost of capital</i></span></label>
+    <label class="chk"><input type="checkbox" id="f_lev">
+      <span>Net debt at most <input type="number" id="v_lev" value="3" step="0.5" min="0" max="20">&times; EBITDA
+        <i>balance sheet not stretched</i></span></label>
+    <label class="chk"><input type="checkbox" id="f_conv">
+      <span>FCF conversion at least <input type="number" id="v_conv" value="50" step="5" min="0" max="300">%
+        <i>earnings turning into cash</i></span></label>
+    <button id="f_reset" class="rst" type="button">Reset</button>
+  </div>
+  <p class="note" id="snote"></p>
+</section>
+
+<section class="panel">
+  <div class="phead">
     <div><h2>Cross-section</h2></div>
     <span class="count" id="cnt"></span>
   </div>
@@ -370,7 +412,58 @@ const $=id=>document.getElementById(id);
 const HUE=["--s1","--s2","--s3","--s4"];
 const cssv=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 
-const st={x:"fcf_yield",y:"ev_sales",lx:false,ly:true,sector:null,hit:null,q:""};
+const st={x:"fcf_yield",y:"ev_sales",lx:false,ly:true,sector:null,hit:null,q:"",
+          scr:{growth:1,ni:1,fcf:1,roic:0,lev:0,conv:0},
+          val:{roic:10,lev:3,conv:50}};
+
+// The screen. Each test returns true (passes), false (fails on the number), or
+// null (the company does not report the figure).
+//
+// That third case is the whole difficulty. Coverage is uneven — FCF conversion
+// exists for 59% of the market, debt for 61% — so a screen that treats a
+// missing value as a failure quietly removes a thousand companies for not
+// tagging a number rather than for being poor businesses. Absent is not zero
+// and it is not a fail; it is unknown, and the count below says how many were
+// dropped that way so a narrow result is never mistaken for a strict one.
+const TESTS={
+  growth:{lab:"revenue growing",  f:d=>d.growth==null?null:d.growth>0},
+  ni:    {lab:"profitable",       f:d=>d.ni==null?null:d.ni>0},
+  fcf:   {lab:"cash generative",  f:d=>d.fcf==null?null:d.fcf>0},
+  roic:  {lab:"ROIC",             f:d=>d.roic==null?null:d.roic>=st.val.roic},
+  conv:  {lab:"FCF conversion",   f:d=>d.fcf_conv==null?null:d.fcf_conv>=st.val.conv},
+  lev:   {lab:"net debt / EBITDA",f:d=>{
+            // netcash is cash minus debt, so net debt is its negation. A company
+            // with more cash than debt passes any leverage ceiling outright.
+            if(d.netcash==null) return null;
+            if(d.netcash>=0) return true;
+            if(d.ebitda==null||d.ebitda<=0) return null;   // ratio undefined
+            return (-d.netcash)/d.ebitda<=st.val.lev;
+          }},
+};
+
+let SCREEN_STATS={pass:0,fail:0,unknown:0,total:0};
+function passes(d){
+  for(const k in TESTS){
+    if(!st.scr[k]) continue;
+    const r=TESTS[k].f(d);
+    if(r===null) return "unknown";
+    if(r===false) return "fail";
+  }
+  return "pass";
+}
+function screened(){
+  let pass=0,fail=0,unknown=0;
+  const out=[];
+  for(const d of D){
+    const v=passes(d);
+    if(v==="pass"){ pass++; out.push(d); }
+    else if(v==="fail") fail++;
+    else unknown++;
+  }
+  SCREEN_STATS={pass,fail,unknown,total:D.length};
+  return out;
+}
+let S=D;                       // the screened set every view reads from
 
 // Shareable views. The chart state lives in the URL so a specific cross-section
 // can be sent as a link rather than described in words.
@@ -383,6 +476,16 @@ const st={x:"fcf_yield",y:"ev_sales",lx:false,ly:true,sector:null,hit:null,q:""}
   if(p.has("ly")) st.ly = p.get("ly")==="1";
   if(p.get("sector") && SECTORS.includes(p.get("sector"))) st.sector=p.get("sector");
   if(p.get("q")) st.q=p.get("q").trim().toUpperCase();
+  // A screen is the part of this page worth sending to someone, so it travels
+  // in the link: which gates are on, and the threshold each was set to.
+  if(p.has("scr")){
+    const on=new Set(p.get("scr").split(",").filter(Boolean));
+    for(const k in st.scr) st.scr[k]=on.has(k)?1:0;
+  }
+  for(const k of ["roic","lev","conv"]){
+    const v=parseFloat(p.get("v_"+k));
+    if(Number.isFinite(v)) st.val[k]=v;
+  }
 })();
 
 let _urlHold=false;
@@ -393,10 +496,59 @@ function writeURL(){
   p.set("lx", st.lx?"1":"0"); p.set("ly", st.ly?"1":"0");
   if(st.sector) p.set("sector", st.sector);
   if(st.q) p.set("q", st.q);
+  p.set("scr", Object.keys(st.scr).filter(k=>st.scr[k]).join(","));
+  for(const k of ["roic","lev","conv"]) if(st.scr[k]) p.set("v_"+k, st.val[k]);
   // replaceState, not pushState: dragging a slider should not fill the
   // back button with fifty near-identical entries.
   history.replaceState(null,"", location.pathname+"?"+p.toString());
 }
+
+// --- screen controls --------------------------------------------------------
+function applyScreen(){
+  S=screened();
+  const {pass,fail,unknown,total}=SCREEN_STATS;
+  $("scnt").textContent=`${pass.toLocaleString()} of ${total.toLocaleString()} pass`;
+  const active=Object.keys(st.scr).filter(k=>st.scr[k]);
+  if(!active.length){
+    $("snote").textContent="No gates applied — the whole cross-section is shown.";
+  }else{
+    // Say plainly how many were set aside for want of a number rather than for
+    // failing one. Without it a screen looks stricter than it is, and the names
+    // that vanish look like rejections.
+    $("snote").innerHTML=
+      `<b>${fail.toLocaleString()}</b> fail a gate · `+
+      `<b>${unknown.toLocaleString()}</b> set aside because they do not report `+
+      `one of the figures tested — absent, not zero, and not a rejection.`;
+  }
+  writeURL(); draw(); drawSmall(); renderTables();
+}
+function syncScreenUI(){
+  for(const k in st.scr){ const el=$("f_"+k); if(el) el.checked=!!st.scr[k]; }
+  for(const k of ["roic","lev","conv"]){ const el=$("v_"+k); if(el) el.value=st.val[k]; }
+}
+for(const k in st.scr){
+  const el=$("f_"+k); if(!el) continue;
+  el.onchange=e=>{ st.scr[k]=e.target.checked?1:0; applyScreen(); };
+}
+for(const k of ["roic","lev","conv"]){
+  const el=$("v_"+k); if(!el) continue;
+  const upd=e=>{
+    const v=parseFloat(e.target.value);
+    if(!Number.isFinite(v)) return;
+    st.val[k]=v;
+    // Changing a threshold implies you want that gate on.
+    if(!st.scr[k]){ st.scr[k]=1; $("f_"+k).checked=true; }
+    applyScreen();
+  };
+  el.oninput=upd;
+  el.onclick=e=>e.stopPropagation();      // the number sits inside the label
+}
+$("f_reset").onclick=()=>{
+  st.scr={growth:1,ni:1,fcf:1,roic:0,lev:0,conv:0};
+  st.val={roic:10,lev:3,conv:50};
+  syncScreenUI(); applyScreen();
+};
+syncScreenUI();
 
 for(const sel of [$("xs"),$("ys")]){
   METRICS.forEach(([k,l])=>{const o=document.createElement("option");o.value=k;o.textContent=l;sel.appendChild(o);});
@@ -465,7 +617,7 @@ function draw(){
   const cv=$("cv"), g=cv.getContext("2d"), W=cv.width, H=cv.height;
   const dpr=1, L=104, R=26, T=22, B=74;
   g.clearRect(0,0,W,H);
-  const rows=D.filter(d=>d[st.x]!=null&&d[st.y]!=null);
+  const rows=S.filter(d=>d[st.x]!=null&&d[st.y]!=null);
   const dx=clip(rows.map(d=>d[st.x]),st.lx), dy=clip(rows.map(d=>d[st.y]),st.ly);
   $("cnt").textContent=`${rows.length} of ${D.length} plotted · ${D.length-rows.length} missing a value`;
   if(!dx||!dy){ g.fillStyle=cssv("--ink3"); g.font="26px "+cssv("--sans");
@@ -559,7 +711,7 @@ function draw(){
 
 function drawSmall(){
   const host=$("sm"); host.innerHTML="";
-  const rows=D.filter(d=>d[st.x]!=null&&d[st.y]!=null);
+  const rows=S.filter(d=>d[st.x]!=null&&d[st.y]!=null);
   const dx=clip(rows.map(d=>d[st.x]),st.lx), dy=clip(rows.map(d=>d[st.y]),st.ly);
   if(!dx||!dy) return;
   for(const s of SECTORS){
@@ -646,7 +798,7 @@ const COLS=[["t","Ticker"],["n","Company"],["s","Sector"],["score","Score"],["mc
   $("tcnt").textContent=`showing top 400 of ${D.length} by market cap`;
 })();
 
-(function top25(){
+function renderTables(){
   const mk=(el,rows)=>{
     const C=[["t","Ticker"],["n","Company"],["s","Sector"],["mcap","Mkt cap $bn"],
              ["score","Score"],["p_value","Value"],["p_quality","Quality"],["p_cash","Cash"],
@@ -664,10 +816,10 @@ const COLS=[["t","Ticker"],["n","Company"],["s","Sector"],["score","Score"],["mc
       return `<td class="${num?"num":""}">${txt}</td>`;
     }).join("")+"</tr>").join("");
   };
-  const scored=D.filter(d=>d.score!=null);
+  const scored=S.filter(d=>d.score!=null);
   mk($("t25"),  scored.filter(d=>d.m==="O").sort((a,b)=>b.score-a.score).slice(0,25));
   mk($("tfin"), scored.filter(d=>d.m==="F").sort((a,b)=>b.score-a.score).slice(0,10));
-})();
+}
 
 $("stamp").innerHTML=`prices ${META.price_date}<br>${META.n} companies<br>median quarter ${META.median_end}`;
 $("meth").innerHTML=`Own construction from SEC filings`
@@ -771,6 +923,7 @@ if(st.sector){
 // Entrance runs once, on first paint, and is skipped for anyone who has asked
 // for reduced motion.
 let ENTER = matchMedia("(prefers-reduced-motion: reduce)").matches ? 1 : 0;
+applyScreen();          // seeds S and the counts, then paints
 draw(); drawSmall();
 if(ENTER<1){
   const t0=performance.now(), DUR=1150;   // points travel now, so give it room
