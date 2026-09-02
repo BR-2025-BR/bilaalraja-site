@@ -37,13 +37,29 @@ def main():
     tmp = HERE / ".og_render.html"
     tmp.write_text(html)
 
-    out = SITE / "og.png"
+    # 1200x630 is the size Open Graph consumers expect, so the published card
+    # stays there. --scale renders the same layout at a higher device pixel
+    # ratio for anywhere that wants it sharp: a slide, a print, a retina post.
+    # Rendering at scale beats upscaling the 1x file, which only blurs it.
+    scale = 1
+    dest = SITE / "og.png"
+    for i, a in enumerate(sys.argv):
+        if a == "--scale" and i + 1 < len(sys.argv):
+            scale = max(1, min(4, int(sys.argv[i + 1])))
+        if a == "--out" and i + 1 < len(sys.argv):
+            dest = Path(sys.argv[i + 1]).expanduser().resolve()
+
+    out = dest
     subprocess.run([CHROME, "--headless", "--disable-gpu", "--hide-scrollbars",
                     "--window-size=1200,630", "--default-background-color=000000",
-                    "--virtual-time-budget=6000",
+                    f"--force-device-scale-factor={scale}",
+                    "--virtual-time-budget=8000",
                     f"--screenshot={out}", f"file://{tmp}"],
                    capture_output=True, check=True)
     tmp.unlink()
+    if scale != 1 or dest != SITE / "og.png":
+        print(f"  {out}  {1200*scale}x{630*scale}")
+        return
     print(f"  og.png  {meta['n']:,} companies  {n_metrics} metrics  {MDA_CHARS} MD&A chars")
 
 
