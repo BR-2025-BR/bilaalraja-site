@@ -1,4 +1,4 @@
-const V="r3k-2026-09-02-cd33b4545e-r2";
+const V="r3k-2026-09-02-f010dbcde4-r2";
 
 // Cloudflare Pages 308s /russell3000 to /russell3000/. A response that followed
 // a redirect carries redirected:true, and Safari refuses to accept one of those
@@ -32,8 +32,19 @@ async function navigate(req){
     c.put(req,fixed.clone());
     return fixed;
   }catch(err){
-    const hit=await caches.match(req) || await caches.match(req.url+"/")
-              || await caches.match("/");
+    // Offline. Look for this page under both spellings of its path, since the
+    // shell is precached with a trailing slash and a link may omit it.
+    //
+    // What must not happen is falling back to "/". Returning the landing page
+    // for a different URL does not read as an offline page, it reads as the
+    // link being broken: following the cross-section and arriving back at the
+    // front page looks like a loop, and it hides the real cause. Fail honestly
+    // instead and let the browser show its own offline page.
+    const u=new URL(req.url);
+    const alt=u.pathname.endsWith("/") ? u.pathname.slice(0,-1) : u.pathname+"/";
+    const hit=await caches.match(req)
+           || await caches.match(u.pathname)
+           || await caches.match(alt);
     return hit ? await plain(hit) : Response.error();
   }
 }

@@ -25,8 +25,8 @@ PAGES = [                      # source file, url path, human title
 
 # Any Claude artifact link becomes a local path, so the site stands alone.
 ARTIFACT_MAP = {
-    "0c2545da-ee53-41ec-8763-583958244c94": "/commentary",
-    "ae70a1e5": "/russell3000",
+    "0c2545da-ee53-41ec-8763-583958244c94": "/commentary/",
+    "ae70a1e5": "/russell3000/",
 }
 
 
@@ -226,7 +226,7 @@ __MASTHEAD__
   facts rather than a vendor feed.</p>
 </section>
 
-<a class="card" href="/russell3000">
+<a class="card" href="/russell3000/">
   <div class="chead"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true">
     <path d="M4 3v16a2 2 0 0 0 2 2h15"/>
     <circle cx="9"  cy="15" r="1.5"/><circle cx="13" cy="9"  r="1.5"/>
@@ -238,7 +238,7 @@ __MASTHEAD__
   <div class="m">filings to {latest_filing} &middot; prices {price_date} &middot; rebuilt {built_human}</div>
 </a>
 
-<a class="card" href="/commentary">
+<a class="card" href="/commentary/">
   <div class="chead"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true">
     <path d="M21 12a7 7 0 0 1-7 7H8l-4 3v-4.6A7 7 0 0 1 3 12a7 7 0 0 1 7-7h4a7 7 0 0 1 7 7z"/>
     <path d="M8.5 10.5h7"/><path d="M8.5 13.5h4"/>
@@ -248,7 +248,7 @@ __MASTHEAD__
   <div class="m">filings to {latest_filing} &middot; prices {price_date} &middot; rebuilt {built_human}</div>
 </a>
 
-<a class="card" href="/methodology">
+<a class="card" href="/methodology/">
   <div class="chead"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true">
     <path d="M12 3 3 7.5 12 12l9-4.5L12 3z"/>
     <path d="M3 12.5 12 17l9-4.5"/><path d="M3 17.5 12 22l9-4.5"/>
@@ -745,8 +745,19 @@ async function navigate(req){{
     c.put(req,fixed.clone());
     return fixed;
   }}catch(err){{
-    const hit=await caches.match(req) || await caches.match(req.url+"/")
-              || await caches.match("/");
+    // Offline. Look for this page under both spellings of its path, since the
+    // shell is precached with a trailing slash and a link may omit it.
+    //
+    // What must not happen is falling back to "/". Returning the landing page
+    // for a different URL does not read as an offline page, it reads as the
+    // link being broken: following the cross-section and arriving back at the
+    // front page looks like a loop, and it hides the real cause. Fail honestly
+    // instead and let the browser show its own offline page.
+    const u=new URL(req.url);
+    const alt=u.pathname.endsWith("/") ? u.pathname.slice(0,-1) : u.pathname+"/";
+    const hit=await caches.match(req)
+           || await caches.match(u.pathname)
+           || await caches.match(alt);
     return hit ? await plain(hit) : Response.error();
   }}
 }}

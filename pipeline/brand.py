@@ -81,10 +81,14 @@ MASTHEAD_CSS = """
 
 def masthead(current=""):
     """current: '', 'russell3000', 'commentary' or 'methodology'."""
-    items = [("/russell3000", "russell3000", "Cross-section"),
-             ("/commentary",  "commentary",  "Commentary"),
-             ("/learn",       "learn",       "Case study"),
-             ("/methodology", "methodology", "Method")]
+    # Trailing slashes are canonical. Cloudflare 308s the bare path, and a
+    # redirected navigation is the most fragile fetch on the site: Safari will
+    # not accept a redirected response for a navigation, and the service worker
+    # then falls into its offline path for a page that is perfectly available.
+    items = [("/russell3000/", "russell3000", "Cross-section"),
+             ("/commentary/",  "commentary",  "Commentary"),
+             ("/learn/",       "learn",       "Case study"),
+             ("/methodology/", "methodology", "Method")]
     CUR = ' aria-current="page"'
     nav = "".join(
         '<a href="%s"%s>%s</a>' % (href, CUR if key == current else "", label)

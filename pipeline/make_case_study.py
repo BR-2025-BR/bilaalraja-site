@@ -335,7 +335,7 @@ than it looks.</p>
 {prior}, as filed and not restated &middot; the arithmetic on this page is
 checked against itself before publication &middot;
 <a href="/c/{ticker}/">see {ticker} in the cross-section</a> &middot;
-<a href="/methodology">method</a> &middot; <a href="/">bilaalraja.com</a></footer>
+<a href="/methodology/">method</a> &middot; <a href="/">bilaalraja.com</a></footer>
 {READERJS}{NAVJS}
 </div></body></html>"""
 

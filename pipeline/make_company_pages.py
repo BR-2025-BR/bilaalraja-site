@@ -131,7 +131,7 @@ are paid, not what they think.</p>"""
         commentary = f"""<h2>What management said</h2>
 <blockquote>{esc(t)}{" &hellip;" if truncated else ""}<cite>{esc(nm)}, {mdna.get('form','filing')},
 period ended {mdna.get('period','&mdash;')}, filed {mdna.get('filed','&mdash;')}</cite></blockquote>
-<p class="note"><a href="/commentary">Read the full passage &rarr;</a></p>"""
+<p class="note"><a href="/commentary/">Read the full passage &rarr;</a></p>"""
 
     ld = json.dumps({"@context":"https://schema.org","@type":"Corporation",
         "name":nm,"tickerSymbol":tk,"url":f"https://{DOMAIN}/c/{tk}/"},
@@ -168,7 +168,7 @@ risk. Negative means you are paying up front for growth not yet delivered.</p>
 <footer>Built from SEC EDGAR filings, computed point in time &middot;
 prices {meta.get('price_date','')} &middot;
 <a href="/russell3000?q={tk}">see {tk} in the cross-section</a> &middot;
-<a href="/methodology">method and known defects</a> &middot;
+<a href="/methodology/">method and known defects</a> &middot;
 <a href="/">bilaalraja.com</a></footer>
 </div>{brand.NAV_JS}</body></html>"""
 
