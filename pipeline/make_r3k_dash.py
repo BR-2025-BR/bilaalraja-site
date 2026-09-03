@@ -340,7 +340,8 @@ __MASTHEAD__
   </div>
   <div class="screen" id="screen">
     <label class="chk"><input type="checkbox" id="f_growth" checked>
-      <span>Revenue growing<i>YoY &gt; 0</i></span></label>
+      <span>Revenue growth at least <input type="number" id="v_growth" value="0" step="1" min="-100" max="200">%
+        <i>year on year</i></span></label>
     <label class="chk"><input type="checkbox" id="f_ni" checked>
       <span>Profitable<i>net income &gt; 0</i></span></label>
     <label class="chk"><input type="checkbox" id="f_fcf" checked>
@@ -434,7 +435,7 @@ const cssv=n=>getComputedStyle(document.documentElement).getPropertyValue(n).tri
 
 const st={x:"fcf_yield",y:"ev_sales",lx:false,ly:true,sector:null,hit:null,q:"",
           scr:{growth:1,ni:1,fcf:1,roic:0,lev:0,conv:0},
-          val:{roic:10,lev:3,conv:50}};
+          val:{growth:0,roic:10,lev:3,conv:50}};
 
 // The screen. Each test returns true (passes), false (fails on the number), or
 // null (the company does not report the figure).
@@ -446,7 +447,7 @@ const st={x:"fcf_yield",y:"ev_sales",lx:false,ly:true,sector:null,hit:null,q:"",
 // and it is not a fail; it is unknown, and the count below says how many were
 // dropped that way so a narrow result is never mistaken for a strict one.
 const TESTS={
-  growth:{lab:"revenue growing",  f:d=>d.growth==null?null:d.growth>0},
+  growth:{lab:"revenue growth",   f:d=>d.growth==null?null:d.growth>=st.val.growth},
   ni:    {lab:"profitable",       f:d=>d.ni==null?null:d.ni>0},
   fcf:   {lab:"cash generative",  f:d=>d.fcf==null?null:d.fcf>0},
   roic:  {lab:"ROIC",             f:d=>d.roic==null?null:d.roic>=st.val.roic},
@@ -502,7 +503,7 @@ let S=D;                       // the screened set every view reads from
     const on=new Set(p.get("scr").split(",").filter(Boolean));
     for(const k in st.scr) st.scr[k]=on.has(k)?1:0;
   }
-  for(const k of ["roic","lev","conv"]){
+  for(const k of ["growth","roic","lev","conv"]){
     const v=parseFloat(p.get("v_"+k));
     if(Number.isFinite(v)) st.val[k]=v;
   }
@@ -517,7 +518,7 @@ function writeURL(){
   if(st.sector) p.set("sector", st.sector);
   if(st.q) p.set("q", st.q);
   p.set("scr", Object.keys(st.scr).filter(k=>st.scr[k]).join(","));
-  for(const k of ["roic","lev","conv"]) if(st.scr[k]) p.set("v_"+k, st.val[k]);
+  for(const k of ["growth","roic","lev","conv"]) if(st.scr[k]) p.set("v_"+k, st.val[k]);
   // replaceState, not pushState: dragging a slider should not fill the
   // back button with fifty near-identical entries.
   history.replaceState(null,"", location.pathname+"?"+p.toString());
@@ -544,13 +545,13 @@ function applyScreen(){
 }
 function syncScreenUI(){
   for(const k in st.scr){ const el=$("f_"+k); if(el) el.checked=!!st.scr[k]; }
-  for(const k of ["roic","lev","conv"]){ const el=$("v_"+k); if(el) el.value=st.val[k]; }
+  for(const k of ["growth","roic","lev","conv"]){ const el=$("v_"+k); if(el) el.value=st.val[k]; }
 }
 for(const k in st.scr){
   const el=$("f_"+k); if(!el) continue;
   el.onchange=e=>{ st.scr[k]=e.target.checked?1:0; applyScreen(); };
 }
-for(const k of ["roic","lev","conv"]){
+for(const k of ["growth","roic","lev","conv"]){
   const el=$("v_"+k); if(!el) continue;
   const upd=e=>{
     const v=parseFloat(e.target.value);
@@ -565,7 +566,7 @@ for(const k of ["roic","lev","conv"]){
 }
 $("f_reset").onclick=()=>{
   st.scr={growth:1,ni:1,fcf:1,roic:0,lev:0,conv:0};
-  st.val={roic:10,lev:3,conv:50};
+  st.val={growth:0,roic:10,lev:3,conv:50};
   syncScreenUI(); applyScreen();
 };
 syncScreenUI();
