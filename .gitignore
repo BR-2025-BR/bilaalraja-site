@@ -43,3 +43,6 @@ research/*.log
 
 # a separate git repository; not part of this site
 streamed-tui/
+
+research/ticker_map.json
+research/price_requirements.json
