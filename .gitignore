@@ -46,3 +46,6 @@ streamed-tui/
 
 research/ticker_map.json
 research/price_requirements.json
+
+# price store: bought data, not ours to publish
+prices/
