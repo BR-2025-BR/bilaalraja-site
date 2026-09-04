@@ -66,7 +66,11 @@ def ingest(csv_path, is_tickers=False):
             t = t[t["table"].isin(["SEP", "SF1", "stocks"])].drop_duplicates("ticker", keep="first")
             print(f"  {before:,} rows -> {len(t):,} unique equities")
         keep = [c for c in ("permaticker", "ticker", "cik", "exchange", "isdelisted",
-                            "firstpricedate", "lastpricedate", "name", "sector")
+                            "firstpricedate", "lastpricedate", "name", "sector",
+                            # siccode is what the pipeline's own sector mapping
+                            # takes; the vendor's sector field is a different
+                            # taxonomy and would repartition the composite
+                            "siccode", "category")
                 if c in t.columns]
         # Sharadar has no cik column, but every row carries an EDGAR browse URL
         # with the CIK in its query string. That is the join key the study needs
