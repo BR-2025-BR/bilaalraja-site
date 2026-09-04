@@ -1,0 +1,52 @@
+[
+ {
+  "label":"1. primary (length-residualised)",
+  "n":38542,
+  "spread_pct":-1.4045657434,
+  "ann_pct":-9.7362153072,
+  "t":-0.8195642326,
+  "n_lo":7716,
+  "n_hi":7712,
+  "pass":false
+ },
+ {
+  "label":"2. no length control",
+  "n":38542,
+  "spread_pct":-1.6266272796,
+  "ann_pct":-11.2932785768,
+  "t":-0.8927713326,
+  "n_lo":7716,
+  "n_hi":7712,
+  "pass":false
+ },
+ {
+  "label":"3. 10-K only",
+  "n":2106,
+  "spread_pct":-1.7511774598,
+  "ann_pct":-27.7149329144,
+  "t":-1.1326489963,
+  "n_lo":422,
+  "n_hi":421,
+  "pass":false
+ },
+ {
+  "label":"4. market cap >= $1bn",
+  "n":16038,
+  "spread_pct":-1.0724897018,
+  "ann_pct":-3.0749797746,
+  "t":-0.9009631182,
+  "n_lo":3213,
+  "n_hi":3211,
+  "pass":false
+ },
+ {
+  "label":"5. tone level (straw man)",
+  "n":38542,
+  "spread_pct":0.7568873323,
+  "ann_pct":11.8899907339,
+  "t":1.9832028535,
+  "n_lo":7716,
+  "n_hi":7712,
+  "pass":false
+ }
+]

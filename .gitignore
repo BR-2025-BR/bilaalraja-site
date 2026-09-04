@@ -49,3 +49,8 @@ research/price_requirements.json
 
 # price store: bought data, not ours to publish
 prices/
+
+# derived analysis artefacts, rebuildable from signal.py / returns.py
+research/signal.parquet
+research/panel_returns.parquet
+research/mcap.parquet
