@@ -58,12 +58,28 @@ def ingest(csv_path, is_tickers=False):
     if is_tickers:
         t = pd.read_csv(src, low_memory=False)
         t.columns = [c.strip().lower() for c in t.columns]
+        # the file mixes SF1/SEP/holdings rows for the same ticker; keep the
+        # equity rows only, or a ticker resolves to several conflicting entries
+        if "table" in t.columns:
+            before = len(t)
+            t = t[t["table"].isin(["SEP", "SF1", "stocks"])].drop_duplicates("ticker", keep="first")
+            print(f"  {before:,} rows -> {len(t):,} unique equities")
         keep = [c for c in ("permaticker", "ticker", "cik", "exchange", "isdelisted",
                             "firstpricedate", "lastpricedate", "name", "sector")
                 if c in t.columns]
-        if "cik" not in keep:
-            print("  WARNING: no cik column. Without it the 2,805 companies whose "
-                  "ticker SEC no longer publishes cannot be joined to the panel.")
+        # Sharadar has no cik column, but every row carries an EDGAR browse URL
+        # with the CIK in its query string. That is the join key the study needs
+        # for the 2,805 companies whose ticker SEC no longer publishes, so it is
+        # worth digging out rather than doing without.
+        if "cik" not in t.columns and "secfilings" in t.columns:
+            t["cik"] = t["secfilings"].fillna("").str.extract(r"CIK=0*(\d+)")[0]
+            keep = keep + ["cik"]
+            got = t["cik"].notna().sum()
+            print(f"  cik recovered from secfilings for {got:,} of {len(t):,} rows")
+        if "cik" not in t.columns:
+            print("  WARNING: no cik anywhere. The companies whose ticker SEC no "
+                  "longer publishes cannot be joined to the panel.")
+        keep = [c for c in dict.fromkeys(keep) if c in t.columns]
         t = t[keep]
         if "cik" in t:
             t["cik"] = pd.to_numeric(t["cik"], errors="coerce").astype("Int64")
@@ -173,12 +189,37 @@ def check():
     req = HERE.parent / "research" / "price_needs.csv"
     if req.exists():
         need = pd.read_csv(req)
-        have = set(df.ticker.unique())
-        by = need.assign(ok=need.ticker.isin(have)).groupby("group").ok.agg(["sum", "count"])
-        print("\n  coverage against research/price_needs.csv:")
+        # dropna matters: the ticker column is categorical, its unique() carries a
+        # NaN, and a set built from that makes every null ticker test as present.
+        # That silently reported the 2,805 companies with no ticker at all as
+        # fully covered, which is the opposite of the truth.
+        have = {t for t in df.ticker.dropna().unique()}
+        ok = need.ticker.notna() & need.ticker.isin(have)
+        by = need.assign(ok=ok).groupby("group").ok.agg(["sum", "count"])
+        print("\n  coverage by ticker (research/price_needs.csv):")
         for grp, r in by.iterrows():
             print(f"    {grp:20} {int(r['sum']):>5,} of {int(r['count']):>5,}"
                   f"  ({r['sum']/r['count']:.0%})")
+
+        # Ticker is the wrong key for a third of the sample. Join on CIK, which
+        # is what the vendor's table was bought for.
+        if TK.exists():
+            t = pd.read_parquet(TK)
+            if "cik" in t.columns:
+                t = t[t.cik.notna()].copy()
+                t["cik"] = t.cik.astype("int64")
+                t = t[t.ticker.isin(have)]
+                # one CIK can carry several share classes; a company is covered
+                # if any of its tickers is priced
+                cov = set(t.cik.unique())
+                m = need.assign(ok=need.cik.isin(cov))
+                by = m.groupby("group").ok.agg(["sum", "count"])
+                print("\n  coverage by CIK:")
+                for grp, r in by.iterrows():
+                    print(f"    {grp:20} {int(r['sum']):>5,} of {int(r['count']):>5,}"
+                          f"  ({r['sum']/r['count']:.0%})")
+                print(f"    {'TOTAL':20} {int(m.ok.sum()):>5,} of {len(m):>5,}"
+                      f"  ({m.ok.mean():.0%})")
 
 
 if __name__ == "__main__":
