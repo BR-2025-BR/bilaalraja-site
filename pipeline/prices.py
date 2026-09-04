@@ -28,7 +28,8 @@ import pandas as pd
 HERE = Path(__file__).resolve().parent
 STORE = HERE.parent / "prices"
 STORE.mkdir(exist_ok=True)
-PX = STORE / "daily.parquet"
+PX = STORE / "daily.parquet"        # legacy single file, still read if present
+PXDIR = STORE / "daily"             # year-partitioned dataset written by ingest
 TK = STORE / "tickers.parquet"
 
 # Vendor column -> our name. Add a vendor by adding a row, not by editing logic.
@@ -90,27 +91,50 @@ def ingest(csv_path, is_tickers=False):
             print(f"  of which delisted: {d:,}  ({d/len(t):.0%})")
         return
 
-    rows = []
-    for chunk in pd.read_csv(src, chunksize=1_000_000, low_memory=False):
+    # Streamed, not accumulated. The full history is 45M rows and holding it in
+    # memory to concat at the end needs several gigabytes; this machine does not
+    # have them. Rows are appended to a Parquet dataset partitioned by year,
+    # which also makes the date-filtered reads in closes() cheaper.
+    import pyarrow as pa, pyarrow.parquet as pq
+    import shutil
+    if PXDIR.exists():
+        shutil.rmtree(PXDIR)
+    PXDIR.mkdir(parents=True)
+
+    writers, n, tickers = {}, 0, set()
+    lo, hi = None, None
+    for chunk in pd.read_csv(src, chunksize=2_000_000, low_memory=False):
         chunk.columns = [c.strip() for c in chunk.columns]
         chunk = chunk.rename(columns=COLMAP)
-        need = {"ticker", "date", "close"}
-        if not need <= set(chunk.columns):
-            sys.exit(f"columns {sorted(need - set(chunk.columns))} missing. "
+        needcols = {"ticker", "date", "close"}
+        if not needcols <= set(chunk.columns):
+            sys.exit(f"columns {sorted(needcols - set(chunk.columns))} missing. "
                      f"Saw: {list(chunk.columns)[:12]}. Add them to COLMAP.")
         chunk = chunk[[c for c in ("ticker", "date", "close", "volume")
                        if c in chunk.columns]]
         chunk["date"] = pd.to_datetime(chunk["date"], errors="coerce", format="mixed")
         chunk = chunk.dropna(subset=["date", "close"])
-        rows.append(chunk)
-        print(f"    {sum(len(r) for r in rows):,} rows", end="\r", flush=True)
-
-    df = pd.concat(rows, ignore_index=True)
-    df["ticker"] = df["ticker"].astype("category")
-    df = df.sort_values(["ticker", "date"]).drop_duplicates(["ticker", "date"], keep="last")
-    df.to_parquet(PX, index=False)
-    print(f"\n  prices: {len(df):,} rows, {df.ticker.nunique():,} tickers, "
-          f"{df.date.min().date()} to {df.date.max().date()} -> {PX.name}")
+        chunk["ticker"] = chunk["ticker"].astype(str)
+        tickers.update(chunk.ticker.unique())
+        d0, d1 = chunk.date.min(), chunk.date.max()
+        lo = d0 if lo is None or d0 < lo else lo
+        hi = d1 if hi is None or d1 > hi else hi
+        for yr, part in chunk.groupby(chunk.date.dt.year):
+            tbl = pa.Table.from_pandas(part, preserve_index=False)
+            w = writers.get(yr)
+            if w is None:
+                w = pq.ParquetWriter(PXDIR / f"{yr}.parquet", tbl.schema,
+                                     compression="zstd")
+                writers[yr] = w
+            w.write_table(tbl)
+        n += len(chunk)
+        print(f"    {n:,} rows", end="\r", flush=True)
+    for w in writers.values():
+        w.close()
+    size = sum(f.stat().st_size for f in PXDIR.glob("*.parquet"))
+    print(f"\n  prices: {n:,} rows, {len(tickers):,} tickers, "
+          f"{lo.date()} to {hi.date()}")
+    print(f"  {len(writers)} yearly parts, {size/1e9:.2f} GB -> {PXDIR.name}/")
 
 
 def closes(tickers, start, end):
@@ -121,11 +145,22 @@ def closes(tickers, start, end):
     omitting them is how survivorship bias gets back in after being paid to
     remove it.
     """
-    if not PX.exists():
-        sys.exit(f"{PX} not found. Run: python3 pipeline/prices.py ingest <csv>")
+    source = PXDIR if PXDIR.exists() else PX
+    if not source.exists():
+        sys.exit(f"{PXDIR} not found. Run: python3 pipeline/prices.py ingest <csv>")
     want = list(dict.fromkeys(tickers))
-    df = pd.read_parquet(PX, filters=[("date", ">=", pd.Timestamp(start)),
-                                      ("date", "<=", pd.Timestamp(end))])
+    # only the year files the window touches are opened
+    if source is PXDIR:
+        yrs = range(pd.Timestamp(start).year, pd.Timestamp(end).year + 1)
+        parts = [PXDIR / f"{y}.parquet" for y in yrs]
+        parts = [p for p in parts if p.exists()]
+        if not parts:
+            sys.exit(f"no price data covering {start}..{end}")
+        df = pd.concat([pd.read_parquet(p) for p in parts], ignore_index=True)
+        df = df[(df.date >= pd.Timestamp(start)) & (df.date <= pd.Timestamp(end))]
+    else:
+        df = pd.read_parquet(source, filters=[("date", ">=", pd.Timestamp(start)),
+                                              ("date", "<=", pd.Timestamp(end))])
     df = df[df.ticker.isin(want)]
     wide = df.pivot_table(index="date", columns="ticker", values="close", observed=True)
     missing = [t for t in want if t not in wide.columns]
@@ -174,9 +209,19 @@ def panel(tickers, start, end, delist_return=DELIST_RETURN):
 
 def check():
     """What is actually in the store, and what the study still cannot price."""
-    if not PX.exists():
+    if PXDIR.exists():
+        parts = sorted(PXDIR.glob("*.parquet"))
+        if not parts:
+            sys.exit("no price store yet")
+        # read the light columns only; the full store is 45M rows
+        df = pd.concat([pd.read_parquet(f, columns=["ticker", "date"]) for f in parts],
+                       ignore_index=True)
+        print(f"  parts     {len(parts)} yearly files, "
+              f"{sum(f.stat().st_size for f in parts)/1e9:.2f} GB")
+    elif PX.exists():
+        df = pd.read_parquet(PX, columns=["ticker", "date"])
+    else:
         sys.exit("no price store yet")
-    df = pd.read_parquet(PX, columns=["ticker", "date"])
     print(f"  rows      {len(df):,}")
     print(f"  tickers   {df.ticker.nunique():,}")
     print(f"  span      {df.date.min().date()} to {df.date.max().date()}")
