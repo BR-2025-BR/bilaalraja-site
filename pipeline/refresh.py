@@ -126,35 +126,24 @@ def fetch_facts(ciks):
 def fetch_prices(tickers, snap):
     """Merge into the existing snapshot; never replace it wholesale.
 
-    The bulk fetch is rate limited often enough that an overwrite can silently
-    halve coverage. Merging means a bad run leaves yesterday's price in place
-    rather than removing the company from the universe.
+    A bad fetch can silently halve coverage, and an overwrite would then remove
+    companies from the universe rather than leave yesterday's price in place.
+    Merging makes a failed run visible in the gates instead of destructive.
+
+    Where the prices come from is price_source.py's decision, not this
+    function's. PRICE_SOURCE=yfinance restores the original behaviour exactly,
+    which is the point: cancelling a subscription should be one environment
+    variable, not a rewrite.
     """
-    import yfinance as yf
-    todo = list(tickers); added = 0
-    CH = 60
-    for i in range(0, len(todo), CH):
-        chunk = todo[i:i+CH]
-        for attempt in range(4):
-            try:
-                d = yf.download(chunk, period="7d", progress=False,
-                                auto_adjust=False, threads=False)
-                if d is None or d.empty: raise ValueError("empty frame")
-                cl = d["Close"] if isinstance(d.columns, pd.MultiIndex) else d[["Close"]]
-                if not isinstance(d.columns, pd.MultiIndex): cl.columns = chunk[:1]
-                cl = cl.ffill()
-                for t in cl.columns:
-                    s = cl[t].dropna()
-                    if len(s):
-                        snap[t] = {"price": float(s.iloc[-1]),
-                                   "date": str(s.index[-1])[:10]}
-                        added += 1
-                break
-            except Exception:
-                if attempt < 3: time.sleep(10*(attempt+1))
-        json.dump(snap, open(HERE/"prices_snapshot.json","w"))
-        if (i//CH) % 5 == 0: log(f"  {min(i+CH,len(todo))}/{len(todo)}  priced={added}")
-        time.sleep(2)
+    import price_source
+    log(f"  source: {price_source.resolve()}")
+    got = price_source.latest(tickers)
+    added = 0
+    for t, v in got.items():
+        if v and v.get("price"):
+            snap[t] = {"price": float(v["price"]), "date": str(v["date"])[:10]}
+            added += 1
+    json.dump(snap, open(HERE / "prices_snapshot.json", "w"))
     return added
 
 
