@@ -121,19 +121,39 @@ READER_JS = """<script>
     return s;
   }
   function loadVoices(){
-    voices = synth.getVoices().filter(function(v){ return /^en/i.test(v.lang); });
-    if(!voices.length) return;
-    voices.sort(function(a,b){ return rank(b)-rank(a); });
-    voiceSel.innerHTML = voices.map(function(v,i){
+    // Everything the browser exposes, English first. Filtering to /^en/ hid
+    // about 160 voices and a reader who wants one had no way to reach it. Siri
+    // voices never appear whatever the filter: macOS does not publish them to
+    // third-party APIs, so no web page can offer one.
+    var all = synth.getVoices();
+    if(!all.length) return;
+    var eng = all.filter(function(v){ return /^en/i.test(v.lang); });
+    var rest = all.filter(function(v){ return !/^en/i.test(v.lang); });
+    eng.sort(function(a,b){ return rank(b)-rank(a); });
+    rest.sort(function(a,b){ return (a.lang+a.name).localeCompare(b.lang+b.name); });
+    voices = eng.concat(rest);
+    function opt(v,i){
       var good = /premium|enhanced|natural|siri/i.test(v.name);
-      return '<option value="'+i+'">'+(good?"\\u2605 ":"")+v.name+"</option>";
-    }).join("");
+      return '<option value="'+i+'">'+(good?"\\u2605 ":"")+v.name+
+             " \\u00b7 "+v.lang+"</option>";
+    }
+    var html = '<optgroup label="English">';
+    eng.forEach(function(v,i){ html += opt(v,i); });
+    html += "</optgroup>";
+    if(rest.length){
+      html += '<optgroup label="Other languages">';
+      rest.forEach(function(v,i){ html += opt(v, eng.length+i); });
+      html += "</optgroup>";
+    }
+    voiceSel.innerHTML = html;
     chosen = voices[0];
     var anyGood = voices.some(function(v){ return /premium|enhanced|natural|siri/i.test(v.name); });
     hint.innerHTML = anyGood ? "" :
       "Only basic voices are installed. For a far better one: System Settings " +
       "\\u2192 Accessibility \\u2192 Spoken Content \\u2192 System Voice \\u2192 " +
-      "Manage Voices, then download an <b>Enhanced</b> or <b>Premium</b> English voice.";
+      "Manage Voices, then download an <b>Enhanced</b> or <b>Premium</b> English " +
+      "voice. Siri voices cannot be offered here \\u2014 macOS keeps those for its " +
+      "own Spoken Content and does not publish them to browsers.";
   }
   loadVoices();
   if(synth.onvoiceschanged !== undefined) synth.onvoiceschanged = loadVoices;

@@ -3,7 +3,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="Every relevant line item pulled from SEC EDGAR filings for the Russell 3000, with key financial metrics computed point in time. 2,578 companies, 35 metrics, sector-neutral percentile ranking.">
 <meta name="author" content="Bilaal Raja">
-<meta name="x-build" content="59164a354b">
+<meta name="x-build" content="e4dc3bb424">
 <link rel="canonical" href="https://bilaalraja.com/russell3000">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Bilaal Raja">
@@ -39,7 +39,7 @@
   --rule:#E3DED3; --rule2:#EFEBE2; --grid:#EAE5DA;
   --s1:#B4531E; --s2:#14110E; --s3:#2C5670; --s4:#9A9086;
   --ember:#B4531E; --ember2:#8F3F14; --raise:#F3F0E9;
-  --dot:#A9A096; --accentbg:#F6EADF;
+  --dot:#A9A096; --accentbg:#F6EADF; --spy:#2E6F8E;
   --pos:#1F6F4A; --neg:#A32B1F;
   --serif:"Newsreader",Georgia,"Times New Roman",serif;
   --mono:"IBM Plex Mono",ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace;
@@ -50,7 +50,7 @@
   --rule:#2E2A26; --rule2:#232019; --grid:#262220;
   --s1:#E0762F; --s2:#F5F2EC; --s3:#7FA8C4; --s4:#8A8177;
   --ember:#E0762F; --ember2:#F0A268; --raise:#1C1917;
-  --dot:#6B635B; --accentbg:#2A1C10;
+  --dot:#6B635B; --accentbg:#2A1C10; --spy:#6FB2CE;
   --pos:#5FBE8C; --neg:#E8705F;
 }}
 :root[data-theme="dark"]{
@@ -58,7 +58,7 @@
   --rule:#2E2A26; --rule2:#232019; --grid:#262220;
   --s1:#E0762F; --s2:#F5F2EC; --s3:#7FA8C4; --s4:#8A8177;
   --ember:#E0762F; --ember2:#F0A268; --raise:#1C1917;
-  --dot:#6B635B; --accentbg:#2A1C10;
+  --dot:#6B635B; --accentbg:#2A1C10; --spy:#6FB2CE;
   --pos:#5FBE8C; --neg:#E8705F;
 }
 *{box-sizing:border-box;margin:0;padding:0}
@@ -147,8 +147,29 @@ canvas{width:100%;height:auto;display:block;border-radius:10px;cursor:crosshair}
   padding:16px 14px 10px;position:relative;margin-top:18px}
 .stratbox svg{display:block;width:100%;height:auto}
 .stip{position:absolute;pointer-events:none;background:var(--bg);border:1px solid var(--rule);
+  max-width:330px;
   border-radius:7px;padding:9px 11px;font-family:var(--mono);font-size:11.5px;
-  box-shadow:0 4px 18px rgba(0,0,0,.16);opacity:0;transition:opacity .1s;white-space:nowrap;z-index:6}
+  box-shadow:0 4px 18px rgba(0,0,0,.16);opacity:0;transition:opacity .1s;z-index:6}
+.stip table{border-collapse:collapse;width:100%;margin-top:5px}
+.stip td{padding:1px 0;font-size:11px}
+.stip td+td{text-align:right;padding-left:10px;font-variant-numeric:tabular-nums}
+.stiprule{border-top:1px solid var(--rule);margin:6px 0 4px}
+.sthold{margin-top:12px;border:1px solid var(--rule);border-radius:9px;overflow:hidden;display:none}
+.sthold.on{display:block}
+.sthold h4{margin:0;padding:9px 13px;border-bottom:1px solid var(--rule);font-size:13.5px;
+  display:flex;justify-content:space-between;align-items:center;gap:10px}
+.sthold .wrap{max-height:340px;overflow:auto}
+.sthold table{border-collapse:collapse;width:100%;font-size:12px}
+.sthold th{position:sticky;top:0;background:var(--bg);text-align:right;padding:6px 10px;
+  font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3);
+  border-bottom:1px solid var(--rule)}
+.sthold th:nth-child(-n+3){text-align:left}
+.sthold td{padding:4px 10px;text-align:right;font-variant-numeric:tabular-nums;
+  border-bottom:1px solid var(--grid)}
+.sthold td:nth-child(-n+3){text-align:left}
+.sthold tr:last-child td{border-bottom:0}
+.stclose{background:none;border:1px solid var(--rule);border-radius:6px;color:var(--ink2);
+  cursor:pointer;font:inherit;font-size:11.5px;padding:3px 9px}
 .stip.on{opacity:1}
 .slegend{display:flex;flex-wrap:wrap;gap:9px 20px;margin-top:12px;font-size:12.5px;color:var(--ink2)}
 .slegend i{display:inline-block;width:15px;height:10px;border-radius:2px;margin-right:6px;
@@ -417,12 +438,14 @@ html[data-nav="traverse"]::view-transition-old(root){animation-name:vt-out-right
       aria-label="Yearly return of the composite basket against the range a random basket would have produced"></svg>
     <div class="stip" id="stratTip"></div>
   </div>
+  <div class="sthold" id="stratHold"></div>
   <div class="slegend">
     <span><i style="background:var(--s1);width:11px;height:11px;border-radius:50%"></i>beat chance</span>
     <span><i style="background:var(--bg);border:2.4px solid var(--ink3);box-sizing:border-box;
       width:11px;height:11px;border-radius:50%"></i>within the range of luck</span>
     <span><i style="background:var(--dot);opacity:.45"></i>where 90% of random baskets landed</span>
     <span><i style="background:var(--ink3);height:2px"></i>average random basket</span>
+    <span><i style="border-top:2px dashed var(--spy);height:0"></i>S&amp;P 500</span>
   </div>
 
   <p class="note" style="margin-top:14px"><b>Read it this way.</b> Each marker sits at what the
@@ -927,7 +950,10 @@ function renderTables(){
   if(!el || typeof STRAT === "undefined" || !STRAT.length) return;
   const W=900,H=360,L=72,R=20,T=26,B=48, pw=W-L-R, ph=H-T-B, n=STRAT.length;
   let lo=Infinity,hi=-Infinity;
-  STRAT.forEach(d=>{lo=Math.min(lo,d.lo,d.ret);hi=Math.max(hi,d.hi,d.ret)});
+  STRAT.forEach(d=>{
+    lo=Math.min(lo,d.lo,d.ret); hi=Math.max(hi,d.hi,d.ret);
+    if(d.spy!=null){lo=Math.min(lo,d.spy); hi=Math.max(hi,d.spy);}
+  });
   const pad=(hi-lo)*.12; lo-=pad; hi+=pad;
   const Y=v=>T+ph-((v-lo)/(hi-lo))*ph;
   const bw=pw/n, cx=i=>L+bw*(i+0.5);
@@ -943,6 +969,10 @@ function renderTables(){
     g+=`<rect x="${x-w}" y="${Y(d.hi)}" width="${w*2}" height="${Math.max(Y(d.lo)-Y(d.hi),2)}"
         rx="3" fill="var(--dot)" opacity="0.30"/>`;
     g+=`<line x1="${x-w}" y1="${Y(d.nm)}" x2="${x+w}" y2="${Y(d.nm)}" stroke="var(--ink3)" stroke-width="2"/>`;
+    // what an index fund did over the identical two sessions
+    if(d.spy!=null)
+      g+=`<line x1="${x-w-3}" y1="${Y(d.spy)}" x2="${x+w+3}" y2="${Y(d.spy)}"
+          stroke="var(--spy)" stroke-width="2" stroke-dasharray="5 4"/>`;
     const beat=d.p<0.05;          // i.e. clear of the top of the band
     g+= beat
       ? `<circle cx="${x}" cy="${Y(d.ret)}" r="7" fill="var(--s1)"/>`
@@ -965,15 +995,57 @@ function renderTables(){
     const t=e.target; if(t.tagName!=="rect"||!t.dataset.i){tip.classList.remove("on");return;}
     const d=STRAT[+t.dataset.i], r=el.getBoundingClientRect();
     tip.classList.add("on");
-    tip.innerHTML=`<b>${d.y}</b> &middot; ${d.n} holdings<br>`+
-      `basket <b>${d.ret>0?'+':''}${d.ret}%</b><br>`+
-      `random average ${d.nm>0?'+':''}${d.nm}%<br>`+
-      `beat ${d.pct.toFixed(0)}% of random baskets<br>`+
-      `p = ${d.p.toFixed(3)}`;
-    tip.style.left=Math.min((e.clientX-r.left)+14, r.width-180)+"px";
+    const pc=v=>(v>0?'+':'')+v.toFixed(1)+'%';
+    const pp=v=>(v>0?'+':'')+v.toFixed(1)+'pp';
+    const held=d.partial?` &middot; only ${d.days} days so far`:'';
+    let rows=`<tr><td>the basket</td><td><b>${pc(d.ret)}</b></td></tr>`;
+    if(d.spy!=null)
+      rows+=`<tr><td style="color:var(--spy)">S&amp;P 500</td><td>${pc(d.spy)}</td></tr>`
+           +`<tr><td>&rarr; vs S&amp;P 500</td><td><b>${pp(d.vs_spy)}</b></td></tr>`;
+    rows+=`<tr><td>average random basket</td><td>${pc(d.nm)}</td></tr>`
+         +`<tr><td>&rarr; vs chance</td><td><b>${pp(d.ex)}</b></td></tr>`;
+    let top='';
+    if(d.h&&d.h.length){
+      const best=d.h.slice(0,5).map(x=>
+        `<tr><td>${x.t}</td><td>${x.r==null?'&mdash;':pc(x.r)}</td></tr>`).join('');
+      top=`<div class="stiprule"></div><div style="color:var(--ink3)">`
+         +`highest scoring holdings</div><table>${best}</table>`
+         +`<div style="color:var(--ink3);margin-top:5px">click for all ${d.h.length}</div>`;
+    }
+    tip.innerHTML=`<b>${d.y}</b> &middot; ${d.n} holdings${held}`
+      +`<table>${rows}</table>`
+      +`<div class="stiprule"></div>beat ${d.pct.toFixed(0)}% of random baskets`
+      +` &middot; ${d.p<0.0005?'p &lt; 0.001':'p = '+d.p.toFixed(3)}`+top;
+    const tw=tip.offsetWidth||300;
+    tip.style.left=Math.max(0,Math.min((e.clientX-r.left)+14, r.width-tw-4))+"px";
     tip.style.top="16px";
   });
   el.addEventListener("pointerleave",()=>tip.classList.remove("on"));
+
+  // 120 names will not fit in a tooltip, so hovering previews and clicking
+  // opens the whole basket underneath the chart
+  const box=$("stratHold");
+  const show=i=>{
+    const d=STRAT[i];
+    if(!d||!d.h||!d.h.length) return;
+    const pc=v=>(v>0?'+':'')+v.toFixed(1)+'%';
+    const rows=d.h.map((x,k)=>`<tr><td>${k+1}</td><td><b>${x.t}</b></td>`
+      +`<td>${x.n}</td><td>${x.s}</td><td>${x.sc.toFixed(1)}</td>`
+      +`<td>${x.r==null?'&mdash;':pc(x.r)}</td></tr>`).join('');
+    const sp=d.spy==null?'':` &middot; S&amp;P 500 ${pc(d.spy)}`;
+    box.innerHTML=`<h4><span>${d.y} basket &middot; ${d.h.length} holdings `
+      +`&middot; ${pc(d.ret)}${sp}</span>`
+      +`<button class="stclose" type="button">close</button></h4>`
+      +`<div class="wrap"><table><thead><tr><th>#</th><th>Ticker</th><th>Company</th>`
+      +`<th>Sector</th><th>Score</th><th>Return</th></tr></thead><tbody>${rows}</tbody>`
+      +`</table></div>`;
+    box.classList.add("on");
+    box.querySelector(".stclose").onclick=()=>box.classList.remove("on");
+  };
+  el.addEventListener("click",e=>{
+    const t=e.target;
+    if(t.tagName==="rect"&&t.dataset.i) show(+t.dataset.i);
+  });
 })();
 
 $("stamp").innerHTML=`prices ${META.price_date}<br>${META.n} companies<br>median quarter ${META.median_end}`;

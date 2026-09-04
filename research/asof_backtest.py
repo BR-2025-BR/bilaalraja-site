@@ -10,8 +10,21 @@ earlier version of this got wrong:
     was at the time.
   * share counts are the ones stated on filings made strictly before D, so
     market cap cannot use a number nobody had yet.
-  * returns come from a feed that keeps delisted tickers, with an explicit
-    -30% delisting return where a holding stops trading inside the year.
+  * returns come from a feed that keeps delisted tickers, so a company is
+    eligible on the day it was actually investable rather than only if it
+    survived to today.
+
+    NOTE what this does NOT do. It reads closes(), not panel(), so no delisting
+    return is applied: a holding that stops trading inside the window ends with
+    no return and drops out of the basket average. The pool it is compared with
+    is built the same way and loses the same names, so this is not the usual
+    survivorship error -- but the two sides need not lose them at the same RATE,
+    and the composite favours cheap, cash-generative, strong-balance-sheet
+    companies, which is also the acquisition-target profile. Most of the names
+    lost this way were takeovers, which carry a premium. Switching to panel()
+    would price them at the -30% convention, which is right for a bankruptcy and
+    badly wrong for a takeover, so neither treatment is obviously correct and
+    the honest thing is to say which one is in force. It is this one.
 
 The comparison that matters is not the index. A basket drawn from this universe
 is small-cap tilted, so beating SPY may say nothing about the composite. Each
@@ -20,7 +33,7 @@ the same universe on the same date.
 
     python3 research/asof_backtest.py 2019-01-01 2020-01-01 ...
 """
-import importlib.util, json, sys, time, warnings
+import importlib.util, json, os, sys, time, warnings
 from pathlib import Path
 
 warnings.filterwarnings("ignore")
@@ -32,6 +45,7 @@ PIPE = HERE.parent / "pipeline"
 sys.path.insert(0, str(PIPE))
 
 WIDTHS = [1, 3, 5, 10, 20]        # names per sector, all from one panel build
+OUT = os.environ.get("ASOF_OUT", "asof_results.json")
 HOLD_DAYS = 365
 N_DRAWS = 2000
 TOP_N_UNIVERSE = 3000
@@ -160,12 +174,19 @@ def run_one(asof, tk, sh, px):
         hold["ret"] = hold.ticker.map(r)
         hold.sort_values("score", ascending=False).to_csv(
             HERE / f"picks_{str(asof)[:10]}_n{N}.csv", index=False)
+        held = (endday - day).days
         out.append({"asof": str(asof), "formed": str(day.date()),
-                    "exit": str(endday.date()), "n_per_sector": N,
+                    "exit": str(endday.date()), "days_held": int(held),
+                    "partial": bool(held < HOLD_DAYS - 20), "n_per_sector": N,
                     "universe": int(len(u)), "scored": int(len(scored)),
                     "picks": int(n), "ret": float(r.mean()),
                     "median": float(r.median()), "pool_mean": float(pool.mean()),
                     "null_mean": float(draws.mean()), "null_sd": float(draws.std()),
+                    # the actual 5th/95th of the draws, not mean +/- 1.645 sd:
+                    # the bootstrap distribution is not obliged to be normal and
+                    # the chart draws this band directly
+                    "null_p5": float(np.percentile(draws, 5)),
+                    "null_p95": float(np.percentile(draws, 95)),
                     "pctile": float((draws < r.mean()).mean() * 100),
                     "p": float((draws >= r.mean()).mean()),
                     "secs": round(time.time() - t0)})
@@ -189,14 +210,19 @@ def main():
 
     out = [x for d in dates for x in (run_one(d, tk, sh, px) or [])]
     if out:
-        pd.DataFrame(out).to_json(HERE / "asof_results.json", orient="records", indent=1)
+        pd.DataFrame(out).to_json(HERE / OUT, orient="records", indent=1)
         d = pd.DataFrame(out)
+        if d.partial.any():
+            part = sorted(d[d.partial].asof.str[:10].unique())
+            print(f"\n  PARTIAL windows, returns not comparable with a full year: "
+                  f"{', '.join(part)}")
         print(f"\n  {'N':>4}{'windows':>9}{'mean excess':>13}{'median pctile':>15}{'p<0.05':>9}")
-        for N, g in d.groupby("n_per_sector"):
+        full = d[~d.partial]
+        for N, g in full.groupby("n_per_sector"):
             ex = (g.ret - g.pool_mean)
             print(f"  {N:>4}{len(g):>9}{ex.mean():>+12.2f}pp{g.pctile.median():>14.0f}"
                   f"{int((g.p<0.05).sum()):>6} /{len(g)}")
-        print(f"  wrote asof_results.json")
+        print(f"  wrote {OUT}")
 
 
 if __name__ == "__main__":
