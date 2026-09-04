@@ -253,6 +253,24 @@ canvas{width:100%;height:auto;display:block;border-radius:10px;cursor:crosshair}
   border:1px solid var(--rule);border-radius:999px;cursor:pointer;background:var(--panel);color:var(--ink2)}
 .chip[aria-pressed="true"]{background:var(--accentbg);border-color:var(--s1);color:var(--ink)}
 .chip i{width:9px;height:9px;border-radius:50%;background:var(--dot);display:inline-block}
+
+/* strategy section ------------------------------------------------------ */
+.strat{display:grid;gap:20px}
+@media(min-width:900px){.strat{grid-template-columns:1fr 1fr}}
+.strat .step{border-left:3px solid var(--s1);padding-left:16px}
+.strat .step b{display:block;font-size:15px;margin-bottom:4px}
+.strat .step p{font-size:14px;color:var(--ink2);margin:0}
+.stratbox{border:1px solid var(--rule);border-radius:10px;background:var(--panel);
+  padding:16px 14px 10px;position:relative;margin-top:18px}
+.stratbox svg{display:block;width:100%;height:auto}
+.stip{position:absolute;pointer-events:none;background:var(--bg);border:1px solid var(--rule);
+  border-radius:7px;padding:9px 11px;font-family:var(--mono);font-size:11.5px;
+  box-shadow:0 4px 18px rgba(0,0,0,.16);opacity:0;transition:opacity .1s;white-space:nowrap;z-index:6}
+.stip.on{opacity:1}
+.slegend{display:flex;flex-wrap:wrap;gap:9px 20px;margin-top:12px;font-size:12.5px;color:var(--ink2)}
+.slegend i{display:inline-block;width:15px;height:10px;border-radius:2px;margin-right:6px;
+  vertical-align:-1px}
+
 /* screen ---------------------------------------------------------------- */
 .screen{display:grid;grid-template-columns:repeat(auto-fit,minmax(232px,1fr));
         gap:9px 15px;align-items:start}
@@ -386,6 +404,82 @@ __MASTHEAD__
     colour-blind separable. Use the panels below to compare sectors.</p>
 </section>
 
+<section class="panel" id="strategy">
+  <div class="phead">
+    <div><h2>Does the score actually pick anything?</h2>
+      <p class="sub">A composite is only worth having if a portfolio built from it
+      beats what you would have got by picking at random. That is a testable claim,
+      and this is the test.</p></div>
+  </div>
+
+  <div class="strat" style="margin-top:6px">
+    <div class="step"><b>1 &middot; Rank inside each sector</b>
+      <p>Every company gets a percentile on value, quality, cash generation,
+      balance sheet and growth &mdash; compared only with its own sector, so a
+      software company is never called expensive for not looking like a utility.
+      The five combine into one score out of a hundred.</p></div>
+    <div class="step"><b>2 &middot; Take the best few in each sector</b>
+      <p>The ten highest scorers in each of the twelve sectors, about 120
+      companies. Equal amounts in each, so one large holding cannot decide the
+      outcome.</p></div>
+    <div class="step"><b>3 &middot; Hold for a year, change nothing</b>
+      <p>Bought on the first trading day of January, sold twelve months later.
+      No trading in between, no reacting to news.</p></div>
+    <div class="step"><b>4 &middot; Compare with luck, not with an index</b>
+      <p>Beating the S&amp;P would only show these companies are smaller than the
+      S&amp;P. So each basket is compared with 2,000 random baskets of the same size,
+      drawn from the same companies on the same day. That asks the real question:
+      was the <em>choosing</em> worth anything?</p></div>
+  </div>
+
+  <div class="stratbox">
+    <svg id="stratchart" viewBox="0 0 900 360" role="img"
+      aria-label="Yearly return of the composite basket against the range a random basket would have produced"></svg>
+    <div class="stip" id="stratTip"></div>
+  </div>
+  <div class="slegend">
+    <span><i style="background:var(--s1);width:11px;height:11px;border-radius:50%"></i>beat chance</span>
+    <span><i style="background:var(--bg);border:2.4px solid var(--ink3);box-sizing:border-box;
+      width:11px;height:11px;border-radius:50%"></i>within the range of luck</span>
+    <span><i style="background:var(--dot);opacity:.45"></i>where 90% of random baskets landed</span>
+    <span><i style="background:var(--ink3);height:2px"></i>average random basket</span>
+  </div>
+
+  <p class="note" style="margin-top:14px"><b>Read it this way.</b> Each marker sits at what the
+  basket actually returned; the grey band behind it is where nine out of ten random
+  baskets of the same size landed. A filled marker is a year that finished clear of
+  that band; a hollow one is a year the score cannot be told apart from luck,
+  whether it landed inside the band or below it.
+  The score cleared the band in four of the seven years, and the median year sat at the 98th
+  percentile of random selection &mdash; something that happens by luck about twice
+  in ten thousand tries.</p>
+
+  <details style="margin-top:12px">
+    <summary>What this still does not prove</summary>
+    <div class="body"><div>
+    <p class="note"><b>2020 was bad, not just unlucky.</b> The basket returned
+    5.8% while the average random basket returned 15.8% &mdash; the 3rd percentile.
+    A method that wins by ten points in four years and loses by ten in a fifth is
+    harder to live with than one that wins by four every year, even where the
+    averages match. Across all seven years the average advantage is +3.8
+    percentage points, and that average is <b>not</b> statistically significant
+    (t = 1.21).</p>
+    <p class="note" style="margin-top:9px"><b>The method was designed while
+    looking at this data.</b> Using return on capital employed rather than ROIC,
+    capping quality, capping growth at 50% &mdash; each of those was decided by
+    examining this universe and fixing what looked wrong. The <em>data</em> in
+    this test is out-of-sample; the <em>method</em> is not. The only cure is to
+    fix the rules now and test them on years that have not happened yet.</p>
+    <p class="note" style="margin-top:9px"><b>What is genuinely solid.</b> The
+    universe at each January is rebuilt from companies that had a price and had
+    filed accounts <em>on that day</em> &mdash; including the ones that have since
+    delisted, which most backtests quietly drop. Two thirds of the companies in
+    the price history no longer trade. Leaving them out is the single most common
+    way a backtest flatters itself.</p>
+    </div></div>
+  </details>
+</section>
+
 <section class="panel">
   <div class="phead">
     <div><h2>Top 25 by composite score</h2>
@@ -428,6 +522,7 @@ __MASTHEAD__
 </div>
 
 <script>
+const STRAT=[{"y":"2019","ret":20.2,"pool":24.7,"ex":-4.6,"pct":14.3,"p":0.857,"n":119,"lo":17.5,"hi":32.0,"nm":24.8},{"y":"2020","ret":5.8,"pool":15.8,"ex":-10.1,"pct":3.1,"p":0.969,"n":112,"lo":6.6,"hi":24.9,"nm":15.8},{"y":"2021","ret":34.5,"pool":24.1,"ex":10.4,"pct":97.8,"p":0.0225,"n":120,"lo":17.0,"hi":31.8,"nm":24.4},{"y":"2022","ret":-11.0,"pool":-18.4,"ex":7.4,"pct":99.0,"p":0.01,"n":118,"lo":-23.6,"hi":-13.2,"nm":-18.4},{"y":"2023","ret":25.1,"pool":14.1,"ex":11.1,"pct":99.3,"p":0.0065,"n":117,"lo":7.6,"hi":20.8,"nm":14.2},{"y":"2024","ret":18.3,"pool":8.3,"ex":10.0,"pct":98.7,"p":0.0135,"n":116,"lo":1.5,"hi":15.3,"nm":8.4},{"y":"2025","ret":9.3,"pool":7.1,"ex":2.2,"pct":71.8,"p":0.282,"n":116,"lo":0.3,"hi":13.6,"nm":7.0}];
 const D=__DATA__, META=__META__, METRICS=__METRICS__, SECTORS=__SECTORS__;
 const $=id=>document.getElementById(id);
 const HUE=["--s1","--s2","--s3","--s4"];
@@ -841,6 +936,65 @@ function renderTables(){
   mk($("t25"),  scored.filter(d=>d.m==="O").sort((a,b)=>b.score-a.score).slice(0,25));
   mk($("tfin"), scored.filter(d=>d.m==="F").sort((a,b)=>b.score-a.score).slice(0,10));
 }
+
+
+// ---- strategy chart ------------------------------------------------------
+// Each year shows the range a RANDOM basket would have produced (the grey band)
+// with the actual basket marked on it. That framing is the point: the question
+// is never "did it go up" but "did choosing beat not choosing".
+(function(){
+  const el=$("stratchart");
+  if(!el || typeof STRAT === "undefined" || !STRAT.length) return;
+  const W=900,H=360,L=72,R=20,T=26,B=48, pw=W-L-R, ph=H-T-B, n=STRAT.length;
+  let lo=Infinity,hi=-Infinity;
+  STRAT.forEach(d=>{lo=Math.min(lo,d.lo,d.ret);hi=Math.max(hi,d.hi,d.ret)});
+  const pad=(hi-lo)*.12; lo-=pad; hi+=pad;
+  const Y=v=>T+ph-((v-lo)/(hi-lo))*ph;
+  const bw=pw/n, cx=i=>L+bw*(i+0.5);
+  let g="";
+  for(let t=Math.ceil(lo/10)*10;t<=hi;t+=10){
+    const zero=Math.abs(t)<.001;
+    g+=`<line x1="${L}" y1="${Y(t)}" x2="${W-R}" y2="${Y(t)}" stroke="${zero?'var(--rule)':'var(--grid)'}" stroke-width="${zero?1.6:1}"/>`;
+    g+=`<text x="${L-9}" y="${Y(t)+4}" text-anchor="end" font-family="var(--mono)" font-size="11" fill="var(--ink3)">${t>0?'+':''}${t}%</text>`;
+  }
+  STRAT.forEach((d,i)=>{
+    const x=cx(i), w=Math.min(bw*0.46,44);
+    // the band a random basket would have landed in, 90% of the time
+    g+=`<rect x="${x-w}" y="${Y(d.hi)}" width="${w*2}" height="${Math.max(Y(d.lo)-Y(d.hi),2)}"
+        rx="3" fill="var(--dot)" opacity="0.30"/>`;
+    g+=`<line x1="${x-w}" y1="${Y(d.nm)}" x2="${x+w}" y2="${Y(d.nm)}" stroke="var(--ink3)" stroke-width="2"/>`;
+    const beat=d.p<0.05;          // i.e. clear of the top of the band
+    g+= beat
+      ? `<circle cx="${x}" cy="${Y(d.ret)}" r="7" fill="var(--s1)"/>`
+      : `<circle cx="${x}" cy="${Y(d.ret)}" r="6.2" fill="var(--bg)"
+          stroke="var(--ink3)" stroke-width="2.6"/>`;
+    const ly=Y(d.ret)+(beat?-21:20);
+    g+=`<text x="${x}" y="${ly}" text-anchor="middle" font-family="var(--mono)"
+        font-size="12" font-weight="600" fill="${beat?'var(--s1)':'var(--ink2)'}">${d.ex>0?'+':''}${d.ex}pp</text>`;
+    g+=`<text x="${x}" y="${ly+12}" text-anchor="middle" font-family="var(--mono)"
+        font-size="9.5" fill="var(--ink3)">vs chance</text>`;
+    g+=`<text x="${x}" y="${H-14}" text-anchor="middle" font-family="var(--mono)" font-size="12" fill="var(--ink3)">${d.y}</text>`;
+    g+=`<rect data-i="${i}" x="${x-bw/2}" y="${T}" width="${bw}" height="${ph}" fill="transparent"/>`;
+  });
+  g+=`<text transform="translate(15,${T+ph/2}) rotate(-90)" text-anchor="middle"
+      font-family="var(--mono)" font-size="10.5" fill="var(--ink3)"
+      letter-spacing="0.06em">RETURN OVER THE 12 MONTHS HELD</text>`;
+  el.innerHTML=g;
+  const tip=$("stratTip");
+  el.addEventListener("pointermove",e=>{
+    const t=e.target; if(t.tagName!=="rect"||!t.dataset.i){tip.classList.remove("on");return;}
+    const d=STRAT[+t.dataset.i], r=el.getBoundingClientRect();
+    tip.classList.add("on");
+    tip.innerHTML=`<b>${d.y}</b> &middot; ${d.n} holdings<br>`+
+      `basket <b>${d.ret>0?'+':''}${d.ret}%</b><br>`+
+      `random average ${d.nm>0?'+':''}${d.nm}%<br>`+
+      `beat ${d.pct.toFixed(0)}% of random baskets<br>`+
+      `p = ${d.p.toFixed(3)}`;
+    tip.style.left=Math.min((e.clientX-r.left)+14, r.width-180)+"px";
+    tip.style.top="16px";
+  });
+  el.addEventListener("pointerleave",()=>tip.classList.remove("on"));
+})();
 
 $("stamp").innerHTML=`prices ${META.price_date}<br>${META.n} companies<br>median quarter ${META.median_end}`;
 $("meth").innerHTML=`Own construction from SEC filings`

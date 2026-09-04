@@ -31,7 +31,7 @@ HERE = Path(__file__).resolve().parent
 PIPE = HERE.parent / "pipeline"
 sys.path.insert(0, str(PIPE))
 
-N_PER_SECTOR = 10
+WIDTHS = [1, 3, 5, 10, 20]        # names per sector, all from one panel build
 HOLD_DAYS = 365
 N_DRAWS = 2000
 TOP_N_UNIVERSE = 3000
@@ -138,32 +138,41 @@ def run_one(asof, tk, sh, px):
     scored = score(panel)
     scored = scored[scored.score.notna() & scored.sector.notna()]
 
-    picks = (scored.sort_values("score", ascending=False)
-                   .groupby("sector").head(N_PER_SECTOR))
-    r, endday = forward_return(picks.ticker.tolist(), day, px)
-    if len(r) < 10:
-        print(f"  {asof}: only {len(r)} priced picks"); return None
-
-    pool, _ = forward_return(scored.ticker.tolist(), day, px)
+    pool, endday = forward_return(scored.ticker.tolist(), day, px)
+    if len(pool) < 50:
+        print(f"  {asof}: only {len(pool)} priced in the pool"); return None
     rng = np.random.default_rng(7)
-    n = len(r)
-    draws = np.array([rng.choice(pool.values, n, replace=False).mean()
-                      for _ in range(N_DRAWS)]) if len(pool) > n else np.array([np.nan])
 
-    res = {"asof": str(asof), "formed": str(day.date()), "exit": str(endday.date()),
-           "universe": int(len(u)), "panel": int(len(panel)),
-           "scored": int(len(scored)), "picks": int(n),
-           "ret": float(r.mean()), "median": float(r.median()),
-           "pool_mean": float(pool.mean()), "pool_n": int(len(pool)),
-           "null_mean": float(np.nanmean(draws)), "null_sd": float(np.nanstd(draws)),
-           "pctile": float((draws < r.mean()).mean() * 100),
-           "p": float((draws >= r.mean()).mean()),
-           "secs": round(time.time() - t0)}
-    print(f"  {str(asof)[:10]}  universe {len(u):>4}  scored {len(scored):>4}  "
-          f"picks {n:>3}  ret {r.mean():>+7.1f}%  pool {pool.mean():>+6.1f}%  "
-          f"pctile {res['pctile']:>3.0f}  p {res['p']:.3f}  [{res['secs']}s]", flush=True)
-    return res
-
+    out = []
+    for N in WIDTHS:
+        picks = (scored.sort_values("score", ascending=False)
+                       .groupby("sector").head(N))
+        r, _ = forward_return(picks.ticker.tolist(), day, px)
+        if len(r) < 5:
+            continue
+        n = len(r)
+        # the null must match the basket's size: a random 120 is less variable
+        # than a random 12 by averaging alone, so comparing across sizes would
+        # reward width for arithmetic reasons rather than selection ones
+        draws = np.array([rng.choice(pool.values, n, replace=False).mean()
+                          for _ in range(N_DRAWS)])
+        hold = picks[["ticker", "name", "sector", "score", "mcap"]].copy()
+        hold["ret"] = hold.ticker.map(r)
+        hold.sort_values("score", ascending=False).to_csv(
+            HERE / f"picks_{str(asof)[:10]}_n{N}.csv", index=False)
+        out.append({"asof": str(asof), "formed": str(day.date()),
+                    "exit": str(endday.date()), "n_per_sector": N,
+                    "universe": int(len(u)), "scored": int(len(scored)),
+                    "picks": int(n), "ret": float(r.mean()),
+                    "median": float(r.median()), "pool_mean": float(pool.mean()),
+                    "null_mean": float(draws.mean()), "null_sd": float(draws.std()),
+                    "pctile": float((draws < r.mean()).mean() * 100),
+                    "p": float((draws >= r.mean()).mean()),
+                    "secs": round(time.time() - t0)})
+        print(f"  {str(asof)[:10]}  N={N:<3} picks {n:>3}  ret {r.mean():>+7.1f}%  "
+              f"pool {pool.mean():>+6.1f}%  excess {r.mean()-pool.mean():>+6.1f}pp  "
+              f"pctile {out[-1]['pctile']:>5.1f}  p {out[-1]['p']:.3f}", flush=True)
+    return out
 
 def main():
     dates = sys.argv[1:] or [f"{y}-01-01" for y in range(2019, 2026)]
@@ -178,13 +187,15 @@ def main():
     px = closes(syms, lo, hi).sort_index()
     print(f"  price matrix {px.shape[0]:,} sessions x {px.shape[1]:,} tickers\n", flush=True)
 
-    out = [r for r in (run_one(d, tk, sh, px) for d in dates) if r]
+    out = [x for d in dates for x in (run_one(d, tk, sh, px) or [])]
     if out:
         pd.DataFrame(out).to_json(HERE / "asof_results.json", orient="records", indent=1)
         d = pd.DataFrame(out)
-        print(f"\n  windows {len(d)}   mean return {d.ret.mean():+.1f}%   "
-              f"mean null {d.null_mean.mean():+.1f}%")
-        print(f"  beat its own null in {int((d.p < 0.05).sum())} of {len(d)} windows at p<0.05")
+        print(f"\n  {'N':>4}{'windows':>9}{'mean excess':>13}{'median pctile':>15}{'p<0.05':>9}")
+        for N, g in d.groupby("n_per_sector"):
+            ex = (g.ret - g.pool_mean)
+            print(f"  {N:>4}{len(g):>9}{ex.mean():>+12.2f}pp{g.pctile.median():>14.0f}"
+                  f"{int((g.p<0.05).sum()):>6} /{len(g)}")
         print(f"  wrote asof_results.json")
 
 

@@ -1,12 +1,9 @@
 {
- "split_mismatch": [
-  "RARE",
-  "CHPT"
- ],
+ "split_mismatch": [],
  "price_mismatch": 0,
- "n": 2580,
- "total_mcap": 80877.56036326429,
- "floor": 0.1321861517,
+ "n": 2579,
+ "total_mcap": 80862.05336987329,
+ "floor": 0.1321039437,
  "priced": 4909,
  "price_date": "2026-09-04",
  "built": "2026-09-04",
