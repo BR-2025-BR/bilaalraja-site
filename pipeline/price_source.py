@@ -31,6 +31,10 @@ STORE = HERE.parent / "prices" / "daily"
 SOURCE = os.environ.get("PRICE_SOURCE", "auto").lower()
 KEY = os.environ.get("SHARADAR_KEY", "")
 
+# A normal US session posts roughly 6,000 securities. A session that is still
+# being written returns far fewer, so this is the floor for trusting a day.
+MIN_ROWS = int(os.environ.get("SHARADAR_MIN_ROWS", "4000"))
+
 
 def resolve():
     if SOURCE != "auto":
@@ -40,15 +44,18 @@ def resolve():
 
 # ---------------------------------------------------------------- sharadar
 def _sharadar(tickers, lookback=8):
-    """Whole-market close for the most recent session, in one request.
+    """Whole-market close for the most recent complete session, in one request.
 
-    Sharadar serves a full day of prices for every ticker at once, so this asks
-    for the market rather than for 4,500 symbols in chunks. Walk back a few
-    days because the newest session may not be posted yet, and a weekend or a
-    holiday is not an error.
+    Everything the vendor returns is kept, not just the tickers asked for. The
+    caller's list is built from the PREVIOUS run's universe, because ranking by
+    market cap needs prices and so prices are fetched first. Filtering to that
+    list left any company new to the universe with no fresh price at all, and
+    the merge in refresh.py then kept its old one indefinitely while the build
+    stamped itself with today's date. The request costs the same either way.
     """
     import json, urllib.request, urllib.error
     want = set(tickers)
+    best = (None, {})
     today = pd.Timestamp.utcnow().normalize()
     for back in range(lookback):
         day = (today - pd.Timedelta(days=back)).strftime("%Y-%m-%d")
@@ -78,18 +85,30 @@ def _sharadar(tickers, lookback=8):
             p = ln.split(",")
             if len(p) <= ci:
                 continue
-            t = p[ti]
-            if t not in want:
-                continue
             try:
-                out[t] = {"price": float(p[ci]), "date": p[di]}
+                out[p[ti]] = {"price": float(p[ci]), "date": p[di]}
             except ValueError:
                 pass
-        if out:
-            print(f"  sharadar: {len(out):,} of {len(want):,} priced on {day} "
-                  f"(1 request)", flush=True)
+        # Share classes: the feed writes BRK.B, the pipeline carries BRK-B. Alias
+        # rather than rename, so a lookup in either convention resolves and no
+        # existing key changes meaning. 33 tickers in the feed are affected,
+        # Berkshire among them, which had been sitting on a ten-day-old price.
+        for t in [t for t in out if "." in t]:
+            out.setdefault(t.replace(".", "-"), out[t])
+
+        if len(out) >= MIN_ROWS:
+            hit = len(want & set(out))
+            print(f"  sharadar: {len(out):,} securities priced on {day} "
+                  f"({hit:,} of {len(want):,} asked for, 1 request)", flush=True)
             return out
-    print("  sharadar returned nothing for the last 8 days", flush=True)
+        if len(out) > len(best[1]):
+            best = (day, out)
+        print(f"  sharadar: {day} returned only {len(out):,} rows, "
+              f"looks half-posted; trying the day before", flush=True)
+    if best[1]:
+        print(f"  sharadar: falling back to {best[0]}, {len(best[1]):,} rows", flush=True)
+        return best[1]
+    print("  sharadar returned nothing usable for the last 8 days", flush=True)
     return {}
 
 

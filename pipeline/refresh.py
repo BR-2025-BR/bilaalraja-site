@@ -123,6 +123,9 @@ def fetch_facts(ciks):
 
 
 # ------------------------------------------------------------------ 2. prices
+DELISTED_REMOVED = 0          # set by fetch_prices, read by gates
+
+
 def fetch_prices(tickers, snap):
     """Merge into the existing snapshot; never replace it wholesale.
 
@@ -143,6 +146,25 @@ def fetch_prices(tickers, snap):
         if v and v.get("price"):
             snap[t] = {"price": float(v["price"]), "date": str(v["date"])[:10]}
             added += 1
+    # Merging keeps a failed fetch from emptying the universe, but it also means
+    # a company that stops trading keeps its last price for ever and stays in the
+    # index as a live constituent. Evict on the vendor's explicit delisting flag
+    # rather than on a missing price, so the merge guard above still holds: a bad
+    # fetch drops no one, while a real delisting drops exactly the right names.
+    tkf = HERE.parent / "prices" / "tickers.parquet"
+    if tkf.exists():
+        import pandas as pd
+        t = pd.read_parquet(tkf, columns=["ticker", "isdelisted"])
+        dead = set(t.ticker[t.isdelisted.astype(str).str.upper() == "Y"].dropna())
+        gone = sorted(set(snap) & dead)
+        for g in gone:
+            snap.pop(g, None)
+        global DELISTED_REMOVED
+        DELISTED_REMOVED = len(gone)
+        if gone:
+            log(f"  delisted, removed from the universe: {len(gone)}"
+                f"  {', '.join(gone[:12])}{' ...' if len(gone) > 12 else ''}")
+
     json.dump(snap, open(HERE / "prices_snapshot.json", "w"))
     return added
 
@@ -172,8 +194,17 @@ def gates(prev, now, force):
             fails.append(f"size floor collapsed: ${prev['floor']:.3f}bn -> "
                          f"${now['floor']:.3f}bn (usually means missing prices)")
 
-        if now["priced"] < prev["priced"] - 100:
-            fails.append(f"price coverage dropped {prev['priced'] - now['priced']} names")
+        # A coverage drop is only alarming when it is unexplained. Names the
+        # vendor flags as delisted are supposed to leave, and failing on those
+        # would mean every rebuild after a delisting needs --force, which is how
+        # a real safety check gets trained out of existence.
+        drop = prev["priced"] - now["priced"]
+        if drop - DELISTED_REMOVED > 100:
+            fails.append(f"price coverage dropped {drop} names, only "
+                         f"{DELISTED_REMOVED} of them delisted")
+        elif drop > 100:
+            warns.append(f"price coverage dropped {drop} names, all but "
+                         f"{drop - DELISTED_REMOVED} explained by delisting")
 
         if now["price_date"] < prev["price_date"]:
             fails.append(f"price date went backwards: {prev['price_date']} -> {now['price_date']}")
@@ -315,6 +346,20 @@ def main():
     out = run("build_universe_v2.py")
     log("  " + out.strip().splitlines()[-1] if out.strip() else "  built")
     r = pd.read_json(HERE/"universe_ranked.json")
+    # Evicting a delisted name from the price snapshot is not enough on its own:
+    # the panel reuses cached rows, so a company that stopped trading kept its
+    # last market cap and stayed in the index as a live constituent. Cut it here,
+    # where the constituent list is actually decided, and it cannot come back in
+    # by any other route.
+    tkf = HERE.parent / "prices" / "tickers.parquet"
+    if tkf.exists() and "ticker" in r:
+        t = pd.read_parquet(tkf, columns=["ticker", "isdelisted"])
+        dead = set(t.ticker[t.isdelisted.astype(str).str.upper() == "Y"].dropna())
+        cut = sorted(set(r.ticker) & dead)
+        if cut:
+            r = r[~r.ticker.isin(dead)]
+            log(f"  delisted, excluded from the index: {len(cut)}"
+                f"  {', '.join(cut[:10])}{' ...' if len(cut) > 10 else ''}")
     top = r.sort_values("mcap", ascending=False).head(3000).reset_index(drop=True)
     top["rank"] = range(1, len(top)+1)
     top.to_json(HERE/"r3k_universe.json", orient="records", indent=1)
