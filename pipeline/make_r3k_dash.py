@@ -1166,6 +1166,26 @@ function renderTables(){
   const pct=v=>(v==null||!isFinite(v))?"&mdash;":v.toFixed(1);
   // the threshold belongs in the label: "revenue growth" alone does not say
   // which bar the book is being held to, and that bar is the user's to move
+  // the figure each gate actually tests, so a holding can be read rather than
+  // only judged. Same source the test uses, so the number and the verdict can
+  // never disagree.
+  const GATEV={
+    growth:{f:d=>d.growth,   u:"%",  dp:1, sh:"Rev growth"},
+    ni:    {f:d=>d.ni,       u:"bn", dp:2, sh:"Net income"},
+    fcf:   {f:d=>d.fcf,      u:"bn", dp:2, sh:"Free cash flow"},
+    roic:  {f:d=>d.roic,     u:"%",  dp:1, sh:"ROIC"},
+    conv:  {f:d=>d.fcf_conv, u:"%",  dp:0, sh:"FCF conversion"},
+    lev:   {f:d=>(d.netcash==null||d.ebitda==null||d.ebitda<=0)?null
+                  :(-d.netcash)/d.ebitda, u:"x", dp:2, sh:"Net debt/EBITDA"}
+  };
+  function gv(k,d){ const x=GATEV[k].f(d);
+    return (x==null||!isFinite(x))?null:x; }
+  function gvTxt(k,d){
+    const x=gv(k,d);
+    if(x==null) return '<span style="color:var(--ink3)">&mdash;</span>';
+    const g=GATEV[k];
+    return (g.u==="bn"?"$":"")+x.toFixed(g.dp)+(g.u==="bn"?"bn":g.u);
+  }
   function gateLabel(k){
     const v=st.val;
     return {growth:"revenue growth &ge; "+v.growth+"%",
@@ -1241,7 +1261,15 @@ function renderTables(){
         +'<div class="fail" style="width:'+(fail*100).toFixed(1)+'%"></div>'
         +'<div class="unk" style="width:'+(unk*100).toFixed(1)+'%"></div></div>'
         +'<div class="v">'+(pass*100).toFixed(0)+'% pass'
-        +(unk>0.005?' · '+(unk*100).toFixed(0)+'% n/a':'')+'</div></div>';
+        +(unk>0.005?' · '+(unk*100).toFixed(0)+'% n/a':'')+'</div></div>'
+        +'<div class="pfgate" style="margin-top:-3px;margin-bottom:9px">'
+        +'<div class="t" style="color:var(--ink3);font-size:11.5px">portfolio median</div>'
+        +'<div style="font-family:var(--mono);font-size:12px;color:var(--ink)">'
+        +(function(){ const m=median(rows.map(r=>gv(k,r.d)));
+            if(m==null) return '<span style="color:var(--ink3)">no figure</span>';
+            const g=GATEV[k];
+            return (g.u==="bn"?"$":"")+m.toFixed(g.dp)+(g.u==="bn"?"bn":g.u); })()
+        +'</div><div></div></div>';
     });
 
     // ---- sectors
@@ -1327,17 +1355,23 @@ function renderTables(){
       +'above and half below is the comparison a reader expects.</p>';
 
     // ---- holdings
-    h+='<div class="tscroll" style="max-height:340px;margin-top:14px"><table><thead><tr>'
-      +'<th>Ticker</th><th>Company</th><th>Sector</th><th>Weight</th><th>Score</th>'
-      +'<th>Mkt cap $bn</th><th>Gates failed</th></tr></thead><tbody>';
+    const GK=Object.keys(GATEV);
+    h+='<h3 style="font-size:14px;font-weight:650;margin:18px 0 5px">Holdings, gate by gate</h3>'
+      +'<p class="note" style="margin-bottom:9px">The figure each gate tests, per holding. Amber '
+      +'is a number that fails the threshold you have set; a dash is a company that does not '
+      +'report it at all.</p>'
+      +'<div class="tscroll" style="max-height:400px"><table><thead><tr>'
+      +'<th>Ticker</th><th>Company</th><th>Weight</th><th>Score</th><th>Mkt cap $bn</th>'
+      +GK.map(k=>'<th>'+GATEV[k].sh+'</th>').join("")+'</tr></thead><tbody>';
     rows.forEach(r=>{
-      const failed=Object.keys(TESTS).filter(k=>TESTS[k].f(r.d)===false).map(k=>TESTS[k].lab);
-      const na=Object.keys(TESTS).filter(k=>TESTS[k].f(r.d)===null).length;
-      h+='<tr><td><b>'+r.t+'</b></td><td>'+(r.d.n||"")+'</td><td>'+(r.d.s||"")+'</td>'
+      h+='<tr><td><b>'+r.t+'</b></td><td>'+(r.d.n||"")+'</td>'
         +'<td class="num">'+(r.nw*100).toFixed(2)+'%</td>'
         +'<td class="num">'+(r.d.score==null?"&mdash;":r.d.score.toFixed(1))+'</td>'
         +'<td class="num">'+(r.d.mcap==null?"&mdash;":r.d.mcap.toFixed(2))+'</td>'
-        +'<td>'+(failed.length?failed.join(", "):(na?'<span style="color:var(--ink3)">not testable</span>':'<span style="color:var(--s1)">none</span>'))+'</td></tr>';
+        +GK.map(k=>{ const v=TESTS[k].f(r.d);
+            const col = v===false ? 'color:var(--s1);font-weight:600' : '';
+            return '<td class="num" style="'+col+'">'+gvTxt(k,r.d)+'</td>'; }).join("")
+        +'</tr>';
     });
     h+='</tbody></table></div>';
     out.innerHTML=h;
