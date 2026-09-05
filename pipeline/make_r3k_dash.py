@@ -775,6 +775,9 @@ function applyScreen(){
       `one of the figures tested — absent, not zero, and not a rejection.`;
   }
   writeURL(); draw(); drawSmall(); renderTables();
+  // the portfolio panel is measured against these gates, so it goes stale the
+  // moment they move
+  if(window.pfRefresh) window.pfRefresh();
 }
 function syncScreenUI(){
   for(const k in st.scr){ const el=$("f_"+k); if(el) el.checked=!!st.scr[k]; }
@@ -1147,6 +1150,17 @@ function renderTables(){
   }
 
   const pct=v=>(v==null||!isFinite(v))?"&mdash;":v.toFixed(1);
+  // the threshold belongs in the label: "revenue growth" alone does not say
+  // which bar the book is being held to, and that bar is the user's to move
+  function gateLabel(k){
+    const v=st.val;
+    return {growth:"revenue growth &ge; "+v.growth+"%",
+            ni:"profitable",
+            fcf:"cash generative",
+            roic:"ROIC &ge; "+v.roic+"%",
+            conv:"FCF conversion &ge; "+v.conv+"%",
+            lev:"net debt &le; "+v.lev+"&times; EBITDA"}[k] || TESTS[k].lab;
+  }
   function wavg(rows, key){
     let num=0, den=0;
     rows.forEach(r=>{ const v=r.d[key];
@@ -1194,15 +1208,21 @@ function renderTables(){
     });
 
     // ---- six gates, at whatever thresholds the screen is currently set to
-    h+='<h3 style="font-size:14px;font-weight:650;margin:16px 0 7px">Gate adherence</h3>'
-      +'<p class="note" style="margin-bottom:9px">Share of the book that passes each gate at the '
-      +'thresholds set in the screen above. Hatched is neither pass nor fail: the company does not '
-      +'report the figure, so it cannot be tested.</p>';
-    Object.keys(TESTS).forEach(k=>{
+    const active=Object.keys(st.scr).filter(k=>st.scr[k]);
+    h+='<h3 style="font-size:14px;font-weight:650;margin:16px 0 7px">Gate adherence</h3>';
+    if(!active.length){
+      h+='<p class="note" style="margin-bottom:9px">No gates are switched on in the screen above, '
+        +'so there is nothing to hold the book to. Turn one on and this updates.</p>';
+    }else{
+      h+='<p class="note" style="margin-bottom:9px">Measured against the gates you have set in the '
+        +'screen above, at their current thresholds. Hatched is neither pass nor fail: the company '
+        +'does not report the figure, so it cannot be tested.</p>';
+    }
+    active.forEach(k=>{
       let pass=0, fail=0, unk=0;
       rows.forEach(r=>{ const v=TESTS[k].f(r.d);
         if(v===null) unk+=r.nw; else if(v) pass+=r.nw; else fail+=r.nw; });
-      h+='<div class="pfgate"><div class="t">'+TESTS[k].lab+'</div><div class="track">'
+      h+='<div class="pfgate"><div class="t">'+gateLabel(k)+'</div><div class="track">'
         +'<div class="pass" style="width:'+(pass*100).toFixed(1)+'%"></div>'
         +'<div class="fail" style="width:'+(fail*100).toFixed(1)+'%"></div>'
         +'<div class="unk" style="width:'+(unk*100).toFixed(1)+'%"></div></div>'
@@ -1252,6 +1272,8 @@ function renderTables(){
     out.innerHTML=h;
   }
 
+  // re-measure whenever the screen changes, but only if something is entered
+  window.pfRefresh=()=>{ if(box.value.trim()) render(); };
   $("pfgo").addEventListener("click",render);
   $("pfclr").addEventListener("click",()=>{ box.value=""; 
     out.innerHTML='<p class="note">Enter holdings on the left, then press Analyse.</p>'; });
