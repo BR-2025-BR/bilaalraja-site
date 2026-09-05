@@ -124,33 +124,33 @@ mistyped.</p>
     ".dscrim{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;"+
     "justify-content:center;padding:20px;background:rgba(10,8,6,.62);"+
     "-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}"+
-    ".dsc{background:var(--paper);color:var(--ink);border:1px solid var(--rule);"+
+    ".dsc{background:var(--paper,var(--bg,#fff));color:var(--ink,#111);border:1px solid var(--rule,#ddd);"+
     "border-radius:13px;max-width:520px;width:100%;max-height:88vh;overflow:auto;"+
     "padding:24px 26px;box-shadow:0 18px 60px rgba(0,0,0,.35)}"+
     ".dsc h2{font-family:var(--serif);font-size:23px;line-height:1.2;margin-bottom:10px;"+
     "font-weight:600;text-wrap:balance}"+
-    ".dsc p{color:var(--ink2);font-size:14px;line-height:1.6;margin-bottom:12px}"+
+    ".dsc p{color:var(--ink2,#444);font-size:14px;line-height:1.6;margin-bottom:12px}"+
     ".dsc ul{list-style:none;margin:0 0 4px;display:flex;flex-direction:column;gap:9px}"+
-    ".dsc li{color:var(--ink2);font-size:13.5px;line-height:1.55;padding-left:15px;"+
+    ".dsc li{color:var(--ink2,#444);font-size:13.5px;line-height:1.55;padding-left:15px;"+
     "position:relative}"+
     ".dsc li:before{content:'';position:absolute;left:0;top:8px;width:5px;height:5px;"+
-    "border-radius:50%;background:var(--ember)}"+
-    ".dsc li b{color:var(--ink);font-weight:600}"+
+    "border-radius:50%;background:var(--ember,var(--s1,#b4531e))}"+
+    ".dsc li b{color:var(--ink,#111);font-weight:600}"+
     // the host pages style `label` as an uppercase, letter-spaced form caption;
     // inherited here it reads as shouting, so the dialog states its own type
     ".dsc,.dsc *{text-transform:none;letter-spacing:normal;font-family:var(--sans)}"+
     ".dsc h2{font-family:var(--serif)}"+
     ".dsc .agree{display:flex;align-items:flex-start;gap:10px;margin:18px 0 16px;"+
-    "padding-top:15px;border-top:1px solid var(--rule);cursor:pointer;font-size:14px;"+
-    "color:var(--ink);font-weight:500}"+
+    "padding-top:15px;border-top:1px solid var(--rule,#ddd);cursor:pointer;font-size:14px;"+
+    "color:var(--ink,#111);font-weight:500}"+
     ".dsc .agree input{flex:0 0 auto;width:17px;height:17px;margin-top:1px;"+
-    "accent-color:var(--ember);cursor:pointer}"+
+    "accent-color:var(--ember,var(--s1,#b4531e));cursor:pointer}"+
     ".dsc button{width:100%;padding:11px 16px;border-radius:9px;"+
-    "border:1px solid var(--ember);background:var(--ember);color:#fff;font:inherit;"+
+    "border:1px solid var(--ember,var(--s1,#b4531e));background:var(--ember,var(--s1,#b4531e));color:#fff;font:inherit;"+
     "font-size:14.5px;font-weight:600;cursor:pointer}"+
     ".dsc button:disabled{opacity:.42;cursor:not-allowed}"+
-    ".dsc button:not(:disabled):hover{background:var(--ember2);border-color:var(--ember2)}"+
-    ".dsc :focus-visible{outline:2px solid var(--ember);outline-offset:2px}"+
+    ".dsc button:not(:disabled):hover{background:var(--ember2,var(--s1,#8f3f14));border-color:var(--ember2,var(--s1,#8f3f14))}"+
+    ".dsc :focus-visible{outline:2px solid var(--ember,var(--s1,#b4531e));outline-offset:2px}"+
     "@media (prefers-reduced-motion:no-preference){.dsc{animation:dscin .22s ease-out}}"+
     "@keyframes dscin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}";
   document.head.appendChild(css);
