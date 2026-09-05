@@ -213,7 +213,8 @@ def main():
         pd.DataFrame(out).to_json(HERE / OUT, orient="records", indent=1)
         d = pd.DataFrame(out)
         if d.partial.any():
-            part = sorted(d[d.partial].asof.str[:10].unique())
+            # d.asof is a DataFrame METHOD; the column needs bracket access
+            part = sorted(d.loc[d.partial, "asof"].str[:10].unique())
             print(f"\n  PARTIAL windows, returns not comparable with a full year: "
                   f"{', '.join(part)}")
         print(f"\n  {'N':>4}{'windows':>9}{'mean excess':>13}{'median pctile':>15}{'p<0.05':>9}")
