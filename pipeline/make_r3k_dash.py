@@ -543,9 +543,12 @@ __MASTHEAD__
 
 <section class="panel">
   <div class="phead">
-    <div><h2>Top 25 by composite score</h2>
-      <p class="note">Operating companies only. Financials and Real Estate are scored on a separate,
-        weaker model and are listed below them &mdash; the two are not comparable.</p></div>
+    <div><h2>Top 25 after the screen</h2>
+      <p class="note">Ranked by composite score <b>within the companies passing the gates above</b>,
+        so this table changes when the screen does. Operating companies only: Financials and Real
+        Estate are scored on a separate, weaker model and are listed below them &mdash; the two are
+        not comparable.</p>
+      <p class="note" id="t25note" style="margin-top:6px"></p></div>
   </div>
   <div class="tscroll" style="max-height:none"><table id="t25"><thead></thead><tbody></tbody></table></div>
   <div class="phead" style="margin-top:18px">
@@ -603,12 +606,17 @@ const st={x:"fcf_yield",y:"ev_sales",lx:false,ly:true,sector:null,hit:null,q:"",
 // and it is not a fail; it is unknown, and the count below says how many were
 // dropped that way so a narrow result is never mistaken for a strict one.
 const TESTS={
-  growth:{lab:"revenue growth",   f:d=>d.growth==null?null:d.growth>=st.val.growth},
-  ni:    {lab:"profitable",       f:d=>d.ni==null?null:d.ni>0},
-  fcf:   {lab:"cash generative",  f:d=>d.fcf==null?null:d.fcf>0},
-  roic:  {lab:"ROIC",             f:d=>d.roic==null?null:d.roic>=st.val.roic},
-  conv:  {lab:"FCF conversion",   f:d=>d.fcf_conv==null?null:d.fcf_conv>=st.val.conv},
-  lev:   {lab:"net debt / EBITDA",f:d=>{
+  growth:{lab:"revenue growth",   miss:"revenue growth",
+          f:d=>d.growth==null?null:d.growth>=st.val.growth},
+  ni:    {lab:"profitable",       miss:"net income",
+          f:d=>d.ni==null?null:d.ni>0},
+  fcf:   {lab:"cash generative",  miss:"free cash flow",
+          f:d=>d.fcf==null?null:d.fcf>0},
+  roic:  {lab:"ROIC",             miss:"ROIC",
+          f:d=>d.roic==null?null:d.roic>=st.val.roic},
+  conv:  {lab:"FCF conversion",   miss:"FCF conversion",
+          f:d=>d.fcf_conv==null?null:d.fcf_conv>=st.val.conv},
+  lev:   {lab:"net debt / EBITDA",miss:"net debt or EBITDA",f:d=>{
             // netcash is cash minus debt, so net debt is its negation. A company
             // with more cash than debt passes any leverage ceiling outright.
             if(d.netcash==null) return null;
@@ -994,7 +1002,42 @@ function renderTables(){
     }).join("")+"</tr>").join("");
   };
   const scored=S.filter(d=>d.score!=null);
-  mk($("t25"),  scored.filter(d=>d.m==="O").sort((a,b)=>b.score-a.score).slice(0,25));
+  const shown=scored.filter(d=>d.m==="O").sort((a,b)=>b.score-a.score);
+  mk($("t25"),  shown.slice(0,25));
+
+  // A company with no figure for an active gate is "unknown", and screened() keeps
+  // only "pass" -- so it disappears without ever failing a test. When one of those
+  // outscores everything on display, saying so is the difference between a table
+  // that looks wrong and one that explains itself.
+  (function(){
+    const note=$("t25note"); if(!note) return;
+    const allOp=D.filter(d=>d.score!=null && d.m==="O");
+    const active=Object.keys(st.scr).filter(k=>st.scr[k]);
+    if(!active.length){
+      note.textContent=`No gates active, so this is the whole scored panel: `
+        +`${allOp.length.toLocaleString()} operating companies.`;
+      return;
+    }
+    const top=shown.length?shown[0].score:-Infinity;
+    const seen=new Set(shown);
+    const hidden=allOp.filter(d=>d.score>top && !seen.has(d))
+                      .sort((a,b)=>b.score-a.score);
+    const why=d=>{
+      for(const k of active){ if(TESTS[k].f(d)===null) return TESTS[k].miss||TESTS[k].lab; }
+      return null;
+    };
+    let t=`Ranked within the ${shown.length.toLocaleString()} of `
+      +`${allOp.length.toLocaleString()} scored operating companies that pass. `;
+    if(hidden.length){
+      const bits=hidden.slice(0,4).map(d=>{
+        const r=why(d);
+        return `<b>${d.t}</b> (${d.score.toFixed(1)}${r?`, no ${r} figure`:", fails a gate"})`;
+      }).join(", ");
+      t+=`${hidden.length} higher-scoring ${hidden.length===1?"company is":"companies are"} `
+        +`not shown: ${bits}.`;
+    }
+    note.innerHTML=t;
+  })();
   mk($("tfin"), scored.filter(d=>d.m==="F").sort((a,b)=>b.score-a.score).slice(0,10));
 }
 
