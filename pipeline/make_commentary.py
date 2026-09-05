@@ -26,6 +26,10 @@ rows = []
 for cik, v in slices.items():
     tk = v["ticker"]
     if not (v.get("q") or v.get("a")): continue
+    # The MD&A corpus is only refetched on a full run, so it outlives the index:
+    # companies that have left carry no current market cap, rank or score, and a
+    # delisted one reads as a live constituent. Require present membership.
+    if tk not in uni.index: continue
     p = panel.get(tk, {})
     u = uni.loc[tk] if tk in uni.index else None
     d = {"t": tk, "n": v["name"], "s": v["sector"], "cik": int(cik),
