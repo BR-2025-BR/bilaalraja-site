@@ -311,6 +311,43 @@ canvas{width:100%;height:auto;display:block;border-radius:10px;cursor:crosshair}
 .slegend i{display:inline-block;width:15px;height:10px;border-radius:2px;margin-right:6px;
   vertical-align:-1px}
 
+/* portfolio builder ------------------------------------------------------ */
+.pfgrid{display:grid;grid-template-columns:minmax(240px,1fr) 2fr;gap:16px;align-items:start}
+@media(max-width:820px){.pfgrid{grid-template-columns:1fr}}
+#pfin{width:100%;min-height:190px;resize:vertical;font-family:var(--mono);font-size:12.5px;
+  line-height:1.55;padding:10px 11px;border:1px solid var(--rule);border-radius:9px;
+  background:var(--bg);color:var(--ink)}
+#pfin:focus{outline:2px solid var(--s1);outline-offset:-1px}
+.pfbtns{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px}
+.pfbtns button{background:none;border:1px solid var(--rule);border-radius:7px;color:var(--ink2);
+  cursor:pointer;font:inherit;font-size:12.5px;padding:5px 10px}
+.pfbtns button:hover{border-color:var(--s1);color:var(--s1)}
+.pfbtns button.pri{background:var(--s1);border-color:var(--s1);color:#fff}
+.pfbtns button.pri:hover{opacity:.9;color:#fff}
+.pfhead{display:flex;flex-wrap:wrap;gap:10px 26px;align-items:flex-end;margin-bottom:14px}
+.pfstat b{display:block;font-family:var(--mono);font-size:23px;font-weight:500;line-height:1;
+  color:var(--ink)}
+.pfstat span{font-family:var(--mono);font-size:10px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--ink3)}
+.pfbar{display:grid;grid-template-columns:118px 1fr 92px;gap:9px;align-items:center;
+  margin-bottom:5px;font-size:12.5px}
+.pfbar .t{color:var(--ink2)}
+.pfbar .track{height:9px;border-radius:5px;background:var(--grid);position:relative;overflow:hidden}
+.pfbar .fill{position:absolute;left:0;top:0;bottom:0;border-radius:5px}
+.pfbar .v{font-family:var(--mono);font-size:12px;text-align:right;color:var(--ink);white-space:nowrap}
+.pfgate{display:grid;grid-template-columns:150px 1fr 96px;gap:9px;align-items:center;
+  margin-bottom:5px;font-size:12.5px}
+.pfgate .track{height:14px;border-radius:4px;background:var(--grid);display:flex;overflow:hidden}
+.pfgate .pass{background:var(--s1)}
+.pfgate .fail{background:var(--dot);opacity:.55}
+.pfgate .unk{background:repeating-linear-gradient(45deg,var(--dot),var(--dot) 3px,transparent 3px,transparent 6px);opacity:.7}
+.pfgate .v{font-family:var(--mono);font-size:11.5px;text-align:right;color:var(--ink2)}
+.pfwarn{margin-top:10px;padding:9px 11px;border-left:2px solid var(--neg);background:var(--raise);
+  border-radius:0 7px 7px 0;font-size:12.5px;color:var(--ink2)}
+.pfsec{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px}
+.pfsec i{display:inline-block;font-style:normal;font-size:11.5px;padding:2px 7px;
+  border:1px solid var(--rule);border-radius:20px;color:var(--ink2)}
+
 /* screen ---------------------------------------------------------------- */
 .screen{display:grid;grid-template-columns:repeat(auto-fit,minmax(232px,1fr));
         gap:9px 15px;align-items:start}
@@ -558,6 +595,38 @@ __MASTHEAD__
         rate-sensitive thing in the index.</p></div>
   </div>
   <div class="tscroll" style="max-height:300px"><table id="tfin"><thead></thead><tbody></tbody></table></div>
+</section>
+
+<section class="panel" id="portfolio">
+  <div class="phead">
+    <div><h2>Build a portfolio</h2>
+      <p class="note">Enter your own holdings and weights to see how the book scores against the
+      same five factors and six gates used everywhere else on this page. Nothing is saved or sent
+      anywhere &mdash; the calculation runs in your browser against the figures already loaded.</p></div>
+  </div>
+  <div class="pfgrid">
+    <div>
+      <textarea id="pfin" spellcheck="false" aria-label="Holdings and weights"
+placeholder="One holding per line:
+
+AAPL 8
+MSFT 8
+NVDA  6.5
+
+A ticker on its own is weighted equally
+with the other lines that have no weight."></textarea>
+      <div class="pfbtns">
+        <button type="button" class="pri" id="pfgo">Analyse</button>
+        <button type="button" id="pfeq">Equal weight</button>
+        <button type="button" id="pftop">Load the top 25</button>
+        <button type="button" id="pfclr">Clear</button>
+      </div>
+      <p class="note" style="margin-top:9px;font-size:12px">Weights can be percentages, fractions or
+      any units &mdash; they are normalised to the total you enter, and the raw total is reported so
+      you can see if it is not 100.</p>
+    </div>
+    <div id="pfout"><p class="note">Enter holdings on the left, then press Analyse.</p></div>
+  </div>
 </section>
 
 <section class="panel">
@@ -1041,6 +1110,166 @@ function renderTables(){
   mk($("tfin"), scored.filter(d=>d.m==="F").sort((a,b)=>b.score-a.score).slice(0,10));
 }
 
+
+// ---- portfolio builder ----------------------------------------------------
+// Everything is weighted by the holding's share of the book, and every average
+// is reported with the share of the book it actually covers. A portfolio where
+// a third of the weight has no free-cash-flow figure has not got a free-cash-
+// flow profile, and saying so is the whole point of the tool.
+(function(){
+  const box=$("pfin"), out=$("pfout");
+  if(!box||!out) return;
+  const BY={}; D.forEach(d=>{ BY[d.t]=d; });
+
+  function parse(text){
+    const rows=[], bad=[], seen={};
+    text.split(/\\r?\\n/).forEach(line=>{
+      const raw=line.trim();
+      if(!raw||raw.startsWith("#")) return;
+      // "AAPL 8", "AAPL,8", "AAPL 8%", "AAPL" -- tolerant of how people type
+      const m=raw.match(/^([A-Za-z0-9.\\-]+)[\\s,;]*([\\d.]+)?\\s*%?$/);
+      if(!m){ bad.push(raw); return; }
+      const t=m[1].toUpperCase();
+      if(!BY[t]){ bad.push(t); return; }
+      if(seen[t]!==undefined){ rows[seen[t]].w+=(m[2]?parseFloat(m[2]):null)||0; return; }
+      seen[t]=rows.length;
+      rows.push({t:t, d:BY[t], w:m[2]!==undefined?parseFloat(m[2]):null});
+    });
+    // lines with no weight share whatever the weighted lines leave over, or an
+    // equal slice if nothing was weighted at all
+    const given=rows.filter(r=>r.w!==null), blank=rows.filter(r=>r.w===null);
+    const gsum=given.reduce((a,r)=>a+r.w,0);
+    if(blank.length){
+      const rest = given.length ? Math.max(gsum/given.length,0) : 1;
+      blank.forEach(r=>{ r.w=rest; });
+    }
+    return {rows, bad};
+  }
+
+  const pct=v=>(v==null||!isFinite(v))?"&mdash;":v.toFixed(1);
+  function wavg(rows, key){
+    let num=0, den=0;
+    rows.forEach(r=>{ const v=r.d[key];
+      if(v!=null && isFinite(v)){ num+=v*r.nw; den+=r.nw; } });
+    return {v: den>0 ? num/den : null, cover: den};
+  }
+
+  function render(){
+    const {rows,bad}=parse(box.value);
+    if(!rows.length){
+      out.innerHTML='<p class="note">No recognised tickers yet.'
+        +(bad.length?' Not found: <b>'+bad.slice(0,12).join(", ")+'</b>.':'')+'</p>';
+      return;
+    }
+    const total=rows.reduce((a,r)=>a+r.w,0);
+    rows.forEach(r=>{ r.nw = total>0 ? r.w/total : 0; });
+    rows.sort((a,b)=>b.nw-a.nw);
+
+    const scored=rows.filter(r=>r.d.score!=null);
+    const sc=wavg(rows,"score");
+    const fin=rows.filter(r=>r.d.m==="F");
+
+    let h='<div class="pfhead">'
+      +'<div class="pfstat"><b>'+(sc.v==null?"&mdash;":sc.v.toFixed(1))+'</b>'
+      +'<span>weighted score</span></div>'
+      +'<div class="pfstat"><b>'+rows.length+'</b><span>holdings</span></div>'
+      +'<div class="pfstat"><b>'+total.toFixed(1)+'</b><span>weights entered</span></div>'
+      +'<div class="pfstat"><b>'+(sc.cover*100).toFixed(0)+'%</b><span>of book scored</span></div>'
+      +'</div>';
+
+    // ---- five factors
+    h+='<h3 style="font-size:14px;font-weight:650;margin-bottom:7px">Factor profile</h3>'
+      +'<p class="note" style="margin-bottom:9px">Weighted average percentile within sector. '
+      +'50 is the middle of the market by construction, so above 50 is the half of the market '
+      +'that scores better on that factor.</p>';
+    [["p_value","Value"],["p_quality","Quality"],["p_cash","Cash generation"],
+     ["p_balance","Balance sheet"],["p_growth","Growth"]].forEach(([k,lab])=>{
+      const a=wavg(rows,k), v=a.v;
+      const w=v==null?0:Math.max(0,Math.min(100,v));
+      h+='<div class="pfbar"><div class="t">'+lab+'</div>'
+        +'<div class="track"><div class="fill" style="width:'+w+'%;background:'
+        +(v!=null&&v>=50?"var(--s1)":"var(--dot)")+'"></div></div>'
+        +'<div class="v">'+pct(v)+(a.cover<0.995&&a.cover>0?'<span style="color:var(--ink3)"> ·'
+        +(a.cover*100).toFixed(0)+'%</span>':'')+'</div></div>';
+    });
+
+    // ---- six gates, at whatever thresholds the screen is currently set to
+    h+='<h3 style="font-size:14px;font-weight:650;margin:16px 0 7px">Gate adherence</h3>'
+      +'<p class="note" style="margin-bottom:9px">Share of the book that passes each gate at the '
+      +'thresholds set in the screen above. Hatched is neither pass nor fail: the company does not '
+      +'report the figure, so it cannot be tested.</p>';
+    Object.keys(TESTS).forEach(k=>{
+      let pass=0, fail=0, unk=0;
+      rows.forEach(r=>{ const v=TESTS[k].f(r.d);
+        if(v===null) unk+=r.nw; else if(v) pass+=r.nw; else fail+=r.nw; });
+      h+='<div class="pfgate"><div class="t">'+TESTS[k].lab+'</div><div class="track">'
+        +'<div class="pass" style="width:'+(pass*100).toFixed(1)+'%"></div>'
+        +'<div class="fail" style="width:'+(fail*100).toFixed(1)+'%"></div>'
+        +'<div class="unk" style="width:'+(unk*100).toFixed(1)+'%"></div></div>'
+        +'<div class="v">'+(pass*100).toFixed(0)+'% pass'
+        +(unk>0.005?' · '+(unk*100).toFixed(0)+'% n/a':'')+'</div></div>';
+    });
+
+    // ---- sectors
+    const bysec={}; rows.forEach(r=>{ bysec[r.d.s]=(bysec[r.d.s]||0)+r.nw; });
+    h+='<h3 style="font-size:14px;font-weight:650;margin:16px 0 5px">Sector weights</h3><div class="pfsec">';
+    Object.entries(bysec).sort((a,b)=>b[1]-a[1]).forEach(([k,v])=>{
+      h+='<i>'+k+' <b style="color:var(--ink)">'+(v*100).toFixed(1)+'%</b></i>'; });
+    h+='</div>';
+
+    // ---- warnings worth interrupting for
+    const warn=[];
+    if(Math.abs(total-100)>0.5 && total>0)
+      warn.push('Your weights total <b>'+total.toFixed(1)+'</b>, not 100. Everything above is '
+        +'computed on weights normalised to that total.');
+    if(bad.length)
+      warn.push('Not found in the panel and excluded: <b>'+bad.slice(0,14).join(", ")
+        +(bad.length>14?' …':'')+'</b>.');
+    if(sc.cover<0.995)
+      warn.push((100-sc.cover*100).toFixed(0)+'% of the book has no composite score, usually '
+        +'because a figure the score needs is missing. That weight is excluded from the score '
+        +'above rather than counted as zero.');
+    if(fin.length)
+      warn.push(fin.length+' holding'+(fin.length>1?'s are':' is')+' scored on the separate '
+        +'financials model ('+fin.map(r=>r.t).join(", ")+'). Those percentiles are not comparable '
+        +'with the others and the blend above mixes two scales.');
+    if(warn.length) h+='<div class="pfwarn">'+warn.join('<br><br>')+'</div>';
+
+    // ---- holdings
+    h+='<div class="tscroll" style="max-height:340px;margin-top:14px"><table><thead><tr>'
+      +'<th>Ticker</th><th>Company</th><th>Sector</th><th>Weight</th><th>Score</th>'
+      +'<th>Mkt cap $bn</th><th>Gates failed</th></tr></thead><tbody>';
+    rows.forEach(r=>{
+      const failed=Object.keys(TESTS).filter(k=>TESTS[k].f(r.d)===false).map(k=>TESTS[k].lab);
+      const na=Object.keys(TESTS).filter(k=>TESTS[k].f(r.d)===null).length;
+      h+='<tr><td><b>'+r.t+'</b></td><td>'+(r.d.n||"")+'</td><td>'+(r.d.s||"")+'</td>'
+        +'<td class="num">'+(r.nw*100).toFixed(2)+'%</td>'
+        +'<td class="num">'+(r.d.score==null?"&mdash;":r.d.score.toFixed(1))+'</td>'
+        +'<td class="num">'+(r.d.mcap==null?"&mdash;":r.d.mcap.toFixed(2))+'</td>'
+        +'<td>'+(failed.length?failed.join(", "):(na?'<span style="color:var(--ink3)">not testable</span>':'<span style="color:var(--s1)">none</span>'))+'</td></tr>';
+    });
+    h+='</tbody></table></div>';
+    out.innerHTML=h;
+  }
+
+  $("pfgo").addEventListener("click",render);
+  $("pfclr").addEventListener("click",()=>{ box.value=""; 
+    out.innerHTML='<p class="note">Enter holdings on the left, then press Analyse.</p>'; });
+  $("pfeq").addEventListener("click",()=>{
+    const {rows}=parse(box.value);
+    if(!rows.length) return;
+    const w=(100/rows.length).toFixed(2);
+    box.value=rows.map(r=>r.t+" "+w).join("\\n"); render();
+  });
+  $("pftop").addEventListener("click",()=>{
+    const top=S.filter(d=>d.score!=null&&d.m==="O").sort((a,b)=>b.score-a.score).slice(0,25);
+    const w=(100/Math.max(top.length,1)).toFixed(2);
+    box.value=top.map(d=>d.t+" "+w).join("\\n"); render();
+  });
+  box.addEventListener("keydown",e=>{
+    if((e.metaKey||e.ctrlKey)&&e.key==="Enter"){ e.preventDefault(); render(); }
+  });
+})();
 
 // ---- strategy chart ------------------------------------------------------
 // Each year shows the range a RANDOM basket would have produced (the grey band)

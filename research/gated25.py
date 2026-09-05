@@ -50,7 +50,11 @@ import asof_backtest as AB                                   # noqa: E402
 from quarterly_backtest import build_panel_parallel          # noqa: E402
 
 CACHE = HERE / "gated25_panels"
-DATES = [f"{y}-01-01" for y in range(2019, 2026)]     # last exits Jan 2026
+# 2014 is where SEC XBRL breadth becomes comparable with today; before that the
+# universe is mostly large filers and the gates would be screening a different
+# market. The last window exits Jan 2026.
+YEAR0 = int(os.environ.get("GATED25_FROM", "2019"))
+DATES = [f"{y}-01-01" for y in range(YEAR0, 2026)]
 TOP_N = 25
 CUT = 8.0                                             # per cent, over the year
 START_CAPITAL = 100_000.0
@@ -71,12 +75,20 @@ def passes_gates(d):
     return (ok & pd.Series(lev, index=d.index)).fillna(False)
 
 
+def price_window():
+    """Two months before the first formation, a year after the last exit."""
+    lo = (pd.Timestamp(min(DATES)) - pd.DateOffset(months=2)).strftime("%Y-%m-%d")
+    hi = (pd.Timestamp(max(DATES)) + pd.DateOffset(months=21)).strftime("%Y-%m-%d")
+    return lo, hi
+
+
 def build_panels(workers):
     CACHE.mkdir(exist_ok=True)
     tk, sh = AB.load_inputs()
     from prices import closes
     syms = sorted(t for t in tk.ticker.unique() if isinstance(t, str) and t)
-    px = closes(syms, "2018-11-01", "2026-09-30").sort_index()
+    lo, hi = price_window()
+    px = closes(syms, lo, hi).sort_index()
     print(f"  price matrix {px.shape[0]:,} x {px.shape[1]:,}\n", flush=True)
     for asof in DATES:
         f = CACHE / f"{asof}.parquet"
@@ -84,6 +96,9 @@ def build_panels(workers):
             print(f"  {asof} cached, skipping", flush=True)
             continue
         u, day = AB.universe_at(pd.Timestamp(asof), tk, sh, px)
+        if u is None or not len(u):
+            print(f"  {asof}: no universe -- price history does not reach this date")
+            continue
         panel, why = build_panel_parallel(u, pd.Timestamp(asof), workers)
         if panel.empty:
             print(f"  {asof} EMPTY {sorted(why.items(), key=lambda k: -k[1])[:2]}")
@@ -125,7 +140,8 @@ def run():
     from prices import closes
     tk, _ = AB.load_inputs()
     syms = sorted(t for t in tk.ticker.unique() if isinstance(t, str) and t)
-    px = closes(syms, "2018-11-01", "2026-09-30").sort_index()
+    lo, hi = price_window()
+    px = closes(syms, lo, hi).sort_index()
     idx = px.index
 
     panels = {}
@@ -198,6 +214,8 @@ def run():
             elif r < CUT:
                 reason = "under 8%"
                 sold_cut += 1
+            elif nxt is None:
+                reason = "end of test"
             elif t not in keep_set:
                 reason = "not in next 25"
                 sold_gone += 1

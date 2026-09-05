@@ -1,0 +1,4367 @@
+{
+ "log": [
+  {
+   "year": "2014",
+   "formed": "2013-12-31",
+   "exit": "2015-01-02",
+   "picks": 12,
+   "gate_pass": 12,
+   "start": 100000.0,
+   "end": 100896.06,
+   "ret": 0.9,
+   "carried": 1,
+   "sold_cut": 9,
+   "sold_gone": 2,
+   "delisted": 0,
+   "median_ret": -3.9
+  },
+  {
+   "year": "2015",
+   "formed": "2014-12-31",
+   "exit": "2016-01-04",
+   "picks": 25,
+   "gate_pass": 35,
+   "start": 100896.06,
+   "end": 101818.3,
+   "ret": 0.91,
+   "carried": 1,
+   "sold_cut": 18,
+   "sold_gone": 6,
+   "delisted": 0,
+   "median_ret": -1.8
+  },
+  {
+   "year": "2016",
+   "formed": "2015-12-31",
+   "exit": "2017-01-03",
+   "picks": 25,
+   "gate_pass": 50,
+   "start": 101818.3,
+   "end": 111830.45,
+   "ret": 9.83,
+   "carried": 2,
+   "sold_cut": 15,
+   "sold_gone": 8,
+   "delisted": 0,
+   "median_ret": -0.3
+  },
+  {
+   "year": "2017",
+   "formed": "2016-12-30",
+   "exit": "2018-01-02",
+   "picks": 25,
+   "gate_pass": 56,
+   "start": 111830.45,
+   "end": 148567.37,
+   "ret": 32.85,
+   "carried": 0,
+   "sold_cut": 13,
+   "sold_gone": 12,
+   "delisted": 0,
+   "median_ret": 4.5
+  },
+  {
+   "year": "2018",
+   "formed": "2017-12-29",
+   "exit": "2019-01-02",
+   "picks": 25,
+   "gate_pass": 74,
+   "start": 148567.37,
+   "end": 117792.33,
+   "ret": -20.71,
+   "carried": 0,
+   "sold_cut": 22,
+   "sold_gone": 3,
+   "delisted": 0,
+   "median_ret": -23.5
+  },
+  {
+   "year": "2019",
+   "formed": "2018-12-31",
+   "exit": "2020-01-02",
+   "picks": 25,
+   "gate_pass": 86,
+   "start": 117792.33,
+   "end": 142000.42,
+   "ret": 20.55,
+   "carried": 0,
+   "sold_cut": 12,
+   "sold_gone": 12,
+   "delisted": 1,
+   "median_ret": 7.6
+  },
+  {
+   "year": "2020",
+   "formed": "2019-12-31",
+   "exit": "2021-01-04",
+   "picks": 25,
+   "gate_pass": 50,
+   "start": 142000.42,
+   "end": 187004.19,
+   "ret": 31.69,
+   "carried": 1,
+   "sold_cut": 11,
+   "sold_gone": 13,
+   "delisted": 0,
+   "median_ret": 14.9
+  },
+  {
+   "year": "2021",
+   "formed": "2020-12-31",
+   "exit": "2022-01-03",
+   "picks": 25,
+   "gate_pass": 44,
+   "start": 187004.19,
+   "end": 244271.2,
+   "ret": 30.62,
+   "carried": 0,
+   "sold_cut": 11,
+   "sold_gone": 13,
+   "delisted": 1,
+   "median_ret": 10.7
+  },
+  {
+   "year": "2022",
+   "formed": "2021-12-31",
+   "exit": "2023-01-03",
+   "picks": 25,
+   "gate_pass": 189,
+   "start": 244271.2,
+   "end": 213547.46,
+   "ret": -12.58,
+   "carried": 0,
+   "sold_cut": 22,
+   "sold_gone": 2,
+   "delisted": 1,
+   "median_ret": -13.2
+  },
+  {
+   "year": "2023",
+   "formed": "2022-12-30",
+   "exit": "2024-01-02",
+   "picks": 25,
+   "gate_pass": 135,
+   "start": 213547.46,
+   "end": 328002.16,
+   "ret": 53.6,
+   "carried": 2,
+   "sold_cut": 5,
+   "sold_gone": 17,
+   "delisted": 1,
+   "median_ret": 49.3
+  },
+  {
+   "year": "2024",
+   "formed": "2023-12-29",
+   "exit": "2025-01-02",
+   "picks": 25,
+   "gate_pass": 56,
+   "start": 328002.16,
+   "end": 439978.56,
+   "ret": 34.14,
+   "carried": 2,
+   "sold_cut": 12,
+   "sold_gone": 11,
+   "delisted": 0,
+   "median_ret": 9.2
+  },
+  {
+   "year": "2025",
+   "formed": "2024-12-31",
+   "exit": "2026-01-02",
+   "picks": 25,
+   "gate_pass": 29,
+   "start": 439978.56,
+   "end": 661446.7,
+   "ret": 50.34,
+   "carried": 0,
+   "sold_cut": 13,
+   "sold_gone": 0,
+   "delisted": 1,
+   "median_ret": 4.4
+  }
+ ],
+ "trades": [
+  {
+   "year": "2014",
+   "action": "buy",
+   "ticker": "MCHP",
+   "amount": 8333.33,
+   "score": 84.1
+  },
+  {
+   "year": "2014",
+   "action": "buy",
+   "ticker": "FSLR",
+   "amount": 8333.33,
+   "score": 77.9
+  },
+  {
+   "year": "2014",
+   "action": "buy",
+   "ticker": "QCOM",
+   "amount": 8333.33,
+   "score": 77.7
+  },
+  {
+   "year": "2014",
+   "action": "buy",
+   "ticker": "MDCO",
+   "amount": 8333.33,
+   "score": 55.4
+  },
+  {
+   "year": "2014",
+   "action": "buy",
+   "ticker": "ALXN",
+   "amount": 8333.33,
+   "score": 53.5
+  },
+  {
+   "year": "2014",
+   "action": "buy",
+   "ticker": "HOG",
+   "amount": 8333.33,
+   "score": 50.7
+  },
+  {
+   "year": "2014",
+   "action": "buy",
+   "ticker": "MDSO",
+   "amount": 8333.33,
+   "score": 50.3
+  },
+  {
+   "year": "2014",
+   "action": "buy",
+   "ticker": "ELLI",
+   "amount": 8333.33,
+   "score": 47.3
+  },
+  {
+   "year": "2014",
+   "action": "buy",
+   "ticker": "AKRXQ",
+   "amount": 8333.33,
+   "score": 46.6
+  },
+  {
+   "year": "2014",
+   "action": "buy",
+   "ticker": "FRANQ",
+   "amount": 8333.33,
+   "score": 44.4
+  },
+  {
+   "year": "2014",
+   "action": "buy",
+   "ticker": "ULTI1",
+   "amount": 8333.33,
+   "score": 43.0
+  },
+  {
+   "year": "2014",
+   "action": "buy",
+   "ticker": "ASNAQ",
+   "amount": 8333.33,
+   "score": 31.1
+  },
+  {
+   "year": "2014",
+   "action": "sell",
+   "ticker": "MCHP",
+   "amount": 8621.18,
+   "ret": 3.5,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2014",
+   "action": "sell",
+   "ticker": "FSLR",
+   "amount": 6794.47,
+   "ret": -18.5,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2014",
+   "action": "sell",
+   "ticker": "QCOM",
+   "amount": 8515.72,
+   "ret": 2.2,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2014",
+   "action": "sell",
+   "ticker": "MDCO",
+   "amount": 5746.16,
+   "ret": -31.0,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2014",
+   "action": "sell",
+   "ticker": "HOG",
+   "amount": 8049.72,
+   "ret": -3.4,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2014",
+   "action": "sell",
+   "ticker": "MDSO",
+   "amount": 6444.69,
+   "ret": -22.7,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2014",
+   "action": "sell",
+   "ticker": "ELLI",
+   "amount": 12473.64,
+   "ret": 49.7,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2014",
+   "action": "sell",
+   "ticker": "AKRXQ",
+   "amount": 12208.91,
+   "ret": 46.5,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2014",
+   "action": "sell",
+   "ticker": "FRANQ",
+   "amount": 7567.93,
+   "ret": -9.2,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2014",
+   "action": "sell",
+   "ticker": "ULTI1",
+   "amount": 7974.92,
+   "ret": -4.3,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2014",
+   "action": "sell",
+   "ticker": "ASNAQ",
+   "amount": 4796.79,
+   "ret": -42.4,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2015",
+   "action": "buy",
+   "ticker": "BKNG",
+   "amount": 3716.42,
+   "score": 93.3
+  },
+  {
+   "year": "2015",
+   "action": "buy",
+   "ticker": "TTWO",
+   "amount": 3716.42,
+   "score": 90.5
+  },
+  {
+   "year": "2015",
+   "action": "buy",
+   "ticker": "LRCX",
+   "amount": 3716.42,
+   "score": 89.6
+  },
+  {
+   "year": "2015",
+   "action": "buy",
+   "ticker": "MTRX",
+   "amount": 3716.42,
+   "score": 75.6
+  },
+  {
+   "year": "2015",
+   "action": "buy",
+   "ticker": "CLCT",
+   "amount": 3716.42,
+   "score": 75.4
+  },
+  {
+   "year": "2015",
+   "action": "buy",
+   "ticker": "MU",
+   "amount": 3716.42,
+   "score": 74.8
+  },
+  {
+   "year": "2015",
+   "action": "buy",
+   "ticker": "MEI",
+   "amount": 3716.42,
+   "score": 74.5
+  },
+  {
+   "year": "2015",
+   "action": "buy",
+   "ticker": "UI",
+   "amount": 3716.42,
+   "score": 72.0
+  },
+  {
+   "year": "2015",
+   "action": "buy",
+   "ticker": "VGR",
+   "amount": 3716.42,
+   "score": 71.7
+  },
+  {
+   "year": "2015",
+   "action": "buy",
+   "ticker": "SAVEQ",
+   "amount": 3716.42,
+   "score": 69.1
+  },
+  {
+   "year": "2015",
+   "action": "buy",
+   "ticker": "MKSI",
+   "amount": 3716.42,
+   "score": 66.7
+  },
+  {
+   "year": "2015",
+   "action": "buy",
+   "ticker": "MMS",
+   "amount": 3716.42,
+   "score": 66.5
+  },
+  {
+   "year": "2015",
+   "action": "buy",
+   "ticker": "CGNX",
+   "amount": 3716.42,
+   "score": 65.8
+  },
+  {
+   "year": "2015",
+   "action": "buy",
+   "ticker": "BIIB",
+   "amount": 3716.42,
+   "score": 65.2
+  },
+  {
+   "year": "2015",
+   "action": "buy",
+   "ticker": "OTEX",
+   "amount": 3716.42,
+   "score": 64.3
+  },
+  {
+   "year": "2015",
+   "action": "buy",
+   "ticker": "CBM",
+   "amount": 3716.42,
+   "score": 63.4
+  },
+  {
+   "year": "2015",
+   "action": "buy",
+   "ticker": "LKQ",
+   "amount": 3716.42,
+   "score": 63.2
+  },
+  {
+   "year": "2015",
+   "action": "buy",
+   "ticker": "SLCA",
+   "amount": 3716.42,
+   "score": 62.5
+  },
+  {
+   "year": "2015",
+   "action": "buy",
+   "ticker": "HOG",
+   "amount": 3716.42,
+   "score": 61.8
+  },
+  {
+   "year": "2015",
+   "action": "buy",
+   "ticker": "SWKS",
+   "amount": 3716.42,
+   "score": 61.0
+  },
+  {
+   "year": "2015",
+   "action": "buy",
+   "ticker": "PKG",
+   "amount": 3716.42,
+   "score": 59.4
+  },
+  {
+   "year": "2015",
+   "action": "buy",
+   "ticker": "AMAT",
+   "amount": 3716.42,
+   "score": 58.3
+  },
+  {
+   "year": "2015",
+   "action": "buy",
+   "ticker": "ILMN",
+   "amount": 3716.42,
+   "score": 57.6
+  },
+  {
+   "year": "2015",
+   "action": "buy",
+   "ticker": "REGN",
+   "amount": 3716.42,
+   "score": 57.6
+  },
+  {
+   "year": "2015",
+   "action": "sell",
+   "ticker": "ALXN",
+   "amount": 16263.16,
+   "ret": 39.0,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2015",
+   "action": "sell",
+   "ticker": "BKNG",
+   "amount": 4059.17,
+   "ret": 9.2,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2015",
+   "action": "sell",
+   "ticker": "TTWO",
+   "amount": 4530.51,
+   "ret": 21.9,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2015",
+   "action": "sell",
+   "ticker": "LRCX",
+   "amount": 3692.34,
+   "ret": -0.6,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2015",
+   "action": "sell",
+   "ticker": "MTRX",
+   "amount": 3381.74,
+   "ret": -9.0,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2015",
+   "action": "sell",
+   "ticker": "CLCT",
+   "amount": 2897.37,
+   "ret": -22.0,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2015",
+   "action": "sell",
+   "ticker": "MU",
+   "amount": 1521.13,
+   "ret": -59.1,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2015",
+   "action": "sell",
+   "ticker": "MEI",
+   "amount": 3214.61,
+   "ret": -13.5,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2015",
+   "action": "sell",
+   "ticker": "UI",
+   "amount": 3883.25,
+   "ret": 4.5,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2015",
+   "action": "sell",
+   "ticker": "VGR",
+   "amount": 4539.24,
+   "ret": 22.1,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2015",
+   "action": "sell",
+   "ticker": "SAVEQ",
+   "amount": 1926.54,
+   "ret": -48.2,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2015",
+   "action": "sell",
+   "ticker": "MKSI",
+   "amount": 3686.63,
+   "ret": -0.8,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2015",
+   "action": "sell",
+   "ticker": "MMS",
+   "amount": 3697.89,
+   "ret": -0.5,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2015",
+   "action": "sell",
+   "ticker": "CGNX",
+   "amount": 3008.61,
+   "ret": -19.0,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2015",
+   "action": "sell",
+   "ticker": "BIIB",
+   "amount": 3225.61,
+   "ret": -13.2,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2015",
+   "action": "sell",
+   "ticker": "OTEX",
+   "amount": 3089.71,
+   "ret": -16.9,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2015",
+   "action": "sell",
+   "ticker": "CBM",
+   "amount": 7633.96,
+   "ret": 105.4,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2015",
+   "action": "sell",
+   "ticker": "LKQ",
+   "amount": 3811.64,
+   "ret": 2.6,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2015",
+   "action": "sell",
+   "ticker": "SLCA",
+   "amount": 2901.92,
+   "ret": -21.9,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2015",
+   "action": "sell",
+   "ticker": "HOG",
+   "amount": 2625.94,
+   "ret": -29.3,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2015",
+   "action": "sell",
+   "ticker": "PKG",
+   "amount": 3065.51,
+   "ret": -17.5,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2015",
+   "action": "sell",
+   "ticker": "AMAT",
+   "amount": 2812.37,
+   "ret": -24.3,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2015",
+   "action": "sell",
+   "ticker": "ILMN",
+   "amount": 3649.98,
+   "ret": -1.8,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2015",
+   "action": "sell",
+   "ticker": "REGN",
+   "amount": 4679.38,
+   "ret": 25.9,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2016",
+   "action": "buy",
+   "ticker": "USNA",
+   "amount": 4074.93,
+   "score": 91.4
+  },
+  {
+   "year": "2016",
+   "action": "buy",
+   "ticker": "LRCX",
+   "amount": 4074.93,
+   "score": 91.2
+  },
+  {
+   "year": "2016",
+   "action": "buy",
+   "ticker": "WLDN",
+   "amount": 4074.93,
+   "score": 88.9
+  },
+  {
+   "year": "2016",
+   "action": "buy",
+   "ticker": "OSPN",
+   "amount": 4074.93,
+   "score": 87.3
+  },
+  {
+   "year": "2016",
+   "action": "buy",
+   "ticker": "EXLS",
+   "amount": 4074.93,
+   "score": 87.0
+  },
+  {
+   "year": "2016",
+   "action": "buy",
+   "ticker": "RAIL",
+   "amount": 4074.93,
+   "score": 83.2
+  },
+  {
+   "year": "2016",
+   "action": "buy",
+   "ticker": "GILD",
+   "amount": 4074.93,
+   "score": 79.6
+  },
+  {
+   "year": "2016",
+   "action": "buy",
+   "ticker": "AAPL",
+   "amount": 4074.93,
+   "score": 78.6
+  },
+  {
+   "year": "2016",
+   "action": "buy",
+   "ticker": "CRUS",
+   "amount": 4074.93,
+   "score": 75.8
+  },
+  {
+   "year": "2016",
+   "action": "buy",
+   "ticker": "ZAGG",
+   "amount": 4074.93,
+   "score": 74.6
+  },
+  {
+   "year": "2016",
+   "action": "buy",
+   "ticker": "SNBRQ",
+   "amount": 4074.93,
+   "score": 74.4
+  },
+  {
+   "year": "2016",
+   "action": "buy",
+   "ticker": "LMNX1",
+   "amount": 4074.93,
+   "score": 74.3
+  },
+  {
+   "year": "2016",
+   "action": "buy",
+   "ticker": "HAS",
+   "amount": 4074.93,
+   "score": 71.0
+  },
+  {
+   "year": "2016",
+   "action": "buy",
+   "ticker": "IPGP",
+   "amount": 4074.93,
+   "score": 70.0
+  },
+  {
+   "year": "2016",
+   "action": "buy",
+   "ticker": "EBS",
+   "amount": 4074.93,
+   "score": 67.9
+  },
+  {
+   "year": "2016",
+   "action": "buy",
+   "ticker": "CTSH",
+   "amount": 4074.93,
+   "score": 67.4
+  },
+  {
+   "year": "2016",
+   "action": "buy",
+   "ticker": "BFXXQ",
+   "amount": 4074.93,
+   "score": 67.4
+  },
+  {
+   "year": "2016",
+   "action": "buy",
+   "ticker": "GPIC",
+   "amount": 4074.93,
+   "score": 65.6
+  },
+  {
+   "year": "2016",
+   "action": "buy",
+   "ticker": "JAZZ",
+   "amount": 4074.93,
+   "score": 65.4
+  },
+  {
+   "year": "2016",
+   "action": "buy",
+   "ticker": "MLNX",
+   "amount": 4074.93,
+   "score": 64.6
+  },
+  {
+   "year": "2016",
+   "action": "buy",
+   "ticker": "LCINQ",
+   "amount": 4074.93,
+   "score": 64.4
+  },
+  {
+   "year": "2016",
+   "action": "buy",
+   "ticker": "CNCE",
+   "amount": 4074.93,
+   "score": 64.2
+  },
+  {
+   "year": "2016",
+   "action": "buy",
+   "ticker": "IDTI",
+   "amount": 4074.93,
+   "score": 64.0
+  },
+  {
+   "year": "2016",
+   "action": "buy",
+   "ticker": "RTEC",
+   "amount": 4074.93,
+   "score": 63.5
+  },
+  {
+   "year": "2016",
+   "action": "sell",
+   "ticker": "SWKS",
+   "amount": 4263.1,
+   "ret": 6.0,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2016",
+   "action": "sell",
+   "ticker": "USNA",
+   "amount": 3968.07,
+   "ret": -2.6,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2016",
+   "action": "sell",
+   "ticker": "LRCX",
+   "amount": 5587.51,
+   "ret": 37.1,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2016",
+   "action": "sell",
+   "ticker": "OSPN",
+   "amount": 3409.9,
+   "ret": -16.3,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2016",
+   "action": "sell",
+   "ticker": "EXLS",
+   "amount": 4557.42,
+   "ret": 11.8,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2016",
+   "action": "sell",
+   "ticker": "RAIL",
+   "amount": 3241.7,
+   "ret": -20.4,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2016",
+   "action": "sell",
+   "ticker": "GILD",
+   "amount": 3054.83,
+   "ret": -25.0,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2016",
+   "action": "sell",
+   "ticker": "AAPL",
+   "amount": 4596.62,
+   "ret": 12.8,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2016",
+   "action": "sell",
+   "ticker": "CRUS",
+   "amount": 7897.32,
+   "ret": 93.8,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2016",
+   "action": "sell",
+   "ticker": "ZAGG",
+   "amount": 2644.6,
+   "ret": -35.1,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2016",
+   "action": "sell",
+   "ticker": "SNBRQ",
+   "amount": 4329.97,
+   "ret": 6.3,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2016",
+   "action": "sell",
+   "ticker": "LMNX1",
+   "amount": 3886.36,
+   "ret": -4.6,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2016",
+   "action": "sell",
+   "ticker": "IPGP",
+   "amount": 4514.59,
+   "ret": 10.8,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2016",
+   "action": "sell",
+   "ticker": "EBS",
+   "amount": 3602.95,
+   "ret": -11.6,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2016",
+   "action": "sell",
+   "ticker": "CTSH",
+   "amount": 3837.36,
+   "ret": -5.8,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2016",
+   "action": "sell",
+   "ticker": "BFXXQ",
+   "amount": 4654.97,
+   "ret": 14.2,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2016",
+   "action": "sell",
+   "ticker": "GPIC",
+   "amount": 5307.53,
+   "ret": 30.2,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2016",
+   "action": "sell",
+   "ticker": "JAZZ",
+   "amount": 3231.3,
+   "ret": -20.7,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2016",
+   "action": "sell",
+   "ticker": "MLNX",
+   "amount": 4061.39,
+   "ret": -0.3,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2016",
+   "action": "sell",
+   "ticker": "LCINQ",
+   "amount": 2280.21,
+   "ret": -44.0,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2016",
+   "action": "sell",
+   "ticker": "CNCE",
+   "amount": 2307.05,
+   "ret": -43.4,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2016",
+   "action": "sell",
+   "ticker": "IDTI",
+   "amount": 3791.92,
+   "ret": -6.9,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2016",
+   "action": "sell",
+   "ticker": "RTEC",
+   "amount": 6662.59,
+   "ret": 63.5,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2017",
+   "action": "buy",
+   "ticker": "SWBI",
+   "amount": 4160.4,
+   "score": 93.4
+  },
+  {
+   "year": "2017",
+   "action": "buy",
+   "ticker": "RGR",
+   "amount": 4160.4,
+   "score": 90.3
+  },
+  {
+   "year": "2017",
+   "action": "buy",
+   "ticker": "SEM",
+   "amount": 4160.4,
+   "score": 88.6
+  },
+  {
+   "year": "2017",
+   "action": "buy",
+   "ticker": "AMZN",
+   "amount": 4160.4,
+   "score": 87.2
+  },
+  {
+   "year": "2017",
+   "action": "buy",
+   "ticker": "SRCL",
+   "amount": 4160.4,
+   "score": 86.1
+  },
+  {
+   "year": "2017",
+   "action": "buy",
+   "ticker": "AWRE",
+   "amount": 4160.4,
+   "score": 80.4
+  },
+  {
+   "year": "2017",
+   "action": "buy",
+   "ticker": "SCHL",
+   "amount": 4160.4,
+   "score": 75.4
+  },
+  {
+   "year": "2017",
+   "action": "buy",
+   "ticker": "GENC",
+   "amount": 4160.4,
+   "score": 71.3
+  },
+  {
+   "year": "2017",
+   "action": "buy",
+   "ticker": "MHO",
+   "amount": 4160.4,
+   "score": 68.7
+  },
+  {
+   "year": "2017",
+   "action": "buy",
+   "ticker": "UI",
+   "amount": 4160.4,
+   "score": 68.2
+  },
+  {
+   "year": "2017",
+   "action": "buy",
+   "ticker": "WEB",
+   "amount": 4160.4,
+   "score": 68.2
+  },
+  {
+   "year": "2017",
+   "action": "buy",
+   "ticker": "PMDI",
+   "amount": 4160.4,
+   "score": 67.8
+  },
+  {
+   "year": "2017",
+   "action": "buy",
+   "ticker": "AMN",
+   "amount": 4160.4,
+   "score": 65.8
+  },
+  {
+   "year": "2017",
+   "action": "buy",
+   "ticker": "ALGN",
+   "amount": 4160.4,
+   "score": 65.0
+  },
+  {
+   "year": "2017",
+   "action": "buy",
+   "ticker": "PATK",
+   "amount": 4160.4,
+   "score": 64.5
+  },
+  {
+   "year": "2017",
+   "action": "buy",
+   "ticker": "REGN",
+   "amount": 4160.4,
+   "score": 64.2
+  },
+  {
+   "year": "2017",
+   "action": "buy",
+   "ticker": "ZD",
+   "amount": 4160.4,
+   "score": 62.8
+  },
+  {
+   "year": "2017",
+   "action": "buy",
+   "ticker": "QLYS",
+   "amount": 4160.4,
+   "score": 62.2
+  },
+  {
+   "year": "2017",
+   "action": "buy",
+   "ticker": "MPX",
+   "amount": 4160.4,
+   "score": 62.0
+  },
+  {
+   "year": "2017",
+   "action": "buy",
+   "ticker": "PGNX",
+   "amount": 4160.4,
+   "score": 60.5
+  },
+  {
+   "year": "2017",
+   "action": "buy",
+   "ticker": "EPAM",
+   "amount": 4160.4,
+   "score": 60.2
+  },
+  {
+   "year": "2017",
+   "action": "buy",
+   "ticker": "KNL",
+   "amount": 4160.4,
+   "score": 59.9
+  },
+  {
+   "year": "2017",
+   "action": "buy",
+   "ticker": "HWKN",
+   "amount": 4160.4,
+   "score": 58.0
+  },
+  {
+   "year": "2017",
+   "action": "sell",
+   "ticker": "WLDN",
+   "amount": 31163.89,
+   "ret": 178.4,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2017",
+   "action": "sell",
+   "ticker": "HAS",
+   "amount": 7093.93,
+   "ret": 43.4,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2017",
+   "action": "sell",
+   "ticker": "SWBI",
+   "amount": 2634.86,
+   "ret": -36.7,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2017",
+   "action": "sell",
+   "ticker": "RGR",
+   "amount": 4613.05,
+   "ret": 10.9,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2017",
+   "action": "sell",
+   "ticker": "SEM",
+   "amount": 5667.54,
+   "ret": 36.2,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2017",
+   "action": "sell",
+   "ticker": "AMZN",
+   "amount": 6596.86,
+   "ret": 58.6,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2017",
+   "action": "sell",
+   "ticker": "SRCL",
+   "amount": 3702.46,
+   "ret": -11.0,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2017",
+   "action": "sell",
+   "ticker": "AWRE",
+   "amount": 3035.05,
+   "ret": -27.0,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2017",
+   "action": "sell",
+   "ticker": "SCHL",
+   "amount": 3548.28,
+   "ret": -14.7,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2017",
+   "action": "sell",
+   "ticker": "GENC",
+   "amount": 4345.9,
+   "ret": 4.5,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2017",
+   "action": "sell",
+   "ticker": "MHO",
+   "amount": 5801.1,
+   "ret": 39.4,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2017",
+   "action": "sell",
+   "ticker": "UI",
+   "amount": 5040.41,
+   "ret": 21.2,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2017",
+   "action": "sell",
+   "ticker": "WEB",
+   "amount": 4347.28,
+   "ret": 4.5,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2017",
+   "action": "sell",
+   "ticker": "PMDI",
+   "amount": 3603.01,
+   "ret": -13.4,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2017",
+   "action": "sell",
+   "ticker": "AMN",
+   "amount": 5366.87,
+   "ret": 29.0,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2017",
+   "action": "sell",
+   "ticker": "ALGN",
+   "amount": 9721.31,
+   "ret": 133.7,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2017",
+   "action": "sell",
+   "ticker": "PATK",
+   "amount": 5725.2,
+   "ret": 37.6,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2017",
+   "action": "sell",
+   "ticker": "REGN",
+   "amount": 4336.18,
+   "ret": 4.2,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2017",
+   "action": "sell",
+   "ticker": "ZD",
+   "amount": 3885.72,
+   "ret": -6.6,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2017",
+   "action": "sell",
+   "ticker": "QLYS",
+   "amount": 8031.62,
+   "ret": 93.0,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2017",
+   "action": "sell",
+   "ticker": "MPX",
+   "amount": 3952.0,
+   "ret": -5.0,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2017",
+   "action": "sell",
+   "ticker": "PGNX",
+   "amount": 2961.4,
+   "ret": -28.8,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2017",
+   "action": "sell",
+   "ticker": "EPAM",
+   "amount": 7012.72,
+   "ret": 68.6,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2017",
+   "action": "sell",
+   "ticker": "KNL",
+   "amount": 3571.18,
+   "ret": -14.2,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2017",
+   "action": "sell",
+   "ticker": "HWKN",
+   "amount": 2809.56,
+   "ret": -32.5,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2018",
+   "action": "buy",
+   "ticker": "ANET",
+   "amount": 5942.69,
+   "score": 95.9
+  },
+  {
+   "year": "2018",
+   "action": "buy",
+   "ticker": "LRCX",
+   "amount": 5942.69,
+   "score": 94.4
+  },
+  {
+   "year": "2018",
+   "action": "buy",
+   "ticker": "KRO",
+   "amount": 5942.69,
+   "score": 91.4
+  },
+  {
+   "year": "2018",
+   "action": "buy",
+   "ticker": "MU",
+   "amount": 5942.69,
+   "score": 90.3
+  },
+  {
+   "year": "2018",
+   "action": "buy",
+   "ticker": "EGRX",
+   "amount": 5942.69,
+   "score": 89.5
+  },
+  {
+   "year": "2018",
+   "action": "buy",
+   "ticker": "DCH",
+   "amount": 5942.69,
+   "score": 89.1
+  },
+  {
+   "year": "2018",
+   "action": "buy",
+   "ticker": "TECD",
+   "amount": 5942.69,
+   "score": 83.8
+  },
+  {
+   "year": "2018",
+   "action": "buy",
+   "ticker": "AEIS",
+   "amount": 5942.69,
+   "score": 82.9
+  },
+  {
+   "year": "2018",
+   "action": "buy",
+   "ticker": "KLIC",
+   "amount": 5942.69,
+   "score": 82.6
+  },
+  {
+   "year": "2018",
+   "action": "buy",
+   "ticker": "CRUS",
+   "amount": 5942.69,
+   "score": 82.1
+  },
+  {
+   "year": "2018",
+   "action": "buy",
+   "ticker": "PAA",
+   "amount": 5942.69,
+   "score": 81.9
+  },
+  {
+   "year": "2018",
+   "action": "buy",
+   "ticker": "ASYS",
+   "amount": 5942.69,
+   "score": 81.4
+  },
+  {
+   "year": "2018",
+   "action": "buy",
+   "ticker": "PAGP",
+   "amount": 5942.69,
+   "score": 81.3
+  },
+  {
+   "year": "2018",
+   "action": "buy",
+   "ticker": "FF",
+   "amount": 5942.69,
+   "score": 78.8
+  },
+  {
+   "year": "2018",
+   "action": "buy",
+   "ticker": "UFPI",
+   "amount": 5942.69,
+   "score": 77.6
+  },
+  {
+   "year": "2018",
+   "action": "buy",
+   "ticker": "CLF",
+   "amount": 5942.69,
+   "score": 77.0
+  },
+  {
+   "year": "2018",
+   "action": "buy",
+   "ticker": "AMAT",
+   "amount": 5942.69,
+   "score": 76.5
+  },
+  {
+   "year": "2018",
+   "action": "buy",
+   "ticker": "SUPN",
+   "amount": 5942.69,
+   "score": 76.1
+  },
+  {
+   "year": "2018",
+   "action": "buy",
+   "ticker": "STLD",
+   "amount": 5942.69,
+   "score": 71.2
+  },
+  {
+   "year": "2018",
+   "action": "buy",
+   "ticker": "MKSI",
+   "amount": 5942.69,
+   "score": 70.9
+  },
+  {
+   "year": "2018",
+   "action": "buy",
+   "ticker": "LDOS",
+   "amount": 5942.69,
+   "score": 70.8
+  },
+  {
+   "year": "2018",
+   "action": "buy",
+   "ticker": "AZTA",
+   "amount": 5942.69,
+   "score": 70.7
+  },
+  {
+   "year": "2018",
+   "action": "buy",
+   "ticker": "PRIM",
+   "amount": 5942.69,
+   "score": 70.5
+  },
+  {
+   "year": "2018",
+   "action": "buy",
+   "ticker": "OSUR",
+   "amount": 5942.69,
+   "score": 69.5
+  },
+  {
+   "year": "2018",
+   "action": "buy",
+   "ticker": "TER",
+   "amount": 5942.69,
+   "score": 68.7
+  },
+  {
+   "year": "2018",
+   "action": "sell",
+   "ticker": "ANET",
+   "amount": 5311.05,
+   "ret": -10.6,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2018",
+   "action": "sell",
+   "ticker": "LRCX",
+   "amount": 4565.34,
+   "ret": -23.2,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2018",
+   "action": "sell",
+   "ticker": "KRO",
+   "amount": 2861.22,
+   "ret": -51.9,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2018",
+   "action": "sell",
+   "ticker": "MU",
+   "amount": 4732.99,
+   "ret": -20.4,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2018",
+   "action": "sell",
+   "ticker": "EGRX",
+   "amount": 4527.66,
+   "ret": -23.8,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2018",
+   "action": "sell",
+   "ticker": "DCH",
+   "amount": 3957.14,
+   "ret": -33.4,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2018",
+   "action": "sell",
+   "ticker": "TECD",
+   "amount": 5041.92,
+   "ret": -15.2,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2018",
+   "action": "sell",
+   "ticker": "AEIS",
+   "amount": 3817.72,
+   "ret": -35.8,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2018",
+   "action": "sell",
+   "ticker": "KLIC",
+   "amount": 5033.67,
+   "ret": -15.3,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2018",
+   "action": "sell",
+   "ticker": "CRUS",
+   "amount": 3925.89,
+   "ret": -33.9,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2018",
+   "action": "sell",
+   "ticker": "PAA",
+   "amount": 6242.87,
+   "ret": 5.1,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2018",
+   "action": "sell",
+   "ticker": "ASYS",
+   "amount": 2879.88,
+   "ret": -51.5,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2018",
+   "action": "sell",
+   "ticker": "PAGP",
+   "amount": 5893.05,
+   "ret": -0.8,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2018",
+   "action": "sell",
+   "ticker": "FF",
+   "amount": 7035.81,
+   "ret": 18.4,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2018",
+   "action": "sell",
+   "ticker": "UFPI",
+   "amount": 4227.68,
+   "ret": -28.9,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2018",
+   "action": "sell",
+   "ticker": "CLF",
+   "amount": 6478.51,
+   "ret": 9.0,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2018",
+   "action": "sell",
+   "ticker": "AMAT",
+   "amount": 3954.98,
+   "ret": -33.4,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2018",
+   "action": "sell",
+   "ticker": "SUPN",
+   "amount": 4886.88,
+   "ret": -17.8,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2018",
+   "action": "sell",
+   "ticker": "STLD",
+   "amount": 4275.3,
+   "ret": -28.1,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2018",
+   "action": "sell",
+   "ticker": "MKSI",
+   "amount": 4192.53,
+   "ret": -29.5,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2018",
+   "action": "sell",
+   "ticker": "LDOS",
+   "amount": 4887.2,
+   "ret": -17.8,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2018",
+   "action": "sell",
+   "ticker": "AZTA",
+   "amount": 6589.69,
+   "ret": 10.9,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2018",
+   "action": "sell",
+   "ticker": "PRIM",
+   "amount": 4250.39,
+   "ret": -28.5,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2018",
+   "action": "sell",
+   "ticker": "OSUR",
+   "amount": 3677.16,
+   "ret": -38.1,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2018",
+   "action": "sell",
+   "ticker": "TER",
+   "amount": 4545.82,
+   "ret": -23.5,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2019",
+   "action": "buy",
+   "ticker": "LRCX",
+   "amount": 4711.69,
+   "score": 95.3
+  },
+  {
+   "year": "2019",
+   "action": "buy",
+   "ticker": "MU",
+   "amount": 4711.69,
+   "score": 91.4
+  },
+  {
+   "year": "2019",
+   "action": "buy",
+   "ticker": "CVI",
+   "amount": 4711.69,
+   "score": 90.4
+  },
+  {
+   "year": "2019",
+   "action": "buy",
+   "ticker": "SUPN",
+   "amount": 4711.69,
+   "score": 89.3
+  },
+  {
+   "year": "2019",
+   "action": "buy",
+   "ticker": "ONTO",
+   "amount": 4711.69,
+   "score": 88.5
+  },
+  {
+   "year": "2019",
+   "action": "buy",
+   "ticker": "ANET",
+   "amount": 4711.69,
+   "score": 87.3
+  },
+  {
+   "year": "2019",
+   "action": "buy",
+   "ticker": "AAWW",
+   "amount": 4711.69,
+   "score": 87.3
+  },
+  {
+   "year": "2019",
+   "action": "buy",
+   "ticker": "ESIO",
+   "amount": 4711.69,
+   "score": 87.0
+  },
+  {
+   "year": "2019",
+   "action": "buy",
+   "ticker": "CORT",
+   "amount": 4711.69,
+   "score": 85.9
+  },
+  {
+   "year": "2019",
+   "action": "buy",
+   "ticker": "CSGP",
+   "amount": 4711.69,
+   "score": 85.4
+  },
+  {
+   "year": "2019",
+   "action": "buy",
+   "ticker": "EXEL",
+   "amount": 4711.69,
+   "score": 85.3
+  },
+  {
+   "year": "2019",
+   "action": "buy",
+   "ticker": "TPH",
+   "amount": 4711.69,
+   "score": 85.2
+  },
+  {
+   "year": "2019",
+   "action": "buy",
+   "ticker": "HURC",
+   "amount": 4711.69,
+   "score": 83.7
+  },
+  {
+   "year": "2019",
+   "action": "buy",
+   "ticker": "UGI",
+   "amount": 4711.69,
+   "score": 83.7
+  },
+  {
+   "year": "2019",
+   "action": "buy",
+   "ticker": "RGNX",
+   "amount": 4711.69,
+   "score": 83.0
+  },
+  {
+   "year": "2019",
+   "action": "buy",
+   "ticker": "EBIXQ",
+   "amount": 4711.69,
+   "score": 81.3
+  },
+  {
+   "year": "2019",
+   "action": "buy",
+   "ticker": "CPRT",
+   "amount": 4711.69,
+   "score": 81.0
+  },
+  {
+   "year": "2019",
+   "action": "buy",
+   "ticker": "GNRC",
+   "amount": 4711.69,
+   "score": 79.4
+  },
+  {
+   "year": "2019",
+   "action": "buy",
+   "ticker": "FCX",
+   "amount": 4711.69,
+   "score": 78.8
+  },
+  {
+   "year": "2019",
+   "action": "buy",
+   "ticker": "AMWD",
+   "amount": 4711.69,
+   "score": 77.9
+  },
+  {
+   "year": "2019",
+   "action": "buy",
+   "ticker": "EBS",
+   "amount": 4711.69,
+   "score": 77.8
+  },
+  {
+   "year": "2019",
+   "action": "buy",
+   "ticker": "HCRSQ",
+   "amount": 4711.69,
+   "score": 77.0
+  },
+  {
+   "year": "2019",
+   "action": "buy",
+   "ticker": "STLD",
+   "amount": 4711.69,
+   "score": 76.6
+  },
+  {
+   "year": "2019",
+   "action": "buy",
+   "ticker": "KAI",
+   "amount": 4711.69,
+   "score": 75.8
+  },
+  {
+   "year": "2019",
+   "action": "buy",
+   "ticker": "TBCH",
+   "amount": 4711.69,
+   "score": 75.3
+  },
+  {
+   "year": "2019",
+   "action": "sell",
+   "ticker": "LRCX",
+   "amount": 10527.13,
+   "ret": 123.4,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2019",
+   "action": "sell",
+   "ticker": "MU",
+   "amount": 8225.05,
+   "ret": 74.6,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2019",
+   "action": "sell",
+   "ticker": "CVI",
+   "amount": 5934.88,
+   "ret": 26.0,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2019",
+   "action": "sell",
+   "ticker": "SUPN",
+   "amount": 3362.86,
+   "ret": -28.6,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2019",
+   "action": "sell",
+   "ticker": "ONTO",
+   "amount": 6383.97,
+   "ret": 35.5,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2019",
+   "action": "sell",
+   "ticker": "ANET",
+   "amount": 4577.88,
+   "ret": -2.8,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2019",
+   "action": "sell",
+   "ticker": "AAWW",
+   "amount": 3096.83,
+   "ret": -34.3,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2019",
+   "action": "sell",
+   "ticker": "ESIO",
+   "amount": 4716.41,
+   "ret": 0.1,
+   "reason": "delisted"
+  },
+  {
+   "year": "2019",
+   "action": "sell",
+   "ticker": "CORT",
+   "amount": 4253.22,
+   "ret": -9.7,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2019",
+   "action": "sell",
+   "ticker": "CSGP",
+   "amount": 8668.88,
+   "ret": 84.0,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2019",
+   "action": "sell",
+   "ticker": "EXEL",
+   "amount": 4230.22,
+   "ret": -10.2,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2019",
+   "action": "sell",
+   "ticker": "TPH",
+   "amount": 6759.32,
+   "ret": 43.5,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2019",
+   "action": "sell",
+   "ticker": "HURC",
+   "amount": 5069.12,
+   "ret": 7.6,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2019",
+   "action": "sell",
+   "ticker": "UGI",
+   "amount": 4050.9,
+   "ret": -14.0,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2019",
+   "action": "sell",
+   "ticker": "RGNX",
+   "amount": 4379.24,
+   "ret": -7.1,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2019",
+   "action": "sell",
+   "ticker": "EBIXQ",
+   "amount": 3728.4,
+   "ret": -20.9,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2019",
+   "action": "sell",
+   "ticker": "CPRT",
+   "amount": 9218.27,
+   "ret": 95.6,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2019",
+   "action": "sell",
+   "ticker": "GNRC",
+   "amount": 9670.82,
+   "ret": 105.3,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2019",
+   "action": "sell",
+   "ticker": "FCX",
+   "amount": 6140.65,
+   "ret": 30.3,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2019",
+   "action": "sell",
+   "ticker": "AMWD",
+   "amount": 8855.58,
+   "ret": 87.9,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2019",
+   "action": "sell",
+   "ticker": "EBS",
+   "amount": 4292.03,
+   "ret": -8.9,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2019",
+   "action": "sell",
+   "ticker": "HCRSQ",
+   "amount": 1123.96,
+   "ret": -76.1,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2019",
+   "action": "sell",
+   "ticker": "STLD",
+   "amount": 5462.62,
+   "ret": 15.9,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2019",
+   "action": "sell",
+   "ticker": "KAI",
+   "amount": 6254.3,
+   "ret": 32.7,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2019",
+   "action": "sell",
+   "ticker": "TBCH",
+   "amount": 3017.86,
+   "ret": -35.9,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2020",
+   "action": "buy",
+   "ticker": "ARNA",
+   "amount": 5680.02,
+   "score": 96.8
+  },
+  {
+   "year": "2020",
+   "action": "buy",
+   "ticker": "VST",
+   "amount": 5680.02,
+   "score": 94.6
+  },
+  {
+   "year": "2020",
+   "action": "buy",
+   "ticker": "ANET",
+   "amount": 5680.02,
+   "score": 94.5
+  },
+  {
+   "year": "2020",
+   "action": "buy",
+   "ticker": "LXRX",
+   "amount": 5680.02,
+   "score": 94.4
+  },
+  {
+   "year": "2020",
+   "action": "buy",
+   "ticker": "MPC",
+   "amount": 5680.02,
+   "score": 89.2
+  },
+  {
+   "year": "2020",
+   "action": "buy",
+   "ticker": "EBIXQ",
+   "amount": 5680.02,
+   "score": 88.3
+  },
+  {
+   "year": "2020",
+   "action": "buy",
+   "ticker": "CORT",
+   "amount": 5680.02,
+   "score": 88.0
+  },
+  {
+   "year": "2020",
+   "action": "buy",
+   "ticker": "EXEL",
+   "amount": 5680.02,
+   "score": 88.0
+  },
+  {
+   "year": "2020",
+   "action": "buy",
+   "ticker": "CMCSA",
+   "amount": 5680.02,
+   "score": 87.2
+  },
+  {
+   "year": "2020",
+   "action": "buy",
+   "ticker": "MED",
+   "amount": 5680.02,
+   "score": 80.2
+  },
+  {
+   "year": "2020",
+   "action": "buy",
+   "ticker": "IESC",
+   "amount": 5680.02,
+   "score": 78.5
+  },
+  {
+   "year": "2020",
+   "action": "buy",
+   "ticker": "MTRX",
+   "amount": 5680.02,
+   "score": 76.2
+  },
+  {
+   "year": "2020",
+   "action": "buy",
+   "ticker": "IRMD",
+   "amount": 5680.02,
+   "score": 75.3
+  },
+  {
+   "year": "2020",
+   "action": "buy",
+   "ticker": "RDNT",
+   "amount": 5680.02,
+   "score": 73.4
+  },
+  {
+   "year": "2020",
+   "action": "buy",
+   "ticker": "HIBB",
+   "amount": 5680.02,
+   "score": 73.1
+  },
+  {
+   "year": "2020",
+   "action": "buy",
+   "ticker": "MERC",
+   "amount": 5680.02,
+   "score": 72.7
+  },
+  {
+   "year": "2020",
+   "action": "buy",
+   "ticker": "MEDP",
+   "amount": 5680.02,
+   "score": 72.6
+  },
+  {
+   "year": "2020",
+   "action": "buy",
+   "ticker": "HCKT",
+   "amount": 5680.02,
+   "score": 72.2
+  },
+  {
+   "year": "2020",
+   "action": "buy",
+   "ticker": "ALK",
+   "amount": 5680.02,
+   "score": 70.4
+  },
+  {
+   "year": "2020",
+   "action": "buy",
+   "ticker": "ALXN",
+   "amount": 5680.02,
+   "score": 69.3
+  },
+  {
+   "year": "2020",
+   "action": "buy",
+   "ticker": "FIX",
+   "amount": 5680.02,
+   "score": 67.2
+  },
+  {
+   "year": "2020",
+   "action": "buy",
+   "ticker": "SEDG",
+   "amount": 5680.02,
+   "score": 66.6
+  },
+  {
+   "year": "2020",
+   "action": "buy",
+   "ticker": "ALCO",
+   "amount": 5680.02,
+   "score": 65.8
+  },
+  {
+   "year": "2020",
+   "action": "buy",
+   "ticker": "ALGN",
+   "amount": 5680.02,
+   "score": 65.4
+  },
+  {
+   "year": "2020",
+   "action": "buy",
+   "ticker": "TTWO",
+   "amount": 5680.02,
+   "score": 64.3
+  },
+  {
+   "year": "2020",
+   "action": "sell",
+   "ticker": "ARNA",
+   "amount": 9420.42,
+   "ret": 65.9,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2020",
+   "action": "sell",
+   "ticker": "VST",
+   "amount": 4888.55,
+   "ret": -13.9,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2020",
+   "action": "sell",
+   "ticker": "ANET",
+   "amount": 7907.26,
+   "ret": 39.2,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2020",
+   "action": "sell",
+   "ticker": "LXRX",
+   "amount": 4817.75,
+   "ret": -15.2,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2020",
+   "action": "sell",
+   "ticker": "MPC",
+   "amount": 4065.03,
+   "ret": -28.4,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2020",
+   "action": "sell",
+   "ticker": "EBIXQ",
+   "amount": 6462.22,
+   "ret": 13.8,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2020",
+   "action": "sell",
+   "ticker": "EXEL",
+   "amount": 6618.09,
+   "ret": 16.5,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2020",
+   "action": "sell",
+   "ticker": "CMCSA",
+   "amount": 6524.19,
+   "ret": 14.9,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2020",
+   "action": "sell",
+   "ticker": "MED",
+   "amount": 10370.77,
+   "ret": 82.6,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2020",
+   "action": "sell",
+   "ticker": "IESC",
+   "amount": 10016.4,
+   "ret": 76.3,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2020",
+   "action": "sell",
+   "ticker": "MTRX",
+   "amount": 2656.3,
+   "ret": -53.2,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2020",
+   "action": "sell",
+   "ticker": "IRMD",
+   "amount": 5492.78,
+   "ret": -3.3,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2020",
+   "action": "sell",
+   "ticker": "RDNT",
+   "amount": 5204.35,
+   "ret": -8.4,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2020",
+   "action": "sell",
+   "ticker": "HIBB",
+   "amount": 9287.81,
+   "ret": 63.5,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2020",
+   "action": "sell",
+   "ticker": "MERC",
+   "amount": 4959.81,
+   "ret": -12.7,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2020",
+   "action": "sell",
+   "ticker": "MEDP",
+   "amount": 9082.89,
+   "ret": 59.9,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2020",
+   "action": "sell",
+   "ticker": "HCKT",
+   "amount": 5053.79,
+   "ret": -11.0,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2020",
+   "action": "sell",
+   "ticker": "ALK",
+   "amount": 4151.59,
+   "ret": -26.9,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2020",
+   "action": "sell",
+   "ticker": "ALXN",
+   "amount": 8235.63,
+   "ret": 45.0,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2020",
+   "action": "sell",
+   "ticker": "FIX",
+   "amount": 5938.17,
+   "ret": 4.5,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2020",
+   "action": "sell",
+   "ticker": "SEDG",
+   "amount": 18597.89,
+   "ret": 227.4,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2020",
+   "action": "sell",
+   "ticker": "ALCO",
+   "amount": 4924.23,
+   "ret": -13.3,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2020",
+   "action": "sell",
+   "ticker": "ALGN",
+   "amount": 10716.39,
+   "ret": 88.7,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2020",
+   "action": "sell",
+   "ticker": "TTWO",
+   "amount": 9364.63,
+   "ret": 64.9,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2021",
+   "action": "buy",
+   "ticker": "BERY",
+   "amount": 7281.54,
+   "score": 91.6
+  },
+  {
+   "year": "2021",
+   "action": "buy",
+   "ticker": "AMZN",
+   "amount": 7281.54,
+   "score": 90.9
+  },
+  {
+   "year": "2021",
+   "action": "buy",
+   "ticker": "TBCH",
+   "amount": 7281.54,
+   "score": 90.7
+  },
+  {
+   "year": "2021",
+   "action": "buy",
+   "ticker": "SWBI",
+   "amount": 7281.54,
+   "score": 89.2
+  },
+  {
+   "year": "2021",
+   "action": "buy",
+   "ticker": "INVA",
+   "amount": 7281.54,
+   "score": 87.8
+  },
+  {
+   "year": "2021",
+   "action": "buy",
+   "ticker": "SPWH",
+   "amount": 7281.54,
+   "score": 83.4
+  },
+  {
+   "year": "2021",
+   "action": "buy",
+   "ticker": "ABBV",
+   "amount": 7281.54,
+   "score": 82.9
+  },
+  {
+   "year": "2021",
+   "action": "buy",
+   "ticker": "ACLS",
+   "amount": 7281.54,
+   "score": 81.8
+  },
+  {
+   "year": "2021",
+   "action": "buy",
+   "ticker": "HZO",
+   "amount": 7281.54,
+   "score": 81.6
+  },
+  {
+   "year": "2021",
+   "action": "buy",
+   "ticker": "VRTX",
+   "amount": 7281.54,
+   "score": 80.5
+  },
+  {
+   "year": "2021",
+   "action": "buy",
+   "ticker": "STMP",
+   "amount": 7281.54,
+   "score": 78.7
+  },
+  {
+   "year": "2021",
+   "action": "buy",
+   "ticker": "BFXXQ",
+   "amount": 7281.54,
+   "score": 76.1
+  },
+  {
+   "year": "2021",
+   "action": "buy",
+   "ticker": "TER",
+   "amount": 7281.54,
+   "score": 73.6
+  },
+  {
+   "year": "2021",
+   "action": "buy",
+   "ticker": "DXCM",
+   "amount": 7281.54,
+   "score": 71.9
+  },
+  {
+   "year": "2021",
+   "action": "buy",
+   "ticker": "LOGI",
+   "amount": 7281.54,
+   "score": 71.6
+  },
+  {
+   "year": "2021",
+   "action": "buy",
+   "ticker": "VIVO1",
+   "amount": 7281.54,
+   "score": 70.7
+  },
+  {
+   "year": "2021",
+   "action": "buy",
+   "ticker": "AMKR",
+   "amount": 7281.54,
+   "score": 69.9
+  },
+  {
+   "year": "2021",
+   "action": "buy",
+   "ticker": "STRL",
+   "amount": 7281.54,
+   "score": 68.7
+  },
+  {
+   "year": "2021",
+   "action": "buy",
+   "ticker": "ASTH",
+   "amount": 7281.54,
+   "score": 66.3
+  },
+  {
+   "year": "2021",
+   "action": "buy",
+   "ticker": "CCRD",
+   "amount": 7281.54,
+   "score": 65.7
+  },
+  {
+   "year": "2021",
+   "action": "buy",
+   "ticker": "ADUS",
+   "amount": 7281.54,
+   "score": 65.1
+  },
+  {
+   "year": "2021",
+   "action": "buy",
+   "ticker": "AEIS",
+   "amount": 7281.54,
+   "score": 65.0
+  },
+  {
+   "year": "2021",
+   "action": "buy",
+   "ticker": "EBS",
+   "amount": 7281.54,
+   "score": 64.4
+  },
+  {
+   "year": "2021",
+   "action": "buy",
+   "ticker": "OLLI",
+   "amount": 7281.54,
+   "score": 63.3
+  },
+  {
+   "year": "2021",
+   "action": "sell",
+   "ticker": "CORT",
+   "amount": 20587.51,
+   "ret": 68.1,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2021",
+   "action": "sell",
+   "ticker": "BERY",
+   "amount": 9443.18,
+   "ret": 29.7,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2021",
+   "action": "sell",
+   "ticker": "AMZN",
+   "amount": 7619.53,
+   "ret": 4.6,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2021",
+   "action": "sell",
+   "ticker": "TBCH",
+   "amount": 7879.61,
+   "ret": 8.2,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2021",
+   "action": "sell",
+   "ticker": "SWBI",
+   "amount": 7519.27,
+   "ret": 3.3,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2021",
+   "action": "sell",
+   "ticker": "INVA",
+   "amount": 10255.28,
+   "ret": 40.8,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2021",
+   "action": "sell",
+   "ticker": "SPWH",
+   "amount": 4937.34,
+   "ret": -32.2,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2021",
+   "action": "sell",
+   "ticker": "ABBV",
+   "amount": 9642.19,
+   "ret": 32.4,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2021",
+   "action": "sell",
+   "ticker": "ACLS",
+   "amount": 19196.56,
+   "ret": 163.6,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2021",
+   "action": "sell",
+   "ticker": "HZO",
+   "amount": 12234.98,
+   "ret": 68.0,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2021",
+   "action": "sell",
+   "ticker": "VRTX",
+   "amount": 6856.06,
+   "ret": -5.8,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2021",
+   "action": "sell",
+   "ticker": "STMP",
+   "amount": 12233.39,
+   "ret": 68.0,
+   "reason": "delisted"
+  },
+  {
+   "year": "2021",
+   "action": "sell",
+   "ticker": "BFXXQ",
+   "amount": 2540.91,
+   "ret": -65.1,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2021",
+   "action": "sell",
+   "ticker": "TER",
+   "amount": 10119.1,
+   "ret": 39.0,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2021",
+   "action": "sell",
+   "ticker": "DXCM",
+   "amount": 10256.78,
+   "ret": 40.9,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2021",
+   "action": "sell",
+   "ticker": "LOGI",
+   "amount": 6448.17,
+   "ret": -11.4,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2021",
+   "action": "sell",
+   "ticker": "VIVO1",
+   "amount": 8060.73,
+   "ret": 10.7,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2021",
+   "action": "sell",
+   "ticker": "AMKR",
+   "amount": 12759.97,
+   "ret": 75.2,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2021",
+   "action": "sell",
+   "ticker": "STRL",
+   "amount": 10521.26,
+   "ret": 44.5,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2021",
+   "action": "sell",
+   "ticker": "ASTH",
+   "amount": 26718.91,
+   "ret": 266.9,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2021",
+   "action": "sell",
+   "ticker": "CCRD",
+   "amount": 7054.62,
+   "ret": -3.1,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2021",
+   "action": "sell",
+   "ticker": "ADUS",
+   "amount": 5820.75,
+   "ret": -20.1,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2021",
+   "action": "sell",
+   "ticker": "AEIS",
+   "amount": 6999.66,
+   "ret": -3.9,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2021",
+   "action": "sell",
+   "ticker": "EBS",
+   "amount": 3898.39,
+   "ret": -46.5,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2021",
+   "action": "sell",
+   "ticker": "OLLI",
+   "amount": 4667.06,
+   "ret": -35.9,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2022",
+   "action": "buy",
+   "ticker": "X",
+   "amount": 9770.85,
+   "score": 97.9
+  },
+  {
+   "year": "2022",
+   "action": "buy",
+   "ticker": "QURE",
+   "amount": 9770.85,
+   "score": 97.3
+  },
+  {
+   "year": "2022",
+   "action": "buy",
+   "ticker": "BCC",
+   "amount": 9770.85,
+   "score": 94.6
+  },
+  {
+   "year": "2022",
+   "action": "buy",
+   "ticker": "RGR",
+   "amount": 9770.85,
+   "score": 94.2
+  },
+  {
+   "year": "2022",
+   "action": "buy",
+   "ticker": "KLIC",
+   "amount": 9770.85,
+   "score": 93.3
+  },
+  {
+   "year": "2022",
+   "action": "buy",
+   "ticker": "RFP",
+   "amount": 9770.85,
+   "score": 93.2
+  },
+  {
+   "year": "2022",
+   "action": "buy",
+   "ticker": "LPX",
+   "amount": 9770.85,
+   "score": 93.1
+  },
+  {
+   "year": "2022",
+   "action": "buy",
+   "ticker": "SIG",
+   "amount": 9770.85,
+   "score": 92.1
+  },
+  {
+   "year": "2022",
+   "action": "buy",
+   "ticker": "AAWW",
+   "amount": 9770.85,
+   "score": 92.0
+  },
+  {
+   "year": "2022",
+   "action": "buy",
+   "ticker": "VHI",
+   "amount": 9770.85,
+   "score": 91.8
+  },
+  {
+   "year": "2022",
+   "action": "buy",
+   "ticker": "ANET",
+   "amount": 9770.85,
+   "score": 91.7
+  },
+  {
+   "year": "2022",
+   "action": "buy",
+   "ticker": "DECK",
+   "amount": 9770.85,
+   "score": 91.1
+  },
+  {
+   "year": "2022",
+   "action": "buy",
+   "ticker": "CRSP",
+   "amount": 9770.85,
+   "score": 90.7
+  },
+  {
+   "year": "2022",
+   "action": "buy",
+   "ticker": "LYB",
+   "amount": 9770.85,
+   "score": 90.5
+  },
+  {
+   "year": "2022",
+   "action": "buy",
+   "ticker": "FLGT",
+   "amount": 9770.85,
+   "score": 90.5
+  },
+  {
+   "year": "2022",
+   "action": "buy",
+   "ticker": "WSM",
+   "amount": 9770.85,
+   "score": 89.8
+  },
+  {
+   "year": "2022",
+   "action": "buy",
+   "ticker": "VSH",
+   "amount": 9770.85,
+   "score": 88.9
+  },
+  {
+   "year": "2022",
+   "action": "buy",
+   "ticker": "APH",
+   "amount": 9770.85,
+   "score": 88.8
+  },
+  {
+   "year": "2022",
+   "action": "buy",
+   "ticker": "SAFM",
+   "amount": 9770.85,
+   "score": 88.3
+  },
+  {
+   "year": "2022",
+   "action": "buy",
+   "ticker": "MNST",
+   "amount": 9770.85,
+   "score": 87.7
+  },
+  {
+   "year": "2022",
+   "action": "buy",
+   "ticker": "TROX",
+   "amount": 9770.85,
+   "score": 87.4
+  },
+  {
+   "year": "2022",
+   "action": "buy",
+   "ticker": "CMG",
+   "amount": 9770.85,
+   "score": 87.4
+  },
+  {
+   "year": "2022",
+   "action": "buy",
+   "ticker": "SHOE",
+   "amount": 9770.85,
+   "score": 87.1
+  },
+  {
+   "year": "2022",
+   "action": "buy",
+   "ticker": "LOGI",
+   "amount": 9770.85,
+   "score": 86.9
+  },
+  {
+   "year": "2022",
+   "action": "buy",
+   "ticker": "REGN",
+   "amount": 9770.85,
+   "score": 86.4
+  },
+  {
+   "year": "2022",
+   "action": "sell",
+   "ticker": "X",
+   "amount": 10364.66,
+   "ret": 6.1,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2022",
+   "action": "sell",
+   "ticker": "QURE",
+   "amount": 10289.07,
+   "ret": 5.3,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2022",
+   "action": "sell",
+   "ticker": "BCC",
+   "amount": 10137.33,
+   "ret": 3.8,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2022",
+   "action": "sell",
+   "ticker": "RGR",
+   "amount": 8479.29,
+   "ret": -13.2,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2022",
+   "action": "sell",
+   "ticker": "KLIC",
+   "amount": 7042.16,
+   "ret": -27.9,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2022",
+   "action": "sell",
+   "ticker": "RFP",
+   "amount": 13706.06,
+   "ret": 40.3,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2022",
+   "action": "sell",
+   "ticker": "LPX",
+   "amount": 7509.43,
+   "ret": -23.1,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2022",
+   "action": "sell",
+   "ticker": "SIG",
+   "amount": 7515.86,
+   "ret": -23.1,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2022",
+   "action": "sell",
+   "ticker": "AAWW",
+   "amount": 10511.03,
+   "ret": 7.6,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2022",
+   "action": "sell",
+   "ticker": "VHI",
+   "amount": 7377.41,
+   "ret": -24.5,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2022",
+   "action": "sell",
+   "ticker": "ANET",
+   "amount": 8218.14,
+   "ret": -15.9,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2022",
+   "action": "sell",
+   "ticker": "DECK",
+   "amount": 10382.21,
+   "ret": 6.3,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2022",
+   "action": "sell",
+   "ticker": "CRSP",
+   "amount": 5286.42,
+   "ret": -45.9,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2022",
+   "action": "sell",
+   "ticker": "LYB",
+   "amount": 9800.23,
+   "ret": 0.3,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2022",
+   "action": "sell",
+   "ticker": "FLGT",
+   "amount": 2978.17,
+   "ret": -69.5,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2022",
+   "action": "sell",
+   "ticker": "WSM",
+   "amount": 6742.51,
+   "ret": -31.0,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2022",
+   "action": "sell",
+   "ticker": "VSH",
+   "amount": 9795.28,
+   "ret": 0.3,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2022",
+   "action": "sell",
+   "ticker": "APH",
+   "amount": 8632.23,
+   "ret": -11.7,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2022",
+   "action": "sell",
+   "ticker": "SAFM",
+   "amount": 10480.66,
+   "ret": 7.3,
+   "reason": "delisted"
+  },
+  {
+   "year": "2022",
+   "action": "sell",
+   "ticker": "MNST",
+   "amount": 10308.02,
+   "ret": 5.5,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2022",
+   "action": "sell",
+   "ticker": "TROX",
+   "amount": 5799.37,
+   "ret": -40.6,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2022",
+   "action": "sell",
+   "ticker": "CMG",
+   "amount": 7663.26,
+   "ret": -21.6,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2022",
+   "action": "sell",
+   "ticker": "SHOE",
+   "amount": 5777.21,
+   "ret": -40.9,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2022",
+   "action": "sell",
+   "ticker": "LOGI",
+   "amount": 7604.36,
+   "ret": -22.2,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2022",
+   "action": "sell",
+   "ticker": "REGN",
+   "amount": 11147.08,
+   "ret": 14.1,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2023",
+   "action": "buy",
+   "ticker": "HCCI",
+   "amount": 8541.9,
+   "score": 97.1
+  },
+  {
+   "year": "2023",
+   "action": "buy",
+   "ticker": "BKNG",
+   "amount": 8541.9,
+   "score": 96.4
+  },
+  {
+   "year": "2023",
+   "action": "buy",
+   "ticker": "HCC",
+   "amount": 8541.9,
+   "score": 96.3
+  },
+  {
+   "year": "2023",
+   "action": "buy",
+   "ticker": "AVGO",
+   "amount": 8541.9,
+   "score": 95.7
+  },
+  {
+   "year": "2023",
+   "action": "buy",
+   "ticker": "AMR",
+   "amount": 8541.9,
+   "score": 94.7
+  },
+  {
+   "year": "2023",
+   "action": "buy",
+   "ticker": "X",
+   "amount": 8541.9,
+   "score": 93.3
+  },
+  {
+   "year": "2023",
+   "action": "buy",
+   "ticker": "RGNX",
+   "amount": 8541.9,
+   "score": 92.4
+  },
+  {
+   "year": "2023",
+   "action": "buy",
+   "ticker": "RYZ",
+   "amount": 8541.9,
+   "score": 92.3
+  },
+  {
+   "year": "2023",
+   "action": "buy",
+   "ticker": "METC",
+   "amount": 8541.9,
+   "score": 92.2
+  },
+  {
+   "year": "2023",
+   "action": "buy",
+   "ticker": "PLAB",
+   "amount": 8541.9,
+   "score": 91.8
+  },
+  {
+   "year": "2023",
+   "action": "buy",
+   "ticker": "WIRE",
+   "amount": 8541.9,
+   "score": 91.0
+  },
+  {
+   "year": "2023",
+   "action": "buy",
+   "ticker": "ANET",
+   "amount": 8541.9,
+   "score": 89.9
+  },
+  {
+   "year": "2023",
+   "action": "buy",
+   "ticker": "SKY",
+   "amount": 8541.9,
+   "score": 89.6
+  },
+  {
+   "year": "2023",
+   "action": "buy",
+   "ticker": "MRNA",
+   "amount": 8541.9,
+   "score": 89.6
+  },
+  {
+   "year": "2023",
+   "action": "buy",
+   "ticker": "APH",
+   "amount": 8541.9,
+   "score": 89.2
+  },
+  {
+   "year": "2023",
+   "action": "buy",
+   "ticker": "OTTR",
+   "amount": 8541.9,
+   "score": 88.6
+  },
+  {
+   "year": "2023",
+   "action": "buy",
+   "ticker": "BLDR",
+   "amount": 8541.9,
+   "score": 87.6
+  },
+  {
+   "year": "2023",
+   "action": "buy",
+   "ticker": "MOS",
+   "amount": 8541.9,
+   "score": 87.5
+  },
+  {
+   "year": "2023",
+   "action": "buy",
+   "ticker": "EXPD",
+   "amount": 8541.9,
+   "score": 87.2
+  },
+  {
+   "year": "2023",
+   "action": "buy",
+   "ticker": "AMN",
+   "amount": 8541.9,
+   "score": 86.7
+  },
+  {
+   "year": "2023",
+   "action": "buy",
+   "ticker": "MPC",
+   "amount": 8541.9,
+   "score": 86.3
+  },
+  {
+   "year": "2023",
+   "action": "buy",
+   "ticker": "ZEUS",
+   "amount": 8541.9,
+   "score": 85.9
+  },
+  {
+   "year": "2023",
+   "action": "buy",
+   "ticker": "ARCB",
+   "amount": 8541.9,
+   "score": 85.8
+  },
+  {
+   "year": "2023",
+   "action": "buy",
+   "ticker": "LYB",
+   "amount": 8541.9,
+   "score": 85.4
+  },
+  {
+   "year": "2023",
+   "action": "buy",
+   "ticker": "RGP",
+   "amount": 8541.9,
+   "score": 84.1
+  },
+  {
+   "year": "2023",
+   "action": "sell",
+   "ticker": "HCCI",
+   "amount": 11968.65,
+   "ret": 40.1,
+   "reason": "delisted"
+  },
+  {
+   "year": "2023",
+   "action": "sell",
+   "ticker": "BKNG",
+   "amount": 14752.52,
+   "ret": 72.7,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2023",
+   "action": "sell",
+   "ticker": "HCC",
+   "amount": 15479.92,
+   "ret": 81.2,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2023",
+   "action": "sell",
+   "ticker": "AVGO",
+   "amount": 16962.87,
+   "ret": 98.6,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2023",
+   "action": "sell",
+   "ticker": "AMR",
+   "amount": 20108.29,
+   "ret": 135.4,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2023",
+   "action": "sell",
+   "ticker": "X",
+   "amount": 16479.49,
+   "ret": 92.9,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2023",
+   "action": "sell",
+   "ticker": "RGNX",
+   "amount": 6907.34,
+   "ret": -19.1,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2023",
+   "action": "sell",
+   "ticker": "RYZ",
+   "amount": 9788.57,
+   "ret": 14.6,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2023",
+   "action": "sell",
+   "ticker": "PLAB",
+   "amount": 15662.68,
+   "ret": 83.4,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2023",
+   "action": "sell",
+   "ticker": "WIRE",
+   "amount": 13358.44,
+   "ret": 56.4,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2023",
+   "action": "sell",
+   "ticker": "SKY",
+   "amount": 12387.49,
+   "ret": 45.0,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2023",
+   "action": "sell",
+   "ticker": "MRNA",
+   "amount": 5349.98,
+   "ret": -37.4,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2023",
+   "action": "sell",
+   "ticker": "APH",
+   "amount": 10971.22,
+   "ret": 28.4,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2023",
+   "action": "sell",
+   "ticker": "OTTR",
+   "amount": 12752.3,
+   "ret": 49.3,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2023",
+   "action": "sell",
+   "ticker": "BLDR",
+   "amount": 21773.41,
+   "ret": 154.9,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2023",
+   "action": "sell",
+   "ticker": "MOS",
+   "amount": 7291.35,
+   "ret": -14.6,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2023",
+   "action": "sell",
+   "ticker": "EXPD",
+   "amount": 10571.19,
+   "ret": 23.8,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2023",
+   "action": "sell",
+   "ticker": "AMN",
+   "amount": 6433.42,
+   "ret": -24.7,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2023",
+   "action": "sell",
+   "ticker": "MPC",
+   "amount": 11448.82,
+   "ret": 34.0,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2023",
+   "action": "sell",
+   "ticker": "ZEUS",
+   "amount": 17269.36,
+   "ret": 102.2,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2023",
+   "action": "sell",
+   "ticker": "ARCB",
+   "amount": 14834.02,
+   "ret": 73.7,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2023",
+   "action": "sell",
+   "ticker": "LYB",
+   "amount": 10470.81,
+   "ret": 22.6,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2023",
+   "action": "sell",
+   "ticker": "RGP",
+   "amount": 6733.23,
+   "ret": -21.2,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2024",
+   "action": "buy",
+   "ticker": "SMCI",
+   "amount": 12598.06,
+   "score": 95.1
+  },
+  {
+   "year": "2024",
+   "action": "buy",
+   "ticker": "HNRG",
+   "amount": 12598.06,
+   "score": 92.4
+  },
+  {
+   "year": "2024",
+   "action": "buy",
+   "ticker": "POWL",
+   "amount": 12598.06,
+   "score": 91.6
+  },
+  {
+   "year": "2024",
+   "action": "buy",
+   "ticker": "USLM",
+   "amount": 12598.06,
+   "score": 91.1
+  },
+  {
+   "year": "2024",
+   "action": "buy",
+   "ticker": "OSUR",
+   "amount": 12598.06,
+   "score": 90.0
+  },
+  {
+   "year": "2024",
+   "action": "buy",
+   "ticker": "TRN",
+   "amount": 12598.06,
+   "score": 87.9
+  },
+  {
+   "year": "2024",
+   "action": "buy",
+   "ticker": "RES",
+   "amount": 12598.06,
+   "score": 84.9
+  },
+  {
+   "year": "2024",
+   "action": "buy",
+   "ticker": "ARLP",
+   "amount": 12598.06,
+   "score": 84.8
+  },
+  {
+   "year": "2024",
+   "action": "buy",
+   "ticker": "HEES",
+   "amount": 12598.06,
+   "score": 84.5
+  },
+  {
+   "year": "2024",
+   "action": "buy",
+   "ticker": "ZYXIQ",
+   "amount": 12598.06,
+   "score": 81.5
+  },
+  {
+   "year": "2024",
+   "action": "buy",
+   "ticker": "CMI",
+   "amount": 12598.06,
+   "score": 80.8
+  },
+  {
+   "year": "2024",
+   "action": "buy",
+   "ticker": "ALKS",
+   "amount": 12598.06,
+   "score": 80.4
+  },
+  {
+   "year": "2024",
+   "action": "buy",
+   "ticker": "ACLS",
+   "amount": 12598.06,
+   "score": 79.6
+  },
+  {
+   "year": "2024",
+   "action": "buy",
+   "ticker": "AGCO",
+   "amount": 12598.06,
+   "score": 74.5
+  },
+  {
+   "year": "2024",
+   "action": "buy",
+   "ticker": "IMAX",
+   "amount": 12598.06,
+   "score": 74.4
+  },
+  {
+   "year": "2024",
+   "action": "buy",
+   "ticker": "IMXI",
+   "amount": 12598.06,
+   "score": 73.9
+  },
+  {
+   "year": "2024",
+   "action": "buy",
+   "ticker": "CROX",
+   "amount": 12598.06,
+   "score": 71.9
+  },
+  {
+   "year": "2024",
+   "action": "buy",
+   "ticker": "CHE",
+   "amount": 12598.06,
+   "score": 68.8
+  },
+  {
+   "year": "2024",
+   "action": "buy",
+   "ticker": "TTEK",
+   "amount": 12598.06,
+   "score": 68.8
+  },
+  {
+   "year": "2024",
+   "action": "buy",
+   "ticker": "AMPH",
+   "amount": 12598.06,
+   "score": 68.7
+  },
+  {
+   "year": "2024",
+   "action": "buy",
+   "ticker": "NOW",
+   "amount": 12598.06,
+   "score": 68.2
+  },
+  {
+   "year": "2024",
+   "action": "buy",
+   "ticker": "VMD",
+   "amount": 12598.06,
+   "score": 67.8
+  },
+  {
+   "year": "2024",
+   "action": "buy",
+   "ticker": "MEDP",
+   "amount": 12598.06,
+   "score": 67.1
+  },
+  {
+   "year": "2024",
+   "action": "sell",
+   "ticker": "METC",
+   "amount": 35668.37,
+   "ret": 62.5,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2024",
+   "action": "sell",
+   "ticker": "ANET",
+   "amount": 60064.19,
+   "ret": 268.5,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2024",
+   "action": "sell",
+   "ticker": "SMCI",
+   "amount": 13317.8,
+   "ret": 5.7,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2024",
+   "action": "sell",
+   "ticker": "HNRG",
+   "amount": 16659.65,
+   "ret": 32.2,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2024",
+   "action": "sell",
+   "ticker": "USLM",
+   "amount": 33488.68,
+   "ret": 165.8,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2024",
+   "action": "sell",
+   "ticker": "OSUR",
+   "amount": 5438.67,
+   "ret": -56.8,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2024",
+   "action": "sell",
+   "ticker": "TRN",
+   "amount": 17276.69,
+   "ret": 37.1,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2024",
+   "action": "sell",
+   "ticker": "RES",
+   "amount": 10870.82,
+   "ret": -13.7,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2024",
+   "action": "sell",
+   "ticker": "ARLP",
+   "amount": 17873.99,
+   "ret": 41.9,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2024",
+   "action": "sell",
+   "ticker": "HEES",
+   "amount": 11890.66,
+   "ret": -5.6,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2024",
+   "action": "sell",
+   "ticker": "ZYXIQ",
+   "amount": 9034.97,
+   "ret": -28.3,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2024",
+   "action": "sell",
+   "ticker": "CMI",
+   "amount": 18707.11,
+   "ret": 48.5,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2024",
+   "action": "sell",
+   "ticker": "ALKS",
+   "amount": 13056.75,
+   "ret": 3.6,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2024",
+   "action": "sell",
+   "ticker": "ACLS",
+   "amount": 6819.21,
+   "ret": -45.9,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2024",
+   "action": "sell",
+   "ticker": "AGCO",
+   "amount": 9801.22,
+   "ret": -22.2,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2024",
+   "action": "sell",
+   "ticker": "IMAX",
+   "amount": 21061.07,
+   "ret": 67.2,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2024",
+   "action": "sell",
+   "ticker": "IMXI",
+   "amount": 11754.01,
+   "ret": -6.7,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2024",
+   "action": "sell",
+   "ticker": "CROX",
+   "amount": 14839.57,
+   "ret": 17.8,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2024",
+   "action": "sell",
+   "ticker": "CHE",
+   "amount": 11410.67,
+   "ret": -9.4,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2024",
+   "action": "sell",
+   "ticker": "TTEK",
+   "amount": 15131.14,
+   "ret": 20.1,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2024",
+   "action": "sell",
+   "ticker": "AMPH",
+   "amount": 7406.07,
+   "ret": -41.2,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2024",
+   "action": "sell",
+   "ticker": "VMD",
+   "amount": 13047.42,
+   "ret": 3.6,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2024",
+   "action": "sell",
+   "ticker": "MEDP",
+   "amount": 13757.87,
+   "ret": 9.2,
+   "reason": "not in next 25"
+  },
+  {
+   "year": "2025",
+   "action": "buy",
+   "ticker": "IESC",
+   "amount": 16885.94,
+   "score": 89.2
+  },
+  {
+   "year": "2025",
+   "action": "buy",
+   "ticker": "DCGO",
+   "amount": 16885.94,
+   "score": 86.9
+  },
+  {
+   "year": "2025",
+   "action": "buy",
+   "ticker": "AMPH",
+   "amount": 16885.94,
+   "score": 86.4
+  },
+  {
+   "year": "2025",
+   "action": "buy",
+   "ticker": "CPRX",
+   "amount": 16885.94,
+   "score": 85.1
+  },
+  {
+   "year": "2025",
+   "action": "buy",
+   "ticker": "UTHR",
+   "amount": 16885.94,
+   "score": 84.7
+  },
+  {
+   "year": "2025",
+   "action": "buy",
+   "ticker": "MGRC",
+   "amount": 16885.94,
+   "score": 74.5
+  },
+  {
+   "year": "2025",
+   "action": "buy",
+   "ticker": "NBIX",
+   "amount": 16885.94,
+   "score": 70.2
+  },
+  {
+   "year": "2025",
+   "action": "buy",
+   "ticker": "AGX",
+   "amount": 16885.94,
+   "score": 69.6
+  },
+  {
+   "year": "2025",
+   "action": "buy",
+   "ticker": "FEIM",
+   "amount": 16885.94,
+   "score": 69.4
+  },
+  {
+   "year": "2025",
+   "action": "buy",
+   "ticker": "HALO",
+   "amount": 16885.94,
+   "score": 69.3
+  },
+  {
+   "year": "2025",
+   "action": "buy",
+   "ticker": "TDW",
+   "amount": 16885.94,
+   "score": 67.8
+  },
+  {
+   "year": "2025",
+   "action": "buy",
+   "ticker": "USAP",
+   "amount": 16885.94,
+   "score": 66.4
+  },
+  {
+   "year": "2025",
+   "action": "buy",
+   "ticker": "FIX",
+   "amount": 16885.94,
+   "score": 61.1
+  },
+  {
+   "year": "2025",
+   "action": "buy",
+   "ticker": "ADMA",
+   "amount": 16885.94,
+   "score": 60.2
+  },
+  {
+   "year": "2025",
+   "action": "buy",
+   "ticker": "WLDN",
+   "amount": 16885.94,
+   "score": 59.3
+  },
+  {
+   "year": "2025",
+   "action": "buy",
+   "ticker": "PSN",
+   "amount": 16885.94,
+   "score": 58.7
+  },
+  {
+   "year": "2025",
+   "action": "buy",
+   "ticker": "VRSK",
+   "amount": 16885.94,
+   "score": 57.7
+  },
+  {
+   "year": "2025",
+   "action": "buy",
+   "ticker": "VITL",
+   "amount": 16885.94,
+   "score": 56.8
+  },
+  {
+   "year": "2025",
+   "action": "buy",
+   "ticker": "PNTG",
+   "amount": 16885.94,
+   "score": 55.7
+  },
+  {
+   "year": "2025",
+   "action": "buy",
+   "ticker": "RDVT",
+   "amount": 16885.94,
+   "score": 54.9
+  },
+  {
+   "year": "2025",
+   "action": "buy",
+   "ticker": "AVO",
+   "amount": 16885.94,
+   "score": 54.5
+  },
+  {
+   "year": "2025",
+   "action": "buy",
+   "ticker": "NVDA",
+   "amount": 16885.94,
+   "score": 54.4
+  },
+  {
+   "year": "2025",
+   "action": "buy",
+   "ticker": "UTI",
+   "amount": 16885.94,
+   "score": 54.2
+  },
+  {
+   "year": "2025",
+   "action": "sell",
+   "ticker": "POWL",
+   "amount": 132263.8,
+   "ret": 303.2,
+   "reason": "end of test"
+  },
+  {
+   "year": "2025",
+   "action": "sell",
+   "ticker": "NOW",
+   "amount": 19619.46,
+   "ret": 4.4,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2025",
+   "action": "sell",
+   "ticker": "IESC",
+   "amount": 34191.17,
+   "ret": 102.5,
+   "reason": "end of test"
+  },
+  {
+   "year": "2025",
+   "action": "sell",
+   "ticker": "DCGO",
+   "amount": 3536.49,
+   "ret": -79.1,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2025",
+   "action": "sell",
+   "ticker": "AMPH",
+   "amount": 12033.45,
+   "ret": -28.7,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2025",
+   "action": "sell",
+   "ticker": "CPRX",
+   "amount": 18730.69,
+   "ret": 10.9,
+   "reason": "end of test"
+  },
+  {
+   "year": "2025",
+   "action": "sell",
+   "ticker": "UTHR",
+   "amount": 23771.63,
+   "ret": 40.8,
+   "reason": "end of test"
+  },
+  {
+   "year": "2025",
+   "action": "sell",
+   "ticker": "MGRC",
+   "amount": 16159.96,
+   "ret": -4.3,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2025",
+   "action": "sell",
+   "ticker": "NBIX",
+   "amount": 17393.13,
+   "ret": 3.0,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2025",
+   "action": "sell",
+   "ticker": "AGX",
+   "amount": 40506.54,
+   "ret": 139.9,
+   "reason": "end of test"
+  },
+  {
+   "year": "2025",
+   "action": "sell",
+   "ticker": "FEIM",
+   "amount": 46089.86,
+   "ret": 172.9,
+   "reason": "end of test"
+  },
+  {
+   "year": "2025",
+   "action": "sell",
+   "ticker": "HALO",
+   "amount": 24832.68,
+   "ret": 47.1,
+   "reason": "end of test"
+  },
+  {
+   "year": "2025",
+   "action": "sell",
+   "ticker": "TDW",
+   "amount": 16120.5,
+   "ret": -4.5,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2025",
+   "action": "sell",
+   "ticker": "USAP",
+   "amount": 17254.11,
+   "ret": 2.2,
+   "reason": "delisted"
+  },
+  {
+   "year": "2025",
+   "action": "sell",
+   "ticker": "FIX",
+   "amount": 40109.58,
+   "ret": 137.5,
+   "reason": "end of test"
+  },
+  {
+   "year": "2025",
+   "action": "sell",
+   "ticker": "ADMA",
+   "amount": 17604.7,
+   "ret": 4.3,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2025",
+   "action": "sell",
+   "ticker": "WLDN",
+   "amount": 47284.17,
+   "ret": 180.0,
+   "reason": "end of test"
+  },
+  {
+   "year": "2025",
+   "action": "sell",
+   "ticker": "PSN",
+   "amount": 11387.25,
+   "ret": -32.6,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2025",
+   "action": "sell",
+   "ticker": "VRSK",
+   "amount": 13643.07,
+   "ret": -19.2,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2025",
+   "action": "sell",
+   "ticker": "VITL",
+   "amount": 13360.01,
+   "ret": -20.9,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2025",
+   "action": "sell",
+   "ticker": "PNTG",
+   "amount": 17720.05,
+   "ret": 4.9,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2025",
+   "action": "sell",
+   "ticker": "RDVT",
+   "amount": 24159.72,
+   "ret": 43.1,
+   "reason": "end of test"
+  },
+  {
+   "year": "2025",
+   "action": "sell",
+   "ticker": "AVO",
+   "amount": 13607.46,
+   "ret": -19.4,
+   "reason": "under 8%"
+  },
+  {
+   "year": "2025",
+   "action": "sell",
+   "ticker": "NVDA",
+   "amount": 23752.69,
+   "ret": 40.7,
+   "reason": "end of test"
+  },
+  {
+   "year": "2025",
+   "action": "sell",
+   "ticker": "UTI",
+   "amount": 16314.54,
+   "ret": -3.4,
+   "reason": "under 8%"
+  }
+ ],
+ "start_capital": 100000.0,
+ "final": 661446.7,
+ "total_ret": 561.45,
+ "years": 12,
+ "annualised": 17.05,
+ "spy_ret": 354.15,
+ "spy_annualised": 13.44,
+ "first": "2013-12-31",
+ "last": "2026-01-02",
+ "holdings_end": [],
+ "cash_end": 661446.7
+}
