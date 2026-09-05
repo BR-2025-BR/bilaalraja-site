@@ -448,5 +448,92 @@ checked against itself before publication &middot;
   if("onpageswap"   in window) window.addEventListener("pageswap",tag);
   tag();
 })();
+
+// ---- first-visit disclaimer --------------------------------------------
+// Lives here rather than on one page because a disclaimer a direct link can
+// skip is not a disclaimer: every generator includes NAV_JS, so every page type
+// is covered. Bump KEY to ask again after changing the wording.
+(function(){
+  var KEY="brDisclaimer.v1";
+  try{ if(localStorage.getItem(KEY)==="agreed") return; }catch(e){ return; }
+
+  var css=document.createElement("style");
+  css.textContent=
+    ".dscrim{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;"+
+    "justify-content:center;padding:20px;background:rgba(10,8,6,.62);"+
+    "-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}"+
+    ".dsc{background:var(--paper);color:var(--ink);border:1px solid var(--rule);"+
+    "border-radius:13px;max-width:520px;width:100%;max-height:88vh;overflow:auto;"+
+    "padding:24px 26px;box-shadow:0 18px 60px rgba(0,0,0,.35)}"+
+    ".dsc h2{font-family:var(--serif);font-size:23px;line-height:1.2;margin-bottom:10px;"+
+    "font-weight:600;text-wrap:balance}"+
+    ".dsc p{color:var(--ink2);font-size:14px;line-height:1.6;margin-bottom:12px}"+
+    ".dsc ul{list-style:none;margin:0 0 4px;display:flex;flex-direction:column;gap:9px}"+
+    ".dsc li{color:var(--ink2);font-size:13.5px;line-height:1.55;padding-left:15px;"+
+    "position:relative}"+
+    ".dsc li:before{content:'';position:absolute;left:0;top:8px;width:5px;height:5px;"+
+    "border-radius:50%;background:var(--ember)}"+
+    ".dsc li b{color:var(--ink);font-weight:600}"+
+    // the host pages style `label` as an uppercase, letter-spaced form caption;
+    // inherited here it reads as shouting, so the dialog states its own type
+    ".dsc,.dsc *{text-transform:none;letter-spacing:normal;font-family:var(--sans)}"+
+    ".dsc h2{font-family:var(--serif)}"+
+    ".dsc .agree{display:flex;align-items:flex-start;gap:10px;margin:18px 0 16px;"+
+    "padding-top:15px;border-top:1px solid var(--rule);cursor:pointer;font-size:14px;"+
+    "color:var(--ink);font-weight:500}"+
+    ".dsc .agree input{flex:0 0 auto;width:17px;height:17px;margin-top:1px;"+
+    "accent-color:var(--ember);cursor:pointer}"+
+    ".dsc button{width:100%;padding:11px 16px;border-radius:9px;"+
+    "border:1px solid var(--ember);background:var(--ember);color:#fff;font:inherit;"+
+    "font-size:14.5px;font-weight:600;cursor:pointer}"+
+    ".dsc button:disabled{opacity:.42;cursor:not-allowed}"+
+    ".dsc button:not(:disabled):hover{background:var(--ember2);border-color:var(--ember2)}"+
+    ".dsc :focus-visible{outline:2px solid var(--ember);outline-offset:2px}"+
+    "@media (prefers-reduced-motion:no-preference){.dsc{animation:dscin .22s ease-out}}"+
+    "@keyframes dscin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}";
+  document.head.appendChild(css);
+
+  var w=document.createElement("div");
+  w.className="dscrim";
+  w.innerHTML=
+    '<div class="dsc" role="dialog" aria-modal="true" aria-labelledby="dsch">'+
+    '<h2 id="dsch">Before you look around</h2>'+
+    '<p>This is a personal research project, not a financial service, and not the '+
+    'work of any firm.</p><ul>'+
+    '<li>Every figure is rebuilt from SEC filings by my own code. It is a '+
+    '<b>reconstruction</b> of the Russell 3000, not the licensed index, and it '+
+    'will contain mistakes.</li>'+
+    '<li>Backtested returns are <b>hypothetical</b>. The method was designed while '+
+    'looking at the same data it is tested on, so it is not evidence of what it '+
+    'would do next.</li>'+
+    '<li>Nothing here is <b>investment advice</b> or a recommendation to buy or '+
+    'sell anything.</li>'+
+    '<li>No warranty of accuracy or completeness. Check anything that matters '+
+    'against the filings themselves.</li></ul>'+
+    '<label class="agree"><input type="checkbox" id="dscok">'+
+    '<span>I understand this is research, not advice.</span></label>'+
+    '<button type="button" id="dscgo" disabled>Continue</button></div>';
+  document.body.appendChild(w);
+
+  var prev=document.body.style.overflow;
+  document.body.style.overflow="hidden";
+  var box=w.querySelector(".dsc"),
+      ok=w.querySelector("#dscok"),
+      go=w.querySelector("#dscgo");
+  ok.addEventListener("change",function(){ go.disabled=!ok.checked; });
+  go.addEventListener("click",function(){
+    if(!ok.checked) return;
+    try{ localStorage.setItem(KEY,"agreed"); }catch(e){}
+    w.remove(); css.remove(); document.body.style.overflow=prev;
+  });
+  // keep focus inside: the point is that it cannot be tabbed past
+  w.addEventListener("keydown",function(e){
+    if(e.key!=="Tab") return;
+    var f=box.querySelectorAll("input,button"), a=f[0], z=f[f.length-1];
+    if(e.shiftKey && document.activeElement===a){ e.preventDefault(); z.focus(); }
+    else if(!e.shiftKey && document.activeElement===z){ e.preventDefault(); a.focus(); }
+  });
+  ok.focus();
+})();
 </script>
 </div></body></html>
