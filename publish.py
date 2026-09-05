@@ -185,10 +185,28 @@ h1{{font-family:var(--serif);font-size:34px;font-weight:600;letter-spacing:-.021
  letter-spacing:-.02em;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1.15}}
 .stats span{{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;
  text-transform:uppercase;color:var(--ink3)}}
-.card{{display:block;text-decoration:none;color:inherit;background:var(--panel);
- border:1px solid var(--rule);border-radius:10px;
- transition:border-color .18s ease,background .18s ease;
- padding:18px 20px;margin-bottom:12px}}
+.pager{{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;
+ scroll-behavior:smooth;scrollbar-width:none;-webkit-overflow-scrolling:touch;
+ margin:0 -22px;padding:2px 22px 4px}}
+.pager::-webkit-scrollbar{{display:none}}
+.card{{flex:0 0 100%;scroll-snap-align:center;scroll-snap-stop:always;
+ display:flex;flex-direction:column;text-decoration:none;color:inherit;
+ background:var(--panel);border:1px solid var(--rule);border-radius:14px;
+ transition:border-color .18s ease,background .18s ease;padding:18px 20px}}
+.card .m{{margin-top:auto}}
+.card:hover{{border-color:var(--ember);background:var(--raise)}}
+/* page dots, and arrows for anything without a thumb to swipe with */
+.pnav{{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:14px}}
+.dots{{display:flex;gap:7px}}
+.dots button{{width:7px;height:7px;padding:0;border:0;border-radius:50%;
+ background:var(--rule);cursor:pointer;transition:background .2s,transform .2s}}
+.dots button[aria-current="true"]{{background:var(--ember);transform:scale(1.35)}}
+.parr{{width:28px;height:28px;border-radius:50%;border:1px solid var(--rule);
+ background:none;color:var(--ink3);cursor:pointer;display:grid;place-items:center;
+ font:inherit;font-size:13px;line-height:1;transition:color .18s,border-color .18s}}
+.parr:hover:not(:disabled){{color:var(--ember);border-color:var(--ember)}}
+.parr:disabled{{opacity:.3;cursor:default}}
+@media (prefers-reduced-motion:reduce){{.pager{{scroll-behavior:auto}}}}
 .card:hover{{border-color:var(--ember);background:var(--raise)}}
 .card h2{{font-size:16.5px;margin-bottom:4px}}
 .chead{{display:flex;align-items:center;gap:11px;margin-bottom:4px}}
@@ -226,6 +244,7 @@ __MASTHEAD__
   facts rather than a vendor feed.</p>
 </section>
 
+<div class="pager" id="pager">
 <a class="card" href="/russell3000/">
   <div class="chead"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true">
     <path d="M4 3v16a2 2 0 0 0 2 2h15"/>
@@ -257,6 +276,12 @@ __MASTHEAD__
   fourteen defects found by checking output against reality.</p>
   <div class="m">methodology</div>
 </a>
+</div>
+<div class="pnav">
+  <button class="parr" id="pprev" type="button" aria-label="Previous">&#8249;</button>
+  <div class="dots" id="pdots" role="tablist" aria-label="Sections"></div>
+  <button class="parr" id="pnext" type="button" aria-label="Next">&#8250;</button>
+</div>
 
 <footer>
 Built from SEC XBRL company facts and market prices.<br>
@@ -407,16 +432,80 @@ def inject_meta(html: str, path: str, domain: str, companies: str = "",
     return html[:i + 8] + tags + html[i + 8:] if i != -1 else tags + html
 
 
+PAGER_JS = """<script>
+// The three tiles page like a home screen. Snap scrolling does the swipe for
+// free on touch; the dots and arrows exist because a mouse has no thumb, and
+// the arrow keys because a keyboard has neither.
+(function(){
+  var pager=document.getElementById("pager"),
+      dots=document.getElementById("pdots"),
+      prev=document.getElementById("pprev"),
+      next=document.getElementById("pnext");
+  if(!pager||!dots) return;
+  var cards=[].slice.call(pager.querySelectorAll(".card"));
+  if(cards.length<2){ document.querySelector(".pnav").style.display="none"; return; }
+
+  cards.forEach(function(c,i){
+    var b=document.createElement("button");
+    b.type="button";
+    b.setAttribute("aria-label","Go to "+(c.querySelector("h2")||{}).textContent);
+    b.addEventListener("click",function(){ go(i); });
+    dots.appendChild(b);
+  });
+  var buttons=[].slice.call(dots.children), at=0;
+
+  function go(i){
+    at=Math.max(0,Math.min(i,cards.length-1));
+    // scrollIntoView would also scroll the PAGE to the pager; setting
+    // scrollLeft moves only the strip, which is what a page flick does
+    pager.scrollLeft=cards[at].offsetLeft-pager.offsetLeft;
+    paint();
+  }
+  function paint(){
+    buttons.forEach(function(b,i){ b.setAttribute("aria-current", i===at?"true":"false"); });
+    prev.disabled = at===0;
+    next.disabled = at===cards.length-1;
+  }
+  // derive the current page from where the strip actually sits, so a finger
+  // swipe and a dot click cannot disagree
+  var tick;
+  pager.addEventListener("scroll",function(){
+    clearTimeout(tick);
+    tick=setTimeout(function(){
+      var mid=pager.scrollLeft+pager.clientWidth/2, best=0, bd=Infinity;
+      cards.forEach(function(c,i){
+        var d=Math.abs((c.offsetLeft-pager.offsetLeft)+c.offsetWidth/2-mid);
+        if(d<bd){ bd=d; best=i; }
+      });
+      at=best; paint();
+    },60);
+  },{passive:true});
+
+  prev.addEventListener("click",function(){ go(at-1); });
+  next.addEventListener("click",function(){ go(at+1); });
+  pager.addEventListener("keydown",function(e){
+    if(e.key==="ArrowRight"){ e.preventDefault(); go(at+1); }
+    if(e.key==="ArrowLeft"){  e.preventDefault(); go(at-1); }
+  });
+  paint();
+})();
+</script>"""
+
+
 def _brandify(html: str) -> str:
     """Insert the shared tokens after formatting.
 
     The templates run through str.format, and CSS is nothing but braces, so the
     palette is carried as a placeholder and swapped in here instead.
     """
-    return (html.replace("__TOKENS__", brand.TOKENS + brand.TRANSITION_CSS + brand.MASTHEAD_CSS + brand.TICKER_CSS)
+    # The live 8-K strip belongs to the cross-section, which injects it itself in
+    # make_r3k_dash. It was arriving here too, so the landing page, the 404 and
+    # the methodology note all carried a filings ticker that has nothing to do
+    # with what is on them -- and each fetched SEC on load to fill it.
+    return (html.replace("__TOKENS__", brand.TOKENS + brand.TRANSITION_CSS + brand.MASTHEAD_CSS)
                 .replace("__FONTS__", brand.FONTS)
-                .replace("__MASTHEAD__", brand.masthead() + brand.TICKER_HTML)
-                .replace("__TICKERJS__", brand.TICKER_JS + brand.NAV_JS))
+                .replace("__MASTHEAD__", brand.masthead())
+                .replace("__TICKERJS__", brand.NAV_JS + PAGER_JS))
 
 
 def write_sitemap(site: Path, domain: str, paths, lastmod: str):

@@ -113,52 +113,6 @@ html[data-nav="traverse"]::view-transition-old(root){animation-name:vt-out-right
   .mast nav{flex-wrap:wrap;gap:10px 14px;width:100%;font-size:10.5px}
 }
 
-.tkr{border-bottom:1px solid var(--rule);overflow:hidden;display:none;
-  margin-bottom:22px;position:relative}
-.tkr.on{display:block}
-.tkr-i{font-family:var(--mono);font-size:10px;letter-spacing:.13em;
-  text-transform:uppercase;color:var(--ink3);padding:0 0 6px}
-.tkr-i b{color:var(--ember);font-weight:500}
-.tkr-i .dot{display:inline-block;width:7px;height:7px;border-radius:50%;
-  background:var(--neg);margin-right:7px;
-  animation:tkrblink 1.5s ease-in-out infinite}
-@keyframes tkrblink{0%,100%{opacity:1}50%{opacity:.2}}
-@media (prefers-reduced-motion:reduce){.tkr-i .dot{animation:none;opacity:1}}
-.tkr-w{overflow:hidden;padding-bottom:10px}
-.tkr-t{display:flex;gap:30px;width:max-content;
-  animation:tkr 70s linear infinite}
-.tkr:hover .tkr-t{animation-play-state:paused}
-@keyframes tkr{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-.tkr a{display:inline-flex;align-items:baseline;gap:8px;text-decoration:none;
-  white-space:nowrap;font-size:13px}
-.tkr a .s{font-family:var(--mono);font-weight:500;color:var(--ember)}
-.tkr a .n{color:var(--ink2)}
-.tkr a .t{font-family:var(--mono);font-size:11px;color:var(--ink3)}
-.tkr a:hover .n{color:var(--ink)}
-.tkr-l{list-style:none;margin:2px 0 11px;padding:0;display:grid;gap:1px}
-.tkr-l li{display:flex;align-items:baseline;gap:9px;font-size:12.5px;
-  padding:3px 0;min-width:0}
-.tkr-l a{display:flex;align-items:baseline;gap:9px;text-decoration:none;
-  min-width:0;width:100%}
-.tkr-l .ar{font-family:var(--mono);font-size:12px;flex:0 0 auto;width:12px;
-  text-align:center}
-.tkr-l .ar.dn{color:var(--neg)} .tkr-l .ar.up{color:var(--pos)}
-.tkr-l .ar.fl{color:var(--ink3);opacity:.55}
-.tkr-l .s{font-family:var(--mono);font-weight:500;color:var(--ember);
-  flex:0 0 auto;min-width:52px}
-.tkr-l .n{color:var(--ink2);flex:0 1 auto;overflow:hidden;
-  text-overflow:ellipsis;white-space:nowrap;max-width:31ch}
-.tkr-l .d{color:var(--ink);flex:1 1 auto;min-width:0}
-.tkr-l .d.warn{color:var(--neg);font-weight:500}
-.tkr-l .t{font-family:var(--mono);font-size:10.5px;color:var(--ink3);
-  flex:0 0 auto;margin-left:auto;white-space:nowrap}
-.tkr-l a:hover .n,.tkr-l a:hover .d{color:var(--ink)}
-@media (max-width:640px){.tkr-l .n{display:none}}
-@media (prefers-reduced-motion:reduce){
-  .tkr-t{animation:none}
-  .tkr-w{overflow-x:auto}
-}
-
 #dots{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
 .wrap{position:relative;z-index:1}
 @supports (corner-shape: squircle){.card{corner-shape:squircle}}
@@ -178,10 +132,28 @@ h1{font-family:var(--serif);font-size:34px;font-weight:600;letter-spacing:-.021e
  letter-spacing:-.02em;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1.15}
 .stats span{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;
  text-transform:uppercase;color:var(--ink3)}
-.card{display:block;text-decoration:none;color:inherit;background:var(--panel);
- border:1px solid var(--rule);border-radius:10px;
- transition:border-color .18s ease,background .18s ease;
- padding:18px 20px;margin-bottom:12px}
+.pager{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;
+ scroll-behavior:smooth;scrollbar-width:none;-webkit-overflow-scrolling:touch;
+ margin:0 -22px;padding:2px 22px 4px}
+.pager::-webkit-scrollbar{display:none}
+.card{flex:0 0 100%;scroll-snap-align:center;scroll-snap-stop:always;
+ display:flex;flex-direction:column;text-decoration:none;color:inherit;
+ background:var(--panel);border:1px solid var(--rule);border-radius:14px;
+ transition:border-color .18s ease,background .18s ease;padding:18px 20px}
+.card .m{margin-top:auto}
+.card:hover{border-color:var(--ember);background:var(--raise)}
+/* page dots, and arrows for anything without a thumb to swipe with */
+.pnav{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:14px}
+.dots{display:flex;gap:7px}
+.dots button{width:7px;height:7px;padding:0;border:0;border-radius:50%;
+ background:var(--rule);cursor:pointer;transition:background .2s,transform .2s}
+.dots button[aria-current="true"]{background:var(--ember);transform:scale(1.35)}
+.parr{width:28px;height:28px;border-radius:50%;border:1px solid var(--rule);
+ background:none;color:var(--ink3);cursor:pointer;display:grid;place-items:center;
+ font:inherit;font-size:13px;line-height:1;transition:color .18s,border-color .18s}
+.parr:hover:not(:disabled){color:var(--ember);border-color:var(--ember)}
+.parr:disabled{opacity:.3;cursor:default}
+@media (prefers-reduced-motion:reduce){.pager{scroll-behavior:auto}}
 .card:hover{border-color:var(--ember);background:var(--raise)}
 .card h2{font-size:16.5px;margin-bottom:4px}
 .chead{display:flex;align-items:center;gap:11px;margin-bottom:4px}
@@ -200,7 +172,7 @@ footer a{color:var(--s1)}
 .rights{display:block;margin-top:12px;padding-top:12px;border-top:1px solid var(--rule);
  max-width:76ch;line-height:1.7;font-size:11.5px}
 </style></head><body><div class="wrap">
-<header class="mast"><a class="wm" href="/">Bilaal<i>.</i>Raja</a><nav><a href="/russell3000/">Cross-section</a><a href="/commentary/">Commentary</a><a href="/learn/">Case study</a><a href="/methodology/">Method</a></nav></header><div class="tkr" id="tkr"><div class="tkr-i"><span class="dot" aria-hidden="true"></span><b>Live</b> &middot; 8-K filings by companies in the panel</div><div class="tkr-w"><div class="tkr-t" id="tkrt"></div></div><ul class="tkr-l" id="tkrl"></ul></div>
+<header class="mast"><a class="wm" href="/">Bilaal<i>.</i>Raja</a><nav><a href="/russell3000/">Cross-section</a><a href="/commentary/">Commentary</a><a href="/learn/">Case study</a><a href="/methodology/">Method</a></nav></header>
 <canvas id="dots" aria-hidden="true"></canvas>
 <!-- The name is already the masthead, top left. Repeating it as a display
      heading said nothing new and pushed the actual work below the fold on a
@@ -219,6 +191,7 @@ footer a{color:var(--s1)}
   facts rather than a vendor feed.</p>
 </section>
 
+<div class="pager" id="pager">
 <a class="card" href="/russell3000/">
   <div class="chead"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true">
     <path d="M4 3v16a2 2 0 0 0 2 2h15"/>
@@ -250,6 +223,12 @@ footer a{color:var(--s1)}
   fourteen defects found by checking output against reality.</p>
   <div class="m">methodology</div>
 </a>
+</div>
+<div class="pnav">
+  <button class="parr" id="pprev" type="button" aria-label="Previous">&#8249;</button>
+  <div class="dots" id="pdots" role="tablist" aria-label="Sections"></div>
+  <button class="parr" id="pnext" type="button" aria-label="Next">&#8250;</button>
+</div>
 
 <footer>
 Built from SEC XBRL company facts and market prices.<br>
@@ -347,118 +326,6 @@ or sell any security.</span>
 })();
 </script>
 <script>
-(function(){
-  var strip=document.getElementById("tkr"), track=document.getElementById("tkrt"),
-      list=document.getElementById("tkrl");
-  if(!strip||!track) return;
-
-  // SEC's own 8-K item numbers, in plain words. This is what separates a
-  // routine press release from a company saying its past accounts were wrong.
-  var ITEM={
-    "1.01":"material agreement",      "1.02":"agreement terminated",
-    "1.03":"bankruptcy",              "2.01":"acquisition or disposal",
-    "2.02":"results announced",       "2.03":"new debt",
-    "2.04":"debt acceleration",       "2.05":"restructuring costs",
-    "2.06":"material impairment",     "3.01":"delisting notice",
-    "3.02":"unregistered share sale", "3.03":"shareholder rights changed",
-    "4.01":"auditor changed",         "4.02":"past accounts not reliable",
-    "5.01":"change of control",       "5.02":"board or executive change",
-    "5.03":"articles amended",        "5.07":"shareholder vote",
-    "7.01":"Reg FD disclosure",       "8.01":"other events",
-    "9.01":"exhibits"
-  };
-  // Ranked by how much it tells you. 9.01 rides along with almost every 8-K
-  // and says nothing, so it sinks; 4.02 is the loudest thing a filer can say.
-  var RANK=["4.02","1.03","3.01","2.04","4.01","2.06","5.01","2.01","2.05",
-            "5.02","2.02","1.01","1.02","2.03","3.02","3.03","5.03","5.07",
-            "7.01","8.01","9.01"];
-  var SEVERE={"4.02":1,"1.03":1,"3.01":1,"2.04":1,"4.01":1,"2.06":1};
-
-  // Direction, where the code itself carries one. Most 8-K items do not.
-  // 2.02 "results announced" is deliberately neutral: it says a company
-  // reported, not whether the numbers were good, and guessing would be
-  // inventing a signal the filing does not contain.
-  var DIR={
-    "4.02":-1,  // past accounts not reliable
-    "1.03":-1,  // bankruptcy
-    "3.01":-1,  // delisting notice
-    "2.04":-1,  // debt acceleration
-    "4.01":-1,  // auditor changed, often a resignation
-    "2.06":-1,  // material impairment, writing assets down
-    "2.05":-1,  // exit and disposal costs
-    "3.02":-1,  // unregistered share sale, dilution
-    "5.01": 1   // change of control, usually a bid at a premium
-  };
-  var ARROW={"-1":"↓", "1":"↑", "0":"–"};
-  function describe(codes){
-    if(!codes||!codes.length) return {text:"", severe:false};
-    var best=null;
-    for(var i=0;i<RANK.length;i++) if(codes.indexOf(RANK[i])>=0){ best=RANK[i]; break; }
-    if(!best) best=codes[0];
-    var extra=codes.filter(function(c){return c!==best && c!=="9.01";}).length;
-    // If any listed item leans a direction, take the strongest lean present.
-    var dir=0;
-    for(var j=0;j<codes.length;j++){
-      var v=DIR[codes[j]];
-      if(v===-1){ dir=-1; break; }        // bad news dominates
-      if(v===1) dir=1;
-    }
-    return {text:(ITEM[best]||("item "+best))+(extra?" +"+extra:""),
-            severe:!!SEVERE[best], dir:dir};
-  }
-  function ago(iso){
-    var s=(Date.now()-new Date(iso).getTime())/1000;
-    if(!isFinite(s)||s<0) return "";
-    if(s<3600) return Math.max(1,Math.round(s/60))+"m ago";
-    if(s<86400) return Math.round(s/3600)+"h ago";
-    return Math.round(s/86400)+"d ago";
-  }
-  Promise.all([
-    fetch("/api/filings").then(function(r){return r.ok?r.json():null;}),
-    fetch("/ciks.json").then(function(r){return r.ok?r.json():null;})
-  ]).then(function(res){
-    var feed=res[0], map=res[1];
-    if(!feed||!map||!feed.items) return;
-    var out=[], rows=[];
-    for(var i=0;i<feed.items.length;i++){
-      var f=feed.items[i], m=map[String(f.cik)];
-      if(!m) continue;                       // not one of ours, skip it
-      // Straight to the filing on SEC, not to our own page: if you click an
-      // 8-K you want the 8-K. Only accept a URL that is actually SEC's, since
-      // it arrives from a parsed feed and ends up in an href.
-      var href = (typeof f.href === "string" &&
-                  f.href.indexOf("https://www.sec.gov/") === 0)
-                 ? f.href : ("/c/" + m[0] + "/");
-      var off = href.indexOf("http") === 0;
-      out.push('<a href="'+href+'"'+(off?' target="_blank" rel="noopener"':'')+'>'+
-               '<span class="s">'+m[0]+'</span>'+
-               '<span class="n">'+m[1]+'</span>'+
-               '<span class="t">8-K &middot; '+ago(f.filed)+'</span></a>');
-      var d=describe(f.items);
-      rows.push({tk:m[0], name:m[1], desc:d.text||"8-K", severe:d.severe,
-                 dir:d.dir, href:href, off:off, ago:ago(f.filed)});
-    }
-    if(!out.length) return;                  // nothing matched: leave it hidden
-    if(list){
-      list.innerHTML = rows.slice(0,7).map(function(r){
-        var dcls = r.dir<0 ? "dn" : (r.dir>0 ? "up" : "fl");
-        var dttl = r.dir<0 ? "the filing type itself is negative"
-                 : (r.dir>0 ? "a bid or change of control, usually at a premium"
-                            : "no direction implied by the filing type");
-        return '<li><a href="'+r.href+'"'+(r.off?' target="_blank" rel="noopener"':'')+'>'+
-               '<span class="ar '+dcls+'" title="'+dttl+'">'+ARROW[String(r.dir)]+'</span>'+
-               '<span class="s">'+r.tk+'</span>'+
-               '<span class="n">'+r.name+'</span>'+
-               '<span class="d'+(r.severe?' warn':'')+'">'+r.desc+'</span>'+
-               '<span class="t">'+r.ago+'</span></a></li>';
-      }).join("");
-    }
-    // the list is laid down twice so the loop has no visible seam
-    track.innerHTML=out.join("")+out.join("");
-    strip.classList.add("on");
-  }).catch(function(){});
-})();
-</script><script>
 // Tag the document with how it was reached, so a back gesture animates as a pop
 // rather than another push. Guarded throughout: these APIs are recent and their
 // absence must not break the page.
@@ -560,5 +427,62 @@ or sell any security.</span>
     else if(!e.shiftKey && document.activeElement===z){ e.preventDefault(); a.focus(); }
   });
   ok.focus();
+})();
+</script><script>
+// The three tiles page like a home screen. Snap scrolling does the swipe for
+// free on touch; the dots and arrows exist because a mouse has no thumb, and
+// the arrow keys because a keyboard has neither.
+(function(){
+  var pager=document.getElementById("pager"),
+      dots=document.getElementById("pdots"),
+      prev=document.getElementById("pprev"),
+      next=document.getElementById("pnext");
+  if(!pager||!dots) return;
+  var cards=[].slice.call(pager.querySelectorAll(".card"));
+  if(cards.length<2){ document.querySelector(".pnav").style.display="none"; return; }
+
+  cards.forEach(function(c,i){
+    var b=document.createElement("button");
+    b.type="button";
+    b.setAttribute("aria-label","Go to "+(c.querySelector("h2")||{}).textContent);
+    b.addEventListener("click",function(){ go(i); });
+    dots.appendChild(b);
+  });
+  var buttons=[].slice.call(dots.children), at=0;
+
+  function go(i){
+    at=Math.max(0,Math.min(i,cards.length-1));
+    // scrollIntoView would also scroll the PAGE to the pager; setting
+    // scrollLeft moves only the strip, which is what a page flick does
+    pager.scrollLeft=cards[at].offsetLeft-pager.offsetLeft;
+    paint();
+  }
+  function paint(){
+    buttons.forEach(function(b,i){ b.setAttribute("aria-current", i===at?"true":"false"); });
+    prev.disabled = at===0;
+    next.disabled = at===cards.length-1;
+  }
+  // derive the current page from where the strip actually sits, so a finger
+  // swipe and a dot click cannot disagree
+  var tick;
+  pager.addEventListener("scroll",function(){
+    clearTimeout(tick);
+    tick=setTimeout(function(){
+      var mid=pager.scrollLeft+pager.clientWidth/2, best=0, bd=Infinity;
+      cards.forEach(function(c,i){
+        var d=Math.abs((c.offsetLeft-pager.offsetLeft)+c.offsetWidth/2-mid);
+        if(d<bd){ bd=d; best=i; }
+      });
+      at=best; paint();
+    },60);
+  },{passive:true});
+
+  prev.addEventListener("click",function(){ go(at-1); });
+  next.addEventListener("click",function(){ go(at+1); });
+  pager.addEventListener("keydown",function(e){
+    if(e.key==="ArrowRight"){ e.preventDefault(); go(at+1); }
+    if(e.key==="ArrowLeft"){  e.preventDefault(); go(at-1); }
+  });
+  paint();
 })();
 </script></body></html>
