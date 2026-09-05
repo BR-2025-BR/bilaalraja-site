@@ -21,6 +21,19 @@ import brand
 import pandas as pd
 
 HERE = Path(__file__).resolve().parent
+
+
+def _strat_json():
+    """The backtest payload, or an empty array so the section simply hides.
+
+    Hand-pasting this once was fine; leaving it hand-pasted means the chart and
+    the numbers drift apart the moment the backtest is re-run.
+    """
+    f = HERE.parent / "research" / "strategy_results.json"
+    if not f.exists():
+        print("  note: research/strategy_results.json absent, strategy chart will be empty")
+        return "[]"
+    return f.read_text().strip()
 rows = json.load(open(HERE/"r3k_scored.json"))
 
 # Optional inputs. The page must still build without them rather than fail, but
@@ -288,6 +301,12 @@ canvas{width:100%;height:auto;display:block;border-radius:10px;cursor:crosshair}
 .stclose{background:none;border:1px solid var(--rule);border-radius:6px;color:var(--ink2);
   cursor:pointer;font:inherit;font-size:11.5px;padding:3px 9px}
 .stip.on{opacity:1}
+.verdict{margin-top:16px;padding:15px 17px;border:1px solid var(--rule);
+  border-left:3px solid var(--spy);border-radius:9px;background:var(--raise)}
+.verdict h3{font-size:15px;margin-bottom:8px;font-weight:600}
+.verdict p{font-size:13.5px;line-height:1.6;color:var(--ink2);margin-bottom:8px}
+.verdict p:last-child{margin-bottom:0}
+.verdict b{color:var(--ink)}
 .slegend{display:flex;flex-wrap:wrap;gap:9px 20px;margin-top:12px;font-size:12.5px;color:var(--ink2)}
 .slegend i{display:inline-block;width:15px;height:10px;border-radius:2px;margin-right:6px;
   vertical-align:-1px}
@@ -450,7 +469,8 @@ __MASTHEAD__
       <p>Beating the S&amp;P would only show these companies are smaller than the
       S&amp;P. So each basket is compared with 2,000 random baskets of the same size,
       drawn from the same companies on the same day. That asks the real question:
-      was the <em>choosing</em> worth anything?</p></div>
+      was the <em>choosing</em> worth anything? The S&amp;P is drawn too, because
+      the answer to that turned out to matter.</p></div>
   </div>
 
   <div class="stratbox">
@@ -466,6 +486,24 @@ __MASTHEAD__
     <span><i style="background:var(--dot);opacity:.45"></i>where 90% of random baskets landed</span>
     <span><i style="background:var(--ink3);height:2px"></i>average random basket</span>
     <span><i style="border-top:2px dashed var(--spy);height:0"></i>S&amp;P 500</span>
+  </div>
+
+  <div class="verdict">
+    <h3>It beat the coin flip and lost to the index</h3>
+    <p>Over the seven years the basket returned <b>+146%</b>. The companies it
+    drew from returned +94%, so the score really did pick better than the pond it
+    was fishing in &mdash; about 3.9 points a year better, and in four of the seven
+    years by more than luck can account for.</p>
+    <p>The S&amp;P 500 returned <b>+206%</b> over the same seven years.
+    $10,000 became <b>$24,600</b> in the basket and <b>$30,600</b> in an index
+    fund &mdash; both in dollars, since a sterling investor would also have worn
+    the exchange rate, which is not modelled here. The basket beat the S&amp;P in
+    two years of seven, and trailed it by 3.6 points a year.</p>
+    <p>Both are true at once, and the second is the one that decides anything.
+    The score adds value <em>relative to its universe</em>. That universe &mdash;
+    the smaller end of the US market &mdash; was a worse place to have been than
+    the mega-caps carrying the index, and picking well inside it did not close
+    the gap.</p>
   </div>
 
   <p class="note" style="margin-top:14px"><b>Read it this way.</b> Each marker sits at what the
@@ -545,7 +583,7 @@ __MASTHEAD__
 </div>
 
 <script>
-const STRAT=[{"y":"2019","ret":20.2,"pool":24.7,"ex":-4.6,"pct":14.3,"p":0.857,"n":119,"lo":17.5,"hi":32.0,"nm":24.8},{"y":"2020","ret":5.8,"pool":15.8,"ex":-10.1,"pct":3.1,"p":0.969,"n":112,"lo":6.6,"hi":24.9,"nm":15.8},{"y":"2021","ret":34.5,"pool":24.1,"ex":10.4,"pct":97.8,"p":0.0225,"n":120,"lo":17.0,"hi":31.8,"nm":24.4},{"y":"2022","ret":-11.0,"pool":-18.4,"ex":7.4,"pct":99.0,"p":0.01,"n":118,"lo":-23.6,"hi":-13.2,"nm":-18.4},{"y":"2023","ret":25.1,"pool":14.1,"ex":11.1,"pct":99.3,"p":0.0065,"n":117,"lo":7.6,"hi":20.8,"nm":14.2},{"y":"2024","ret":18.3,"pool":8.3,"ex":10.0,"pct":98.7,"p":0.0135,"n":116,"lo":1.5,"hi":15.3,"nm":8.4},{"y":"2025","ret":9.3,"pool":7.1,"ex":2.2,"pct":71.8,"p":0.282,"n":116,"lo":0.3,"hi":13.6,"nm":7.0}];
+const STRAT=__STRATJSON__;
 const D=__DATA__, META=__META__, METRICS=__METRICS__, SECTORS=__SECTORS__;
 const $=id=>document.getElementById(id);
 const HUE=["--s1","--s2","--s3","--s4"];
@@ -1187,6 +1225,7 @@ __TICKERJS__
 out = (HTML.replace("__BRANDCSS__", brand.TRANSITION_CSS + brand.MASTHEAD_CSS
                                   + brand.TICKER_CSS + brand.A2HS_CSS)
            .replace("__MASTHEAD__", brand.masthead("russell3000") + brand.A2HS_HTML + brand.TICKER_HTML)
+           .replace("__STRATJSON__", _strat_json())
            .replace("__TICKERJS__", brand.TICKER_JS + brand.NAV_JS + brand.A2HS_JS)
            .replace("__DATA__", json.dumps(data, separators=(",",":")))
            .replace("__META__", json.dumps(meta))
