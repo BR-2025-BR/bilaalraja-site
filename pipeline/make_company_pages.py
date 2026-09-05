@@ -11,7 +11,7 @@ Pages are deliberately small and self-contained. There is no shared stylesheet
 because 2,500 pages each fetching one is 2,500 extra requests, and the CSS is
 smaller than the request that would fetch it.
 """
-import json, re, sys
+import json, re, shutil, sys
 from pathlib import Path
 
 import brand
@@ -217,6 +217,21 @@ def main():
         (d/"index.html").write_text(html)
         n += 1; total += len(html); written.append(tk)
     print(f"  wrote {n} company pages  {total/1e6:.2f} MB  mean {total/max(n,1)/1024:.1f} KB")
+
+    # A company that leaves the index left its page behind, still served, still
+    # saying it is a constituent, and frozen at whatever it last knew. Sixteen
+    # had accumulated that way -- AVB and WBS among them, delisted in August and
+    # still presenting as live. Only prune on a full run: `only` means a handful
+    # of pages were rebuilt deliberately and everything else is not stale.
+    if not only:
+        keep = set(written)
+        gone = sorted(d.name for d in OUT.iterdir()
+                      if d.is_dir() and d.name not in keep)
+        for t in gone:
+            shutil.rmtree(OUT / t)
+        if gone:
+            print(f"  removed {len(gone)} pages for companies no longer in the "
+                  f"index: {', '.join(gone[:12])}{' ...' if len(gone) > 12 else ''}")
     return written
 
 
