@@ -3,7 +3,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="Every relevant line item pulled from SEC EDGAR filings for the Russell 3000, with key financial metrics computed point in time. 2,578 companies, 35 metrics, sector-neutral percentile ranking.">
 <meta name="author" content="Bilaal Raja">
-<meta name="x-build" content="3bbf7ca7a4">
+<meta name="x-build" content="99704124f3">
 <link rel="canonical" href="https://bilaalraja.com/russell3000">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Bilaal Raja">
@@ -183,6 +183,13 @@ canvas{width:100%;height:auto;display:block;border-radius:10px;cursor:crosshair}
 
 /* portfolio builder ------------------------------------------------------ */
 .pfgrid{display:grid;grid-template-columns:minmax(240px,1fr) 2fr;gap:16px;align-items:start}
+/* a grid item's default min-width is auto, so a wide table inside refuses to
+   shrink and shoves the whole column past the panel edge. min-width:0 lets the
+   fr track do its job and hands the overflow to the scroller that wants it. */
+.pfgrid > *{min-width:0}
+#pfout{min-width:0;max-width:100%}
+.pfbar,.pfgate{max-width:100%}
+.pfbar .track,.pfgate .track{min-width:0}
 @media(max-width:820px){.pfgrid{grid-template-columns:1fr}}
 #pfin{width:100%;min-height:190px;resize:vertical;font-family:var(--mono);font-size:12.5px;
   line-height:1.55;padding:10px 11px;border:1px solid var(--rule);border-radius:9px;

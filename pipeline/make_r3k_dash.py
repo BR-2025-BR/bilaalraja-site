@@ -313,6 +313,13 @@ canvas{width:100%;height:auto;display:block;border-radius:10px;cursor:crosshair}
 
 /* portfolio builder ------------------------------------------------------ */
 .pfgrid{display:grid;grid-template-columns:minmax(240px,1fr) 2fr;gap:16px;align-items:start}
+/* a grid item's default min-width is auto, so a wide table inside refuses to
+   shrink and shoves the whole column past the panel edge. min-width:0 lets the
+   fr track do its job and hands the overflow to the scroller that wants it. */
+.pfgrid > *{min-width:0}
+#pfout{min-width:0;max-width:100%}
+.pfbar,.pfgate{max-width:100%}
+.pfbar .track,.pfgate .track{min-width:0}
 @media(max-width:820px){.pfgrid{grid-template-columns:1fr}}
 #pfin{width:100%;min-height:190px;resize:vertical;font-family:var(--mono);font-size:12.5px;
   line-height:1.55;padding:10px 11px;border:1px solid var(--rule);border-radius:9px;
