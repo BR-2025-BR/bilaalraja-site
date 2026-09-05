@@ -3,7 +3,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="Every relevant line item pulled from SEC EDGAR filings for the Russell 3000, with key financial metrics computed point in time. 2,578 companies, 35 metrics, sector-neutral percentile ranking.">
 <meta name="author" content="Bilaal Raja">
-<meta name="x-build" content="99704124f3">
+<meta name="x-build" content="12834c6ebb">
 <link rel="canonical" href="https://bilaalraja.com/russell3000">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Bilaal Raja">
@@ -182,7 +182,12 @@ canvas{width:100%;height:auto;display:block;border-radius:10px;cursor:crosshair}
   vertical-align:-1px}
 
 /* portfolio builder ------------------------------------------------------ */
-.pfgrid{display:grid;grid-template-columns:minmax(240px,1fr) 2fr;gap:16px;align-items:start}
+/* minmax(0,...) on both tracks, not just min-width:0 on the items: an fr track
+   floors at min-content, and relying on the item to shrink is engine-dependent
+   -- Chrome contained it, Safari did not. Sizing the TRACK to allow zero is the
+   part that actually holds. */
+.pfgrid{display:grid;grid-template-columns:minmax(240px,340px) minmax(0,1fr);
+  gap:16px;align-items:start}
 /* a grid item's default min-width is auto, so a wide table inside refuses to
    shrink and shoves the whole column past the panel edge. min-width:0 lets the
    fr track do its job and hands the overflow to the scroller that wants it. */
@@ -206,14 +211,19 @@ canvas{width:100%;height:auto;display:block;border-radius:10px;cursor:crosshair}
   color:var(--ink)}
 .pfstat span{font-family:var(--mono);font-size:10px;letter-spacing:.09em;text-transform:uppercase;
   color:var(--ink3)}
-.pfbar{display:grid;grid-template-columns:118px 1fr 92px;gap:9px;align-items:center;
-  margin-bottom:5px;font-size:12.5px}
+.pfbar{display:flex;gap:9px;align-items:center;margin-bottom:5px;font-size:12.5px}
+.pfbar .t{flex:0 0 118px}
+.pfbar .track{flex:1 1 auto;min-width:0}
+.pfbar .v{flex:0 0 92px}
 .pfbar .t{color:var(--ink2)}
 .pfbar .track{height:9px;border-radius:5px;background:var(--grid);position:relative;overflow:hidden}
 .pfbar .fill{position:absolute;left:0;top:0;bottom:0;border-radius:5px}
 .pfbar .v{font-family:var(--mono);font-size:12px;text-align:right;color:var(--ink);white-space:nowrap}
-.pfgate{display:grid;grid-template-columns:150px 1fr 96px;gap:9px;align-items:center;
-  margin-bottom:5px;font-size:12.5px}
+.pfgate{display:flex;gap:9px;align-items:center;margin-bottom:5px;font-size:12.5px}
+.pfgate > :first-child{flex:0 0 150px}
+.pfgate .track{flex:1 1 auto;min-width:0}
+.pfgate .v{flex:0 0 96px}
+.pfgate > :nth-child(2):not(.track){flex:1 1 auto;min-width:0}
 .pfgate .track{height:14px;border-radius:4px;background:var(--grid);display:flex;overflow:hidden}
 .pfgate .pass{background:var(--s1)}
 .pfgate .fail{background:var(--dot);opacity:.55}
