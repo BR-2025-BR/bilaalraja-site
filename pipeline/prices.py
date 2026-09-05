@@ -281,3 +281,47 @@ if __name__ == "__main__":
         check()
     else:
         sys.exit(__doc__)
+
+
+def append_day(df):
+    """Fold one session's whole-market rows into the year-partitioned store.
+
+    This is what turns a static download into a growing point-in-time archive.
+    Every build records the whole market as it stood that day, so a company that
+    delists in two years is still in the file for every session it traded -- the
+    single thing a survivorship-free backtest cannot reconstruct after the fact.
+
+    Idempotent: re-running a build on the same day rewrites those rows rather
+    than duplicating them, keeping the newest fetch for a (ticker, date) pair.
+    Returns (rows_added, path) or (0, None) if there was nothing new.
+    """
+    import pandas as pd
+
+    if df is None or not len(df):
+        return 0, None
+    df = df.copy()
+    df["date"] = pd.to_datetime(df["date"], errors="coerce")
+    df = df[df.date.notna() & df.ticker.notna()]
+    if not len(df):
+        return 0, None
+
+    PXDIR.mkdir(parents=True, exist_ok=True)
+    total = 0
+    last = None
+    for year, part in df.groupby(df.date.dt.year):
+        f = PXDIR / f"{year}.parquet"
+        if f.exists():
+            old = pd.read_parquet(f)
+            before = len(old)
+            merged = pd.concat([old, part], ignore_index=True)
+        else:
+            before = 0
+            merged = part
+        # keep="last" means a re-run of the same session supersedes itself
+        merged = (merged.sort_values(["ticker", "date"])
+                        .drop_duplicates(["ticker", "date"], keep="last")
+                        .reset_index(drop=True))
+        merged.to_parquet(f, index=False)
+        total += len(merged) - before
+        last = f
+    return total, last

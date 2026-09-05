@@ -141,6 +141,23 @@ def fetch_prices(tickers, snap):
     import price_source
     log(f"  source: {price_source.resolve()}")
     got = price_source.latest(tickers)
+
+    # Fold the session into the permanent store before anything else touches it.
+    # The snapshot below is a CURRENT view and is overwritten every build; this
+    # is the running record, and it is the only thing that makes a future
+    # backtest survivorship-free. A company delisting in 2028 is unrecoverable
+    # unless its 2026 sessions were written down while it still traded.
+    raw = getattr(price_source, "LAST_RAW", None)
+    if raw is not None and len(raw):
+        try:
+            sys.path.insert(0, str(HERE))
+            from prices import append_day
+            n_new, where = append_day(raw)
+            log(f"  archived {len(raw):,} rows for the session"
+                f"  (+{n_new:,} new to {where.name if where else 'store'})")
+        except Exception as e:
+            # never let archiving break a build; the snapshot still promotes
+            log(f"  WARNING could not archive the session: {type(e).__name__}: {e}")
     added = 0
     for t, v in got.items():
         if v and v.get("price"):
@@ -157,6 +174,22 @@ def fetch_prices(tickers, snap):
         t = pd.read_parquet(tkf, columns=["ticker", "isdelisted"])
         dead = set(t.ticker[t.isdelisted.astype(str).str.upper() == "Y"].dropna())
         gone = sorted(set(snap) & dead)
+        # Record WHEN each name was first seen as delisted. The vendor's flag is
+        # a current view: it says a company is gone, not when we learned it, and
+        # a rebuilt tickers table can restate lastpricedate. This log is the
+        # as-observed record, which is the version a point-in-time test needs.
+        if gone:
+            dl = HERE.parent / "prices" / "delist_log.csv"
+            seen = set()
+            if dl.exists():
+                seen = set(pd.read_csv(dl).ticker.astype(str))
+            fresh = [g for g in gone if g not in seen]
+            if fresh:
+                today = date.today().isoformat()
+                pd.DataFrame({"ticker": fresh, "observed": today,
+                              "source": "observed"}).to_csv(
+                    dl, mode="a", header=not dl.exists(), index=False)
+                log(f"  delisting log: {len(fresh)} newly observed")
         for g in gone:
             snap.pop(g, None)
         global DELISTED_REMOVED

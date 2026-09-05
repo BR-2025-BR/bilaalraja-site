@@ -35,6 +35,12 @@ KEY = os.environ.get("SHARADAR_KEY", "")
 # being written returns far fewer, so this is the floor for trusting a day.
 MIN_ROWS = int(os.environ.get("SHARADAR_MIN_ROWS", "4000"))
 
+# The whole-market rows from the last successful fetch, kept so the caller can
+# append them to the permanent store. This is what makes the archive grow
+# point-in-time: every session recorded on the day it happened, including the
+# companies that will later delist and vanish from any current-constituent list.
+LAST_RAW = None
+
 
 def resolve():
     if SOURCE != "auto":
@@ -80,15 +86,38 @@ def _sharadar(tickers, lookback=8):
             ti, di, ci = head.index("ticker"), head.index("date"), head.index("closeadj")
         except ValueError:
             ti, di, ci = 0, 1, 7
-        out = {}
+        try:
+            vi = head.index("volume")
+        except ValueError:
+            vi = None
+        try:
+            ui = head.index("closeunadj")
+        except ValueError:
+            ui = None
+        out, raw = {}, []
         for ln in lines[1:]:
             p = ln.split(",")
             if len(p) <= ci:
                 continue
             try:
-                out[p[ti]] = {"price": float(p[ci]), "date": p[di]}
+                px = float(p[ci])
             except ValueError:
-                pass
+                continue
+            out[p[ti]] = {"price": px, "date": p[di]}
+            def num(i):
+                if i is None or i >= len(p):
+                    return None
+                try:
+                    return float(p[i])
+                except ValueError:
+                    return None
+            # closeunadj is kept alongside the adjusted close because closeadj is
+            # restated backwards whenever a company later splits. A store grown by
+            # appending daily adjusted closes drifts out of line with itself over
+            # years; keeping the raw close means that can be detected and repaired
+            # rather than silently believed.
+            raw.append({"ticker": p[ti], "date": p[di], "close": px,
+                        "volume": num(vi), "closeunadj": num(ui)})
         # Share classes: the feed writes BRK.B, the pipeline carries BRK-B. Alias
         # rather than rename, so a lookup in either convention resolves and no
         # existing key changes meaning. 33 tickers in the feed are affected,
@@ -97,6 +126,9 @@ def _sharadar(tickers, lookback=8):
             out.setdefault(t.replace(".", "-"), out[t])
 
         if len(out) >= MIN_ROWS:
+            global LAST_RAW
+            import pandas as _pd
+            LAST_RAW = _pd.DataFrame(raw)
             hit = len(want & set(out))
             print(f"  sharadar: {len(out):,} securities priced on {day} "
                   f"({hit:,} of {len(want):,} asked for, 1 request)", flush=True)
