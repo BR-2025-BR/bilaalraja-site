@@ -3,7 +3,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="Every relevant line item pulled from SEC EDGAR filings for the Russell 3000, with key financial metrics computed point in time. 2,578 companies, 35 metrics, sector-neutral percentile ranking.">
 <meta name="author" content="Bilaal Raja">
-<meta name="x-build" content="0851a399f5">
+<meta name="x-build" content="4e59fd0a6f">
 <link rel="canonical" href="https://bilaalraja.com/russell3000">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Bilaal Raja">
@@ -217,6 +217,8 @@ canvas{width:100%;height:auto;display:block;border-radius:10px;cursor:crosshair}
 .pfsec{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px}
 .pfsec i{display:inline-block;font-style:normal;font-size:11.5px;padding:2px 7px;
   border:1px solid var(--rule);border-radius:20px;color:var(--ink2)}
+.pfcomp tbody tr.agg td{border-top:1.5px solid var(--rule);font-weight:600;color:var(--ink)}
+.pfcomp tbody tr.mkt td{color:var(--ink3)}
 
 /* screen ---------------------------------------------------------------- */
 .screen{display:grid;grid-template-columns:repeat(auto-fit,minmax(232px,1fr));
@@ -367,7 +369,7 @@ html[data-nav="traverse"]::view-transition-old(root){animation-name:vt-out-right
 </style>
 
 <div class="wrap">
-<header class="mast"><a class="wm" href="/">Bilaal<i>.</i>Raja</a><nav><a href="/russell3000/" aria-current="page">Cross-section</a><a href="/commentary/">Commentary</a><a href="/learn/">Case study</a><a href="/methodology/">Method</a></nav></header><div class="a2hs" id="a2hs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3"/><path d="M8.5 6.5 12 3l3.5 3.5"/><path d="M8 9H6.5A1.5 1.5 0 0 0 5 10.5v9A1.5 1.5 0 0 0 6.5 21h11a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 17.5 9H16"/></svg><div><b>Add this to your home screen.</b> Tap <span class="g"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3"/><path d="M8.5 6.5 12 3l3.5 3.5"/><path d="M8 9H6.5A1.5 1.5 0 0 0 5 10.5v9A1.5 1.5 0 0 0 6.5 21h11a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 17.5 9H16"/></svg></span> in Safari, then <b>Add to Home Screen</b>, and it opens full screen like an app.</div><button class="x" id="a2hsX" aria-label="Dismiss">&times;</button></div><div class="tkr" id="tkr"><div class="tkr-i"><span class="dot" aria-hidden="true"></span><b>Live</b> &middot; 8-K filings by companies in the panel</div><div class="tkr-w"><div class="tkr-t" id="tkrt"></div></div><ul class="tkr-l" id="tkrl"></ul></div>
+<header class="mast"><a class="wm" href="/">Bilaal<i>.</i>Raja</a><nav><a href="/russell3000/" aria-current="page">Cross-section</a><a href="/commentary/">Commentary</a><a href="/learn/">Case study</a><a href="/methodology/">Method</a></nav></header><div class="a2hs" id="a2hs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3"/><path d="M8.5 6.5 12 3l3.5 3.5"/><path d="M8 9H6.5A1.5 1.5 0 0 0 5 10.5v9A1.5 1.5 0 0 0 6.5 21h11a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 17.5 9H16"/></svg><div><b>Add this to your home screen.</b> Tap <span class="g"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3"/><path d="M8.5 6.5 12 3l3.5 3.5"/><path d="M8 9H6.5A1.5 1.5 0 0 0 5 10.5v9A1.5 1.5 0 0 0 6.5 21h11a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 17.5 9H16"/></svg></span> in Safari, then <b>Add to Home Screen</b>, and it opens full screen like an app.</div><button class="x" id="a2hsX" aria-label="Dismiss">&times;</button></div>
 <header>
   <div>
     <h1>Russell 3000 &mdash; Cross-Section</h1>
@@ -380,8 +382,8 @@ html[data-nav="traverse"]::view-transition-old(root){animation-name:vt-out-right
       <a href="https://linkedin.com/in/bilaalraja" target="_blank" rel="noopener">linkedin.com/in/bilaalraja</a></span>
     <span class="meth" id="meth"></span>
   </div>
-
 </header>
+<div class="tkr" id="tkr"><div class="tkr-i"><span class="dot" aria-hidden="true"></span><b>Live</b> &middot; 8-K filings by companies in the panel</div><div class="tkr-w"><div class="tkr-t" id="tkrt"></div></div><ul class="tkr-l" id="tkrl"></ul></div>
 
 <div class="warn" id="warnbox"></div>
 
@@ -1090,6 +1092,18 @@ function renderTables(){
   const box=$("pfin"), out=$("pfout");
   if(!box||!out) return;
   const BY={}; D.forEach(d=>{ BY[d.t]=d; });
+  // the market line is fixed, so compute it once rather than on every render
+  const MKT=(function(){
+    const op=D.filter(d=>d.m==="O"), out={};
+    const med=a=>{ const v=a.filter(x=>x!=null&&isFinite(x)).sort((x,y)=>x-y);
+      if(!v.length) return null; const m=v.length>>1;
+      return v.length%2?v[m]:(v[m-1]+v[m])/2; };
+    ["pe","ps","ev_sales","ev_ebitda","ev_ebit","fcf_yield","growth",
+     "ebitda_margin","roic"].forEach(k=>{ out[k]=med(op.map(d=>d[k])); });
+    out.nd=med(op.map(d=>(d.netcash==null||d.ebitda==null||d.ebitda<=0)
+                          ? null : (-d.netcash)/d.ebitda));
+    return out;
+  })();
 
   function parse(text){
     const rows=[], bad=[], seen={};
@@ -1221,6 +1235,63 @@ function renderTables(){
         +'financials model ('+fin.map(r=>r.t).join(", ")+'). Those percentiles are not comparable '
         +'with the others and the blend above mixes two scales.');
     if(warn.length) h+='<div class="pfwarn">'+warn.join('<br><br>')+'</div>';
+
+    // ---- comps
+    // A portfolio's P/E is not the average of its holdings' P/Es. It is total
+    // price over total earnings, which is the weight-harmonic mean -- averaging
+    // the ratios lets one 200x name drag the whole book upward when it may be a
+    // rounding error of the earnings. Rates (growth, margin, ROIC, FCF yield)
+    // are additive and take a straight weighted mean instead.
+    const MULT=[["pe","P/E"],["ps","P/S"],["ev_sales","EV/Sales"],
+                ["ev_ebitda","EV/EBITDA"],["ev_ebit","EV/EBIT"]];
+    const RATE=[["fcf_yield","FCF yield %"],["growth","Rev growth %"],
+                ["ebitda_margin","EBITDA margin %"],["roic","ROIC %"]];
+    const nd=d=>(d.netcash==null||d.ebitda==null||d.ebitda<=0)?null:(-d.netcash)/d.ebitda;
+
+    function median(a){ const v=a.filter(x=>x!=null&&isFinite(x)).sort((x,y)=>x-y);
+      if(!v.length) return null;
+      const m=v.length>>1; return v.length%2?v[m]:(v[m-1]+v[m])/2; }
+    function harm(rows,key){            // total price / total earnings
+      let w=0,inv=0;
+      rows.forEach(r=>{ const x=r.d[key];
+        if(x!=null&&isFinite(x)&&x>0){ w+=r.nw; inv+=r.nw/x; } });
+      return {v: inv>0 ? w/inv : null, cover:w};
+    }
+
+    h+='<h3 style="font-size:14px;font-weight:650;margin:18px 0 5px">Comparables</h3>'
+      +'<p class="note" style="margin-bottom:9px">On the <b>portfolio</b> row the multiples are '
+      +'the real aggregate &mdash; total price over total earnings, weighted as you hold them, not '
+      +'an average of ratios. The rates beside them are medians: ROIC has no upper bound, so one '
+      +'holding with almost no capital employed drags a mean into the hundreds and tells you '
+      +'nothing about the book. Negative and missing figures are excluded rather than counted as '
+      +'zero, so a number can rest on less than the whole portfolio.</p>'
+      +'<div class="tscroll pfcomp" style="max-height:420px"><table><thead><tr><th>Ticker</th>'
+      +'<th>Weight</th>'+MULT.map(m=>"<th>"+m[1]+"</th>").join("")
+      +RATE.map(m=>"<th>"+m[1]+"</th>").join("")+'<th>Net debt / EBITDA</th></tr></thead><tbody>';
+    const num=(v,dp)=>(v==null||!isFinite(v))?'<span style="color:var(--ink3)">&mdash;</span>'
+                                             :v.toFixed(dp===undefined?1:dp);
+    rows.forEach(r=>{
+      h+='<tr><td><b>'+r.t+'</b></td><td class="num">'+(r.nw*100).toFixed(1)+'%</td>'
+        +MULT.map(m=>'<td class="num">'+num(r.d[m[0]])+'</td>').join("")
+        +RATE.map(m=>'<td class="num">'+num(r.d[m[0]])+'</td>').join("")
+        +'<td class="num">'+num(nd(r.d),2)+'</td></tr>';
+    });
+    h+='<tr class="agg"><td>Portfolio<br><span style="font-weight:400;font-size:10px;'
+      +'color:var(--ink3)">aggregate / median</span></td><td class="num">100%</td>'
+      +MULT.map(m=>{const a=harm(rows,m[0]);
+        return '<td class="num">'+num(a.v)+(a.cover<0.995&&a.cover>0
+          ?'<span style="color:var(--ink3);font-size:10px"> '+(a.cover*100).toFixed(0)+'%</span>':'')
+          +'</td>';}).join("")
+      +RATE.map(m=>'<td class="num">'+num(median(rows.map(r=>r.d[m[0]])))+'</td>').join("")
+      +'<td class="num">'+num(median(rows.map(r=>nd(r.d))),2)+'</td></tr>';
+    h+='<tr class="mkt"><td>Market median</td><td class="num">&mdash;</td>'
+      +MULT.map(m=>'<td class="num">'+num(MKT[m[0]])+'</td>').join("")
+      +RATE.map(m=>'<td class="num">'+num(MKT[m[0]])+'</td>').join("")
+      +'<td class="num">'+num(MKT.nd,2)+'</td></tr>';
+    h+='</tbody></table></div>'
+      +'<p class="note" style="margin-top:6px;font-size:12px">Market median is every operating '
+      +'company in the panel, for scale. Median rather than aggregate, because half the market '
+      +'above and half below is the comparison a reader expects.</p>';
 
     // ---- holdings
     h+='<div class="tscroll" style="max-height:340px;margin-top:14px"><table><thead><tr>'

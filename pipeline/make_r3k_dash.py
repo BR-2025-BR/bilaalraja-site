@@ -347,6 +347,8 @@ canvas{width:100%;height:auto;display:block;border-radius:10px;cursor:crosshair}
 .pfsec{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px}
 .pfsec i{display:inline-block;font-style:normal;font-size:11.5px;padding:2px 7px;
   border:1px solid var(--rule);border-radius:20px;color:var(--ink2)}
+.pfcomp tbody tr.agg td{border-top:1.5px solid var(--rule);font-weight:600;color:var(--ink)}
+.pfcomp tbody tr.mkt td{color:var(--ink3)}
 
 /* screen ---------------------------------------------------------------- */
 .screen{display:grid;grid-template-columns:repeat(auto-fit,minmax(232px,1fr));
@@ -413,8 +415,8 @@ __MASTHEAD__
       <a href="https://linkedin.com/in/bilaalraja" target="_blank" rel="noopener">linkedin.com/in/bilaalraja</a></span>
     <span class="meth" id="meth"></span>
   </div>
-
 </header>
+__TICKERHTML__
 
 <div class="warn" id="warnbox"></div>
 
@@ -1123,6 +1125,18 @@ function renderTables(){
   const box=$("pfin"), out=$("pfout");
   if(!box||!out) return;
   const BY={}; D.forEach(d=>{ BY[d.t]=d; });
+  // the market line is fixed, so compute it once rather than on every render
+  const MKT=(function(){
+    const op=D.filter(d=>d.m==="O"), out={};
+    const med=a=>{ const v=a.filter(x=>x!=null&&isFinite(x)).sort((x,y)=>x-y);
+      if(!v.length) return null; const m=v.length>>1;
+      return v.length%2?v[m]:(v[m-1]+v[m])/2; };
+    ["pe","ps","ev_sales","ev_ebitda","ev_ebit","fcf_yield","growth",
+     "ebitda_margin","roic"].forEach(k=>{ out[k]=med(op.map(d=>d[k])); });
+    out.nd=med(op.map(d=>(d.netcash==null||d.ebitda==null||d.ebitda<=0)
+                          ? null : (-d.netcash)/d.ebitda));
+    return out;
+  })();
 
   function parse(text){
     const rows=[], bad=[], seen={};
@@ -1254,6 +1268,63 @@ function renderTables(){
         +'financials model ('+fin.map(r=>r.t).join(", ")+'). Those percentiles are not comparable '
         +'with the others and the blend above mixes two scales.');
     if(warn.length) h+='<div class="pfwarn">'+warn.join('<br><br>')+'</div>';
+
+    // ---- comps
+    // A portfolio's P/E is not the average of its holdings' P/Es. It is total
+    // price over total earnings, which is the weight-harmonic mean -- averaging
+    // the ratios lets one 200x name drag the whole book upward when it may be a
+    // rounding error of the earnings. Rates (growth, margin, ROIC, FCF yield)
+    // are additive and take a straight weighted mean instead.
+    const MULT=[["pe","P/E"],["ps","P/S"],["ev_sales","EV/Sales"],
+                ["ev_ebitda","EV/EBITDA"],["ev_ebit","EV/EBIT"]];
+    const RATE=[["fcf_yield","FCF yield %"],["growth","Rev growth %"],
+                ["ebitda_margin","EBITDA margin %"],["roic","ROIC %"]];
+    const nd=d=>(d.netcash==null||d.ebitda==null||d.ebitda<=0)?null:(-d.netcash)/d.ebitda;
+
+    function median(a){ const v=a.filter(x=>x!=null&&isFinite(x)).sort((x,y)=>x-y);
+      if(!v.length) return null;
+      const m=v.length>>1; return v.length%2?v[m]:(v[m-1]+v[m])/2; }
+    function harm(rows,key){            // total price / total earnings
+      let w=0,inv=0;
+      rows.forEach(r=>{ const x=r.d[key];
+        if(x!=null&&isFinite(x)&&x>0){ w+=r.nw; inv+=r.nw/x; } });
+      return {v: inv>0 ? w/inv : null, cover:w};
+    }
+
+    h+='<h3 style="font-size:14px;font-weight:650;margin:18px 0 5px">Comparables</h3>'
+      +'<p class="note" style="margin-bottom:9px">On the <b>portfolio</b> row the multiples are '
+      +'the real aggregate &mdash; total price over total earnings, weighted as you hold them, not '
+      +'an average of ratios. The rates beside them are medians: ROIC has no upper bound, so one '
+      +'holding with almost no capital employed drags a mean into the hundreds and tells you '
+      +'nothing about the book. Negative and missing figures are excluded rather than counted as '
+      +'zero, so a number can rest on less than the whole portfolio.</p>'
+      +'<div class="tscroll pfcomp" style="max-height:420px"><table><thead><tr><th>Ticker</th>'
+      +'<th>Weight</th>'+MULT.map(m=>"<th>"+m[1]+"</th>").join("")
+      +RATE.map(m=>"<th>"+m[1]+"</th>").join("")+'<th>Net debt / EBITDA</th></tr></thead><tbody>';
+    const num=(v,dp)=>(v==null||!isFinite(v))?'<span style="color:var(--ink3)">&mdash;</span>'
+                                             :v.toFixed(dp===undefined?1:dp);
+    rows.forEach(r=>{
+      h+='<tr><td><b>'+r.t+'</b></td><td class="num">'+(r.nw*100).toFixed(1)+'%</td>'
+        +MULT.map(m=>'<td class="num">'+num(r.d[m[0]])+'</td>').join("")
+        +RATE.map(m=>'<td class="num">'+num(r.d[m[0]])+'</td>').join("")
+        +'<td class="num">'+num(nd(r.d),2)+'</td></tr>';
+    });
+    h+='<tr class="agg"><td>Portfolio<br><span style="font-weight:400;font-size:10px;'
+      +'color:var(--ink3)">aggregate / median</span></td><td class="num">100%</td>'
+      +MULT.map(m=>{const a=harm(rows,m[0]);
+        return '<td class="num">'+num(a.v)+(a.cover<0.995&&a.cover>0
+          ?'<span style="color:var(--ink3);font-size:10px"> '+(a.cover*100).toFixed(0)+'%</span>':'')
+          +'</td>';}).join("")
+      +RATE.map(m=>'<td class="num">'+num(median(rows.map(r=>r.d[m[0]])))+'</td>').join("")
+      +'<td class="num">'+num(median(rows.map(r=>nd(r.d))),2)+'</td></tr>';
+    h+='<tr class="mkt"><td>Market median</td><td class="num">&mdash;</td>'
+      +MULT.map(m=>'<td class="num">'+num(MKT[m[0]])+'</td>').join("")
+      +RATE.map(m=>'<td class="num">'+num(MKT[m[0]])+'</td>').join("")
+      +'<td class="num">'+num(MKT.nd,2)+'</td></tr>';
+    h+='</tbody></table></div>'
+      +'<p class="note" style="margin-top:6px;font-size:12px">Market median is every operating '
+      +'company in the panel, for scale. Median rather than aggregate, because half the market '
+      +'above and half below is the comparison a reader expects.</p>';
 
     // ---- holdings
     h+='<div class="tscroll" style="max-height:340px;margin-top:14px"><table><thead><tr>'
@@ -1518,7 +1589,8 @@ __TICKERJS__
 
 out = (HTML.replace("__BRANDCSS__", brand.TRANSITION_CSS + brand.MASTHEAD_CSS
                                   + brand.TICKER_CSS + brand.A2HS_CSS)
-           .replace("__MASTHEAD__", brand.masthead("russell3000") + brand.A2HS_HTML + brand.TICKER_HTML)
+           .replace("__MASTHEAD__", brand.masthead("russell3000") + brand.A2HS_HTML)
+           .replace("__TICKERHTML__", brand.TICKER_HTML)
            .replace("__STRATJSON__", _strat_json())
            .replace("__TICKERJS__", brand.TICKER_JS + brand.NAV_JS + brand.A2HS_JS)
            .replace("__DATA__", json.dumps(data, separators=(",",":")))
