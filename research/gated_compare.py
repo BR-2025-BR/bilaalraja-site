@@ -37,14 +37,16 @@ import pandas as pd                                         # noqa: E402
 
 TOP_N = 25
 START = 100_000.0
+# see gated25.EXIT_RULE for the measurements behind this default
+EXIT_RULE = os.environ.get("EXIT_RULE", "gates")
 
 
-def dates_for(freq):
+def dates_for(freq, y0=2014):
     """Formation dates, plus the final exit both runs share."""
     if freq == "A":
-        d = [f"{y}-01-01" for y in range(2014, 2026)]
+        d = [f"{y}-01-01" for y in range(y0, 2026)]
     else:
-        d = [f"{y}-{m:02d}-01" for y in range(2014, 2026) for m in (1, 4, 7, 10)]
+        d = [f"{y}-{m:02d}-01" for y in range(y0, 2026) for m in (1, 4, 7, 10)]
         d = [x for x in d if x <= "2025-10-01"]
     return d, "2026-01-01"
 
@@ -60,18 +62,20 @@ def load(dates, final, CACHE):
     return panels, None
 
 
-def simulate(freq, cut, px, CACHE, G):
-    dates, final = dates_for(freq)
+def simulate(freq, cut, px, CACHE, G, y0=2014):
+    dates, final = dates_for(freq, y0)
     panels, missing = load(dates, final, CACHE)
     if panels is None:
         return {"missing": missing}
     idx = px.index
 
-    picks, sess = {}, {}
+    picks, sess, gate_pass, ordered = {}, {}, {}, {}
     for d in dates + [final]:
         p = panels[d]
         g = p[(p.model == "operating") & G.passes_gates(p)]
-        picks[d] = set(g.sort_values("score", ascending=False).head(TOP_N).ticker)
+        gate_pass[d] = set(g.ticker)
+        ordered[d] = list(g.sort_values("score", ascending=False).ticker)
+        picks[d] = set(ordered[d][:TOP_N])
         sess[d] = idx.searchsorted(pd.Timestamp(p.formed.iloc[0]), side="left")
 
     holdings, cash, log, trades = {}, START, [], 0
@@ -79,7 +83,12 @@ def simulate(freq, cut, px, CACHE, G):
         nxt = dates[i + 1] if i + 1 < len(dates) else final
         a, b = sess[d], min(sess[nxt], len(idx) - 1)
 
-        new = [t for t in picks[d] if t not in holdings]
+        # Cap the book at TOP_N. Under EXIT_RULE="gates" a holding can keep
+        # passing while ranked outside the top 25, so it is carried; without a
+        # cap the book grows past 25 and the extra diversification flatters the
+        # result. Fill only the free slots, best-ranked first.
+        ranked = [t for t in ordered[d] if t not in holdings]
+        new = ranked[:max(0, TOP_N - len(holdings))]
         if new and cash > 0:
             each = cash / len(new)
             for t in new:
@@ -100,14 +109,21 @@ def simulate(freq, cut, px, CACHE, G):
             r = (p1 / h["entry"] - 1) * 100
             rets[t] = r
             h["value"] *= 1 + r / 100
+            # reset the cost basis to THIS period's exit. Without it a carried
+            # position re-applies its whole return-since-first-purchase every
+            # period, which compounds exponentially -- it inflated the quarterly
+            # run to +710,051%. It also matches the rule as specified: the cut
+            # tests the return "over its year", not since the position opened.
+            h["entry"] = p1
             if gone:
                 dead.append(t)
         end_v = sum(h["value"] for h in holdings.values()) + cash
 
-        keep = picks[nxt]
+        keep = gate_pass[nxt] if EXIT_RULE == "gates" else picks[nxt]
         for t in list(holdings):
             r = rets.get(t, 0.0)
-            if t in dead or r < cut or t not in keep:
+            fail = (r < cut) if EXIT_RULE != "gates" else False
+            if t in dead or fail or t not in keep:
                 cash += holdings[t]["value"]
                 del holdings[t]
                 trades += 1
@@ -136,28 +152,41 @@ def main():
     tk, _ = G.AB.load_inputs()
     syms = sorted(t for t in tk.ticker.unique() if isinstance(t, str) and t)
     px = closes(syms, "2013-11-01", "2026-03-31").sort_index()
-
-    out = {}
-    for freq, cut, lab in (("A", 8.0, "annual, 8% cut"), ("Q", 2.0, "quarterly, 2% cut")):
-        r = simulate(freq, cut, px, CACHE, G)
-        out[freq] = r
-        n = len(r["log"])
-        mult = r["final"] / START
-        yrs = 12
-        print(f"\n  {lab}: {n} formations, {r['trades']} trades")
-        print(f"    {START:,.0f} -> {r['final']:,.0f}   "
-              f"{(mult-1)*100:+.1f}%  ({(mult**(1/yrs)-1)*100:+.2f}%/yr)")
-
     spy = pd.read_parquet(os.path.join(HERE, "spy.parquet")).sort_values("date").reset_index(drop=True)
-    d0 = pd.Timestamp(out["A"]["log"][0]["formed"])
-    d1 = pd.Timestamp(out["A"]["log"][-1]["exit"])
-    i = np.searchsorted(spy.date.values, np.datetime64(d0), "left")
-    j = np.searchsorted(spy.date.values, np.datetime64(d1), "right") - 1
-    s = float(spy.close.iloc[j] / spy.close.iloc[i])
-    print(f"\n  S&P 500 {d0.date()} to {d1.date()}")
-    print(f"    {START:,.0f} -> {START*s:,.0f}   {(s-1)*100:+.1f}%  ({(s**(1/12)-1)*100:+.2f}%/yr)")
 
-    out["spy"] = {"mult": s, "final": START * s}
+    # 2014 is the window as specified. 2016 is the robustness check: SEC cash-flow
+    # coverage is so thin before it that two thirds of the 2014 universe has no FCF
+    # figure, the gates read missing as failure, and only 12 names clear all six --
+    # so the early book is not a top-25 selection at all. The annual run holds such
+    # a formation for a year and the quarterly one for a quarter, which can hand
+    # quarterly an edge that is coverage, not frequency.
+    out = {}
+    for y0 in (2014, 2016):
+        blk = {}
+        print(f"\n{'='*62}\n  FROM {y0}\n{'='*62}")
+        for freq, cut, lab in (("A", 8.0, "annual, 8% cut"),
+                               ("Q", 2.0, "quarterly, 2% cut")):
+            r = simulate(freq, cut, px, CACHE, G, y0)
+            blk[freq] = r
+            d0, d1 = pd.Timestamp(r["first"]), pd.Timestamp(r["last"])
+            yrs = (d1 - d0).days / 365.25
+            mult = r["final"] / START
+            print(f"\n  {lab}: {len(r['log'])} formations, {r['trades']} trades")
+            print(f"    {START:,.0f} -> {r['final']:,.0f}   "
+                  f"{(mult-1)*100:+.1f}%  ({(mult**(1/yrs)-1)*100:+.2f}%/yr)")
+
+        d0 = pd.Timestamp(blk["A"]["log"][0]["formed"])
+        d1 = pd.Timestamp(blk["A"]["log"][-1]["exit"])
+        yrs = (d1 - d0).days / 365.25
+        i = np.searchsorted(spy.date.values, np.datetime64(d0), "left")
+        j = np.searchsorted(spy.date.values, np.datetime64(d1), "right") - 1
+        sp = float(spy.close.iloc[j] / spy.close.iloc[i])
+        print(f"\n  S&P 500 {d0.date()} to {d1.date()}")
+        print(f"    {START:,.0f} -> {START*sp:,.0f}   {(sp-1)*100:+.1f}%  "
+              f"({(sp**(1/yrs)-1)*100:+.2f}%/yr)")
+        blk["spy"] = {"mult": sp, "final": START * sp, "years": yrs}
+        out[str(y0)] = blk
+
     json.dump(out, open(os.path.join(HERE, "gated_compare.json"), "w"),
               indent=1, default=float)
     print("\n  wrote gated_compare.json")

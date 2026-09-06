@@ -21,6 +21,9 @@ PY     = "/Users/bilaa/Downloads/pitquant/.venv/bin/python"
 PAGES = [                      # source file, url path, human title
     (SRC / "r3k_dashboard.html", "russell3000", "Russell 3000 Cross-Section"),
     (SRC / "commentary.html",    "commentary",  "Results Commentary"),
+    # must stay after the dashboard: inject_meta reads the universe count that
+    # only the dashboard entry populates
+    (SRC / "gate_exit.html",     "gate-exit",   "The Gate Exit Rule"),
 ]
 
 # Any Claude artifact link becomes a local path, so the site stands alone.
@@ -394,6 +397,10 @@ DESCRIPTIONS = {
  "commentary": ("Russell 3000 Results Commentary | Bilaal Raja",
    "Management's own discussion of results, parsed from 10-Q and 10-K filings "
    "for thousands of US listed companies and matched to the reported figures."),
+ "gate-exit": ("The Gate Exit Rule | Bilaal Raja",
+   "A quality screen where the criterion that buys a company is the criterion "
+   "that sells it. Six gates, 25 names, held while they keep passing. Twelve "
+   "years of point-in-time formations, with the holdings at every rebalance."),
 }
 
 
@@ -1004,7 +1011,7 @@ def main():
               if (SITE / "c").exists() else []
     write_sitemap(SITE, DOMAIN,
                   [("", "1.0"), ("russell3000", "0.9"), ("commentary", "0.8"),
-                   ("methodology", "0.85"), ("learn", "0.85")]
+                   ("methodology", "0.85"), ("learn", "0.85"), ("gate-exit", "0.85")]
                   + [(f"c/{t}", "0.6") for t in tickers],
                   meta["built"])
     n_urls = (SITE / "sitemap.xml").read_text().count("<url>")
