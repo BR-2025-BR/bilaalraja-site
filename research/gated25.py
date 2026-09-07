@@ -74,6 +74,32 @@ START_CAPITAL = 100_000.0
 
 
 # ------------------------------------------------------------------ gates
+# Upper bound on reported revenue growth. The gate has always had a floor and no
+# ceiling, so a company reporting 41,644% "growth" cleared it. Those are almost
+# never businesses tripling in size -- they are pre-commercial biotech with a
+# near-zero revenue base, milestone and licensing lumpiness, merger accounting
+# (Expand Energy at 168% is the Chesapeake-Southwestern combination), or a 2020
+# base effect (Alaska Air printed 3,663%). score.py already caps growth at 50%
+# for the composite for exactly this reason; the gate never did.
+#
+# Measured 2026-09-07 over 48 quarterly formations, gate exit, capped at 25:
+#
+#              full 2014-25   2014-19   2020-25
+#   no ceiling       16.69%     5.48%    28.01%
+#   <= 80%           20.01%     8.71%    30.06%
+#
+# Tested against excluding the SAME NUMBER of gate-passers at random, 300 draws:
+# the cap beat 100% of them over the full period (p=0.000), 99% in 2014-19
+# (p=0.010) and 93% in 2020-25 (p=0.070). Random exclusion does not help at all
+# -- its median is 16.44% against 16.69% for no exclusion -- so the gain is in
+# which names are dropped, not how many.
+#
+# The direction is well supported; the exact threshold is not. 80 was chosen from
+# a sweep in which every ceiling from 60% to 120% improved both eras. Set
+# GROWTH_MAX=inf to reproduce any figure published before 2026-09-07.
+GROWTH_MAX = float(os.environ.get("GROWTH_MAX", "80"))
+
+
 def passes_gates(d):
     """Six gates, with 'no figure' treated as failure, matching the dashboard.
 
@@ -81,7 +107,8 @@ def passes_gates(d):
     the same outcome as failing for anything that has to be picked. Stated here
     so it is a decision rather than an accident.
     """
-    ok = (d.growth >= 20) & (d.ni > 0) & (d.fcf > 0) & (d.roic >= 10) & (d.fcf_conv >= 50)
+    ok = ((d.growth >= 20) & (d.growth <= GROWTH_MAX)
+          & (d.ni > 0) & (d.fcf > 0) & (d.roic >= 10) & (d.fcf_conv >= 50))
     # net debt is the negation of net cash; more cash than debt clears any ceiling
     lev = np.where(d.netcash >= 0, True,
                    np.where(d.ebitda > 0, (-d.netcash) / d.ebitda.replace(0, np.nan) <= 3, False))
