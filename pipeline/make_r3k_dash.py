@@ -454,19 +454,20 @@ __TICKERHTML__
   </div>
   <div class="screen" id="screen">
     <label class="chk"><input type="checkbox" id="f_growth" checked>
-      <span>Revenue growth at least <input type="number" id="v_growth" value="0" step="1" min="-100" max="200">%
-        <i>year on year</i></span></label>
+      <span>Revenue growth <input type="number" id="v_growth" value="20" step="1" min="-100" max="200">%
+        to <input type="number" id="v_gmax" value="80" step="5" min="0" max="100000">%
+        <i>year on year; the ceiling screens out reporting artefacts &mdash; clear it to remove</i></span></label>
     <label class="chk"><input type="checkbox" id="f_ni" checked>
       <span>Profitable<i>net income &gt; 0</i></span></label>
     <label class="chk"><input type="checkbox" id="f_fcf" checked>
       <span>Cash generative<i>free cash flow &gt; 0</i></span></label>
-    <label class="chk"><input type="checkbox" id="f_roic">
+    <label class="chk"><input type="checkbox" id="f_roic" checked>
       <span>ROIC at least <input type="number" id="v_roic" value="10" step="1" min="-100" max="100">%
         <i>returns above the cost of capital</i></span></label>
-    <label class="chk"><input type="checkbox" id="f_lev">
+    <label class="chk"><input type="checkbox" id="f_lev" checked>
       <span>Net debt at most <input type="number" id="v_lev" value="3" step="0.5" min="0" max="20">&times; EBITDA
         <i>balance sheet not stretched</i></span></label>
-    <label class="chk"><input type="checkbox" id="f_conv">
+    <label class="chk"><input type="checkbox" id="f_conv" checked>
       <span>FCF conversion at least <input type="number" id="v_conv" value="50" step="5" min="0" max="300">%
         <i>earnings turning into cash</i></span></label>
     <button id="f_reset" class="rst" type="button">Reset</button>
@@ -681,8 +682,8 @@ const HUE=["--s1","--s2","--s3","--s4"];
 const cssv=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 
 const st={x:"fcf_yield",y:"ev_sales",lx:false,ly:true,sector:null,hit:null,q:"",
-          scr:{growth:1,ni:1,fcf:1,roic:0,lev:0,conv:0},
-          val:{growth:0,roic:10,lev:3,conv:50}};
+          scr:{growth:1,ni:1,fcf:1,roic:1,lev:1,conv:1},
+          val:{growth:20,gmax:80,roic:10,lev:3,conv:50}};
 
 // The screen. Each test returns true (passes), false (fails on the number), or
 // null (the company does not report the figure).
@@ -695,7 +696,12 @@ const st={x:"fcf_yield",y:"ev_sales",lx:false,ly:true,sector:null,hit:null,q:"",
 // dropped that way so a narrow result is never mistaken for a strict one.
 const TESTS={
   growth:{lab:"revenue growth",   miss:"revenue growth",
-          f:d=>d.growth==null?null:d.growth>=st.val.growth},
+          // A band, not a floor. The ceiling is a data-quality filter rather than
+          // a view on growth: 280 of 3,366 historical gate-passers reported above
+          // 80%, and those are near-zero revenue bases, milestone lumpiness,
+          // merger accounting and 2020 base effects, not businesses tripling.
+          f:d=>d.growth==null?null
+                :(d.growth>=st.val.growth && (st.val.gmax==null||d.growth<=st.val.gmax))},
   ni:    {lab:"profitable",       miss:"net income",
           f:d=>d.ni==null?null:d.ni>0},
   fcf:   {lab:"cash generative",  miss:"free cash flow",
@@ -755,8 +761,11 @@ let S=D;                       // the screened set every view reads from
     const on=new Set(p.get("scr").split(",").filter(Boolean));
     for(const k in st.scr) st.scr[k]=on.has(k)?1:0;
   }
-  for(const k of ["growth","roic","lev","conv"]){
-    const v=parseFloat(p.get("v_"+k));
+  for(const k of ["growth","gmax","roic","lev","conv"]){
+    if(!p.has("v_"+k)) continue;
+    const raw=p.get("v_"+k);
+    if(k==="gmax" && raw.trim()===""){ st.val.gmax=null; continue; }  // deliberately cleared
+    const v=parseFloat(raw);
     if(Number.isFinite(v)) st.val[k]=v;
   }
 })();
@@ -771,6 +780,9 @@ function writeURL(){
   if(st.q) p.set("q", st.q);
   p.set("scr", Object.keys(st.scr).filter(k=>st.scr[k]).join(","));
   for(const k of ["growth","roic","lev","conv"]) if(st.scr[k]) p.set("v_"+k, st.val[k]);
+  // the ceiling belongs to the growth gate, and an empty value is meaningful:
+  // it has to round-trip so a shared link reproduces a cleared ceiling
+  if(st.scr.growth) p.set("v_gmax", st.val.gmax==null?"":st.val.gmax);
   // replaceState, not pushState: dragging a slider should not fill the
   // back button with fifty near-identical entries.
   history.replaceState(null,"", location.pathname+"?"+p.toString());
@@ -800,28 +812,34 @@ function applyScreen(){
 }
 function syncScreenUI(){
   for(const k in st.scr){ const el=$("f_"+k); if(el) el.checked=!!st.scr[k]; }
-  for(const k of ["growth","roic","lev","conv"]){ const el=$("v_"+k); if(el) el.value=st.val[k]; }
+  for(const k of ["growth","gmax","roic","lev","conv"]){
+    const el=$("v_"+k); if(el) el.value=(st.val[k]==null?"":st.val[k]); }
 }
 for(const k in st.scr){
   const el=$("f_"+k); if(!el) continue;
   el.onchange=e=>{ st.scr[k]=e.target.checked?1:0; applyScreen(); };
 }
-for(const k of ["growth","roic","lev","conv"]){
+for(const k of ["growth","gmax","roic","lev","conv"]){
   const el=$("v_"+k); if(!el) continue;
   const upd=e=>{
+    // clearing the ceiling removes it; clearing any other box is a half-finished
+    // edit and must not be read as a value
+    if(k==="gmax" && e.target.value.trim()===""){ st.val.gmax=null; applyScreen(); return; }
     const v=parseFloat(e.target.value);
     if(!Number.isFinite(v)) return;
     st.val[k]=v;
-    // Changing a threshold implies you want that gate on.
-    if(!st.scr[k]){ st.scr[k]=1; $("f_"+k).checked=true; }
+    // Changing a threshold implies you want that gate on. The ceiling has no gate
+    // of its own -- it belongs to growth -- so it switches that one on.
+    const owner=(k==="gmax")?"growth":k;
+    if(!st.scr[owner]){ st.scr[owner]=1; $("f_"+owner).checked=true; }
     applyScreen();
   };
   el.oninput=upd;
   el.onclick=e=>e.stopPropagation();      // the number sits inside the label
 }
 $("f_reset").onclick=()=>{
-  st.scr={growth:1,ni:1,fcf:1,roic:0,lev:0,conv:0};
-  st.val={growth:0,roic:10,lev:3,conv:50};
+  st.scr={growth:1,ni:1,fcf:1,roic:1,lev:1,conv:1};
+  st.val={growth:20,gmax:80,roic:10,lev:3,conv:50};
   syncScreenUI(); applyScreen();
 };
 syncScreenUI();
