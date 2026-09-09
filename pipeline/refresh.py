@@ -357,8 +357,24 @@ def main():
     before = len(snap)
     stage0 = pd.read_json(HERE/"universe_stage0.json")
     extra = json.load(open(HERE/"needs_price.json"))
-    want = list(dict.fromkeys(list(stage0.ticker) + [e[1] for e in extra]))
-    log(f"  {len(want)} tickers wanted, snapshot holds {before}")
+    # universe_stage0.json is a frozen input -- nothing in this repo rewrites it,
+    # and on 9 September it was still the 25 August file. Pricing only what it
+    # lists left 375 published companies on stale prices, GOOG, META, BRK-B, V
+    # and MA among them, while the page stamped the new date. r3k_universe.json
+    # IS rewritten every run (step 4), so the previous run's constituents are
+    # unioned in and anything that has since joined the index gets priced.
+    # NOT `prev`: that name holds the previous refresh state, loaded at the top of
+    # main() and read again by gates() in step 9. Shadowing it here made the run
+    # complete eight steps and then die in the checks.
+    prev_index = []
+    f = HERE/"r3k_universe.json"
+    if f.exists():
+        prev_index = [t for t in pd.read_json(f).get("ticker", pd.Series(dtype=str))
+                      if isinstance(t, str)]
+    want = list(dict.fromkeys(list(stage0.ticker) + prev_index + [e[1] for e in extra]))
+    log(f"  {len(want)} tickers wanted "
+        f"(stage0 {len(stage0):,} + last index {len(prev_index):,} + explicit {len(extra):,}), "
+        f"snapshot holds {before}")
     fetch_prices(want, snap)
     snap = json.load(open(HERE/"prices_snapshot.json"))
     log(f"  snapshot now holds {len(snap)} ({len(snap)-before:+d})")
