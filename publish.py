@@ -24,6 +24,7 @@ PAGES = [                      # source file, url path, human title
     # must stay after the dashboard: inject_meta reads the universe count that
     # only the dashboard entry populates
     (SRC / "gate_exit.html",     "gate-exit",   "The Gate Exit Rule"),
+    (SRC / "beta_book.html",     "beta-capped", "The Beta-Capped Book"),
 ]
 
 # Any Claude artifact link becomes a local path, so the site stands alone.
@@ -397,6 +398,10 @@ DESCRIPTIONS = {
  "commentary": ("Russell 3000 Results Commentary | Bilaal Raja",
    "Management's own discussion of results, parsed from 10-Q and 10-K filings "
    "for thousands of US listed companies and matched to the reported figures."),
+ "beta-capped": ("The Beta-Capped Book | Bilaal Raja",
+   "A quality screen with a constituent beta ceiling, which holds portfolio beta at "
+   "1.05 across two market regimes. Every buy and sell across 51 quarterly "
+   "formations, December 2013 to July 2026."),
  "gate-exit": ("The Gate Exit Rule | Bilaal Raja",
    "A quality screen where the criterion that buys a company is the criterion "
    "that sells it. Six gates, 25 names, held while they keep passing. Twelve "
@@ -1011,7 +1016,8 @@ def main():
               if (SITE / "c").exists() else []
     write_sitemap(SITE, DOMAIN,
                   [("", "1.0"), ("russell3000", "0.9"), ("commentary", "0.8"),
-                   ("methodology", "0.85"), ("learn", "0.85"), ("gate-exit", "0.85")]
+                   ("methodology", "0.85"), ("learn", "0.85"), ("gate-exit", "0.85"),
+                   ("beta-capped", "0.85")]
                   + [(f"c/{t}", "0.6") for t in tickers],
                   meta["built"])
     n_urls = (SITE / "sitemap.xml").read_text().count("<url>")
