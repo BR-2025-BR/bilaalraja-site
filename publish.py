@@ -228,6 +228,28 @@ footer{{margin-top:40px;padding-top:18px;border-top:1px solid var(--rule);
 footer a{{color:var(--s1)}}
 .rights{{display:block;margin-top:12px;padding-top:12px;border-top:1px solid var(--rule);
  max-width:76ch;line-height:1.7;font-size:11.5px}}
+/* Wide displays. On a Studio Display this was a 540px column of content in a
+   2000px viewport, with the three-tile pager clipped mid-card. Above 1000px there
+   is no thumb to swipe with and no reason to page at all, so the pager becomes a
+   plain grid and the dots go with it -- they would be controls for a scroll that
+   no longer exists. Type steps up with the width; 14.5px at 5K reads small. */
+@media (min-width:1000px){{
+  .wrap{{max-width:1060px;padding:76px 32px 96px}}
+  .pager{{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;
+    overflow:visible;scroll-snap-type:none;margin:0;padding:0}}
+  .card{{flex:0 1 auto;scroll-snap-align:none;padding:22px 24px}}
+  .pnav{{display:none}}
+  .lede{{font-size:15.5px;max-width:62ch}}
+  .stats b{{font-size:25px}}
+  .stats span{{font-size:10.5px}}
+  .card h2{{font-size:17px}}
+}}
+@media (min-width:1500px){{
+  .wrap{{max-width:1180px;padding:88px 32px 104px}}
+  .lede{{font-size:16.5px}}
+  .stats b{{font-size:28px}}
+  .card h2{{font-size:18px}}
+}}
 </style></head><body><div class="wrap">
 __MASTHEAD__
 <canvas id="dots" aria-hidden="true"></canvas>
