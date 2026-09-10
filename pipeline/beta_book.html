@@ -48,7 +48,14 @@ input[type=range]{flex:1 1 240px;min-width:150px;accent-color:var(--s1)}
 .tick.s{color:var(--neg);border-color:color-mix(in oklab,var(--neg) 40%,var(--line))}
 .tag{font-size:.71rem;padding:1px 7px;border-radius:99px;border:1px solid var(--line);color:var(--ink2)}
 .tag.new{color:var(--s1);border-color:color-mix(in oklab,var(--s1) 45%,var(--line))}
-.chart{width:100%;height:240px;margin:8px 0 4px}
+.chart{width:100%;height:240px;margin:0;display:block}
+.chartwrap{position:relative;margin:8px 0 4px}
+.blip{position:absolute;width:10px;height:10px;border-radius:50%;background:var(--s1);
+ border:2px solid var(--paper);transform:translate(-50%,-50%);pointer-events:none;
+ transition:left .22s ease,top .22s ease}
+.blipline{position:absolute;width:1px;background:var(--ink3);opacity:.45;
+ transform:translateX(-.5px);pointer-events:none;transition:left .22s ease}
+@media (prefers-reduced-motion:reduce){.blip,.blipline{transition:none}}
 .ax-line{stroke:var(--line);stroke-width:1}
 .ax-text{fill:var(--ink3);font-size:11px;font-family:var(--mono)}
 .ln-spy{fill:none;stroke:var(--ink3);stroke-width:1.6;stroke-dasharray:5 4}
@@ -142,7 +149,11 @@ formation is shown. Open the file in a browser to step through all of them.</b><
 
 <h2>Book value against the index</h2>
 <p>Both start at &pound;100,000 on 31 December 2013.</p>
-<svg class="chart" id="chart" preserveAspectRatio="none"></svg>
+<div class="chartwrap">
+  <svg class="chart" id="chart" preserveAspectRatio="none"></svg>
+  <span class="blipline" id="blipline" aria-hidden="true"></span>
+  <span class="blip" id="blip" aria-hidden="true"></span>
+</div>
 <div class="kv" id="cstats"></div>
 
 <div class="foot">Gross of dealing costs, FX, spread and tax. Prices are split- and
@@ -162,6 +173,7 @@ Q.forEach((q,i)=>{const o=document.createElement("option");o.value=i;
 sl.max=Q.length-1; sl.value=Q.length-1; pick.value=Q.length-1;
 const money=v=>"£"+Math.round(v).toLocaleString("en-GB");
 const sign=v=>(v>=0?"+":"")+v.toFixed(1)+"%";
+let moveBlip=()=>{};
 function render(i){
   const q=Q[i]; pick.value=i; sl.value=i;
   document.getElementById("rethead").textContent=q.open?"Return to date":"Quarter return";
@@ -181,6 +193,7 @@ function render(i){
       <td style="color:var(--ink2)">${r.sec}</td><td class="num">${r.sc.toFixed(1)}</td>
       <td class="num">${r.beta.toFixed(2)}</td><td class="num">${r.growth.toFixed(0)}%</td>
       <td class="num">$${r.mcap.toFixed(1)}bn</td><td class="num">${ret}</td><td>${tag}</td></tr>`;}).join("");
+  moveBlip(i);
 }
 pick.onchange=e=>render(+e.target.value);
 sl.oninput=e=>render(+e.target.value);
@@ -202,6 +215,15 @@ render(Q.length-1);
     g+=`<text class="ax-text" x="${x(i)}" y="${H-6}" text-anchor="${anc}">${Q[i].formed.slice(0,7)}</text>`;});
   g+=`<path class="ln-spy" d="${path(sp)}"/><path class="ln-st" d="${path(st)}"/>`;
   svg.innerHTML=g;
+  // percentages, so the marker tracks the svg however it is stretched
+  const blip=document.getElementById("blip"), bl=document.getElementById("blipline");
+  moveBlip=i=>{
+    const px=x(i)/W*100, py=y(st[i])/H*100;
+    blip.style.left=px+"%"; blip.style.top=py+"%";
+    bl.style.left=px+"%"; bl.style.top=py+"%";
+    bl.style.height=(100-py-(P.b/H*100))+"%";
+  };
+  moveBlip(+sl.value);
   document.getElementById("cstats").innerHTML=
     `<span style="color:var(--s1)">&#9644; Book <b>${money(st[st.length-1])}</b></span>`
    +`<span>&#9644; S&amp;P 500 <b>${money(sp[sp.length-1])}</b></span>`
