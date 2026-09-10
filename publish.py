@@ -170,7 +170,6 @@ LANDING = """<!doctype html>
 __FONTS__
 <style>
 __TOKENS__
-#dots{{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}}
 .wrap{{position:relative;z-index:1}}
 @supports (corner-shape: squircle){{.card{{corner-shape:squircle}}}}
 body{{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;
@@ -183,46 +182,43 @@ h1{{font-family:var(--serif);font-size:34px;font-weight:600;letter-spacing:-.021
 .sub{{color:var(--ink3);font-family:var(--mono);font-size:11.5px;letter-spacing:.04em;
  margin:0 0 12px}}
 .lede{{color:var(--ink2);font-size:14.5px;line-height:1.6;margin:13px 0 0;max-width:58ch}}
-.stats{{display:flex;flex-wrap:wrap;gap:14px 30px;margin:0;
- padding:13px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}}
-.stats b{{display:block;font-family:var(--mono);font-size:20px;font-weight:500;
- letter-spacing:-.02em;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1.15}}
-.stats span{{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;
- text-transform:uppercase;color:var(--ink3)}}
-.pager{{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;
- scroll-behavior:smooth;scrollbar-width:none;-webkit-overflow-scrolling:touch;
- margin:0 -22px;padding:2px 22px 4px}}
-.pager::-webkit-scrollbar{{display:none}}
-.card{{flex:0 0 100%;scroll-snap-align:center;scroll-snap-stop:always;
- display:flex;flex-direction:column;text-decoration:none;color:inherit;
- background:var(--panel);border:1px solid var(--rule);border-radius:14px;
- transition:border-color .18s ease,background .18s ease;padding:18px 20px}}
-.card .m{{margin-top:auto}}
-.card:hover{{border-color:var(--ember);background:var(--raise)}}
-/* page dots, and arrows for anything without a thumb to swipe with */
-.pnav{{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:14px}}
-.dots{{display:flex;gap:7px}}
-.dots button{{width:7px;height:7px;padding:0;border:0;border-radius:50%;
- background:var(--rule);cursor:pointer;transition:background .2s,transform .2s}}
-.dots button[aria-current="true"]{{background:var(--ember);transform:scale(1.35)}}
-.parr{{width:28px;height:28px;border-radius:50%;border:1px solid var(--rule);
- background:none;color:var(--ink3);cursor:pointer;display:grid;place-items:center;
- font:inherit;font-size:13px;line-height:1;transition:color .18s,border-color .18s}}
-.parr:hover:not(:disabled){{color:var(--ember);border-color:var(--ember)}}
-.parr:disabled{{opacity:.3;cursor:default}}
-@media (prefers-reduced-motion:reduce){{.pager{{scroll-behavior:auto}}}}
-.card:hover{{border-color:var(--ember);background:var(--raise)}}
-.card h2{{font-size:16.5px;margin-bottom:4px}}
-.chead{{display:flex;align-items:center;gap:11px;margin-bottom:4px}}
-.chead h2{{margin-bottom:0}}
-.ico{{flex:0 0 auto;width:34px;height:34px;border-radius:10px;
- display:grid;place-items:center;background:var(--panel);
- border:1px solid var(--rule);color:var(--s1)}}
-.card:hover .ico{{border-color:var(--s1)}}
-.ico svg{{width:19px;height:19px;stroke:currentColor;fill:none;
- stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}}
-.card p{{color:var(--ink2);font-size:14px}}
-.card .m{{font-family:var(--mono);font-size:11.5px;color:var(--ink3);margin-top:8px}}
+/* The figures are context, not the point of the page, so they are set as a
+   statement's key-figures block -- label left, figure right in tabular mono --
+   rather than oversized tiles. */
+.figs{{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 44px;margin:24px 0 0}}
+.figs>div{{display:flex;justify-content:space-between;align-items:baseline;gap:18px;
+ padding:8px 0;border-bottom:1px solid var(--rule)}}
+.figs dt{{color:var(--ink3);font-size:12.5px}}
+.figs dd{{margin:0;font-family:var(--mono);font-size:13.5px;color:var(--ink);
+ font-variant-numeric:tabular-nums;white-space:nowrap}}
+/* Contents, not cards. Each entry is a ruled row: title, vintage right-aligned,
+   description beneath. It carries five entries as readily as three, which the
+   card row could not, and the accent appears in exactly one place -- the title
+   on hover. */
+.index{{margin:34px 0 0;border-top:1px solid var(--ink2)}}
+.index a{{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:26px;row-gap:5px;
+ padding:17px 0;border-bottom:1px solid var(--rule);text-decoration:none;color:inherit}}
+.index .t{{font-family:var(--serif);font-size:17.5px;line-height:1.25;transition:color .16s ease}}
+.index .v{{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;
+ color:var(--ink3);white-space:nowrap;text-align:right}}
+.index .d{{grid-column:1/-1;color:var(--ink2);font-size:13.5px;line-height:1.62;max-width:70ch}}
+.index a:hover .t,.index a:focus-visible .t{{color:var(--s1)}}
+@media (max-width:620px){{
+  .figs{{grid-template-columns:minmax(0,1fr)}}
+  .index .v{{display:none}}
+}}
+/* Wide displays: a reading column, not a full-bleed one. A contents list wants a
+   measure it can be read at, so this widens far less than a card grid would. */
+@media (min-width:1000px){{
+  .wrap{{max-width:940px;padding:76px 32px 92px}}
+  .lede{{font-size:15.5px}}
+  .figs{{grid-template-columns:repeat(3,minmax(0,1fr))}}
+  .index .t{{font-size:19px}}
+}}
+@media (min-width:1500px){{
+  .wrap{{max-width:1030px;padding:88px 32px 100px}}
+  .lede{{font-size:16px}}
+}}
 footer{{margin-top:40px;padding-top:18px;border-top:1px solid var(--rule);
  font-family:var(--mono);font-size:12px;color:var(--ink3)}}
 footer a{{color:var(--s1)}}
@@ -252,62 +248,57 @@ footer a{{color:var(--s1)}}
 }}
 </style></head><body><div class="wrap">
 __MASTHEAD__
-<canvas id="dots" aria-hidden="true"></canvas>
 <!-- The name is already the masthead, top left. Repeating it as a display
      heading said nothing new and pushed the actual work below the fold on a
      phone, so the identity is one band: what this is, the four numbers that
      size it, and why it exists. -->
 <section class="ident">
   <p class="sub">Equity research &middot; quantitative analysis</p>
-  <div class="stats">
-    <div><b>{n}</b><span>companies</span></div>
-    <div><b>${mcap}tn</b><span>market cap</span></div>
-    <div><b>{metrics}</b><span>metrics</span></div>
-    <div><b>{sectors}</b><span>sectors</span></div>
-  </div>
   <p class="lede">Built from primary sources. The universe, the factor
   construction and the validation are my own, assembled from SEC XBRL company
   facts rather than a vendor feed.</p>
+  <dl class="figs">
+    <div><dt>Companies</dt><dd>{n}</dd></div>
+    <div><dt>Market capitalisation</dt><dd>${mcap}tn</dd></div>
+    <div><dt>Metrics computed</dt><dd>{metrics}</dd></div>
+    <div><dt>Sectors</dt><dd>{sectors}</dd></div>
+    <div><dt>Filings through</dt><dd>{latest_filing}</dd></div>
+    <div><dt>Prices as at</dt><dd>{price_date}</dd></div>
+  </dl>
 </section>
 
-<div class="pager" id="pager">
-<a class="card" href="/russell3000/">
-  <div class="chead"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true">
-    <path d="M4 3v16a2 2 0 0 0 2 2h15"/>
-    <circle cx="9"  cy="15" r="1.5"/><circle cx="13" cy="9"  r="1.5"/>
-    <circle cx="17" cy="13" r="1.5"/><circle cx="19" cy="6"  r="1.5"/>
-    <circle cx="8"  cy="9"  r="1.5"/>
-  </svg></span><h2>Russell 3000 Cross-Section</h2></div>
-  <p>{n} companies with computable trailing-twelve-month fundamentals, screened on
-  35 metrics with sector-neutral percentile ranking and a composite score.</p>
-  <div class="m">filings to {latest_filing} &middot; prices {price_date} &middot; rebuilt {built_human}</div>
+<nav class="index" aria-label="Contents">
+<a href="/russell3000/">
+  <span class="t">Russell 3000 Cross-Section</span>
+  <span class="v">rebuilt {built_human}</span>
+  <span class="d">{n} companies with computable trailing-twelve-month fundamentals,
+  screened on 35 metrics with sector-neutral percentile ranking and a composite score.</span>
 </a>
-
-<a class="card" href="/commentary/">
-  <div class="chead"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true">
-    <path d="M21 12a7 7 0 0 1-7 7H8l-4 3v-4.6A7 7 0 0 1 3 12a7 7 0 0 1 7-7h4a7 7 0 0 1 7 7z"/>
-    <path d="M8.5 10.5h7"/><path d="M8.5 13.5h4"/>
-  </svg></span><h2>Results Commentary</h2></div>
-  <p>Management's own discussion of results, extracted from 10-Q and 10-K
-  filings and matched to the reported figures.</p>
-  <div class="m">filings to {latest_filing} &middot; prices {price_date} &middot; rebuilt {built_human}</div>
+<a href="/commentary/">
+  <span class="t">Results Commentary</span>
+  <span class="v">rebuilt {built_human}</span>
+  <span class="d">Management&rsquo;s own discussion of results, extracted from 10-Q and 10-K
+  filings and matched to the reported figures.</span>
 </a>
-
-<a class="card" href="/methodology/">
-  <div class="chead"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true">
-    <path d="M12 3 3 7.5 12 12l9-4.5L12 3z"/>
-    <path d="M3 12.5 12 17l9-4.5"/><path d="M3 17.5 12 22l9-4.5"/>
-  </svg></span><h2>How this was built</h2></div>
-  <p>Universe construction, point-in-time discipline, metric definitions, and the
-  fourteen defects found by checking output against reality.</p>
-  <div class="m">methodology</div>
+<a href="/gate-exit/">
+  <span class="t">The Gate Exit Rule</span>
+  <span class="v">49 formations</span>
+  <span class="d">A screen where the criterion that buys a company is the criterion that
+  sells it, with the holdings at every quarterly rebalance since 2013.</span>
 </a>
-</div>
-<div class="pnav">
-  <button class="parr" id="pprev" type="button" aria-label="Previous">&#8249;</button>
-  <div class="dots" id="pdots" role="tablist" aria-label="Sections"></div>
-  <button class="parr" id="pnext" type="button" aria-label="Next">&#8250;</button>
-</div>
+<a href="/beta-capped/">
+  <span class="t">The Beta-Capped Book</span>
+  <span class="v">51 formations</span>
+  <span class="d">The same screen with a ceiling on constituent beta, which holds portfolio
+  beta at 1.05 across two market regimes. Every buy and sell.</span>
+</a>
+<a href="/methodology/">
+  <span class="t">How this was built</span>
+  <span class="v">method</span>
+  <span class="d">Universe construction, point-in-time discipline, metric definitions, and the
+  fourteen defects found by checking output against reality.</span>
+</a>
+</nav>
 
 <footer>
 Built from SEC XBRL company facts and market prices.<br>
@@ -319,91 +310,6 @@ personal project; nothing here is investment advice or a recommendation to buy
 or sell any security.</span>
 </footer>
 </div>
-<script>
-(function(){{
-  const c=document.getElementById("dots"), x=c.getContext("2d");
-  const calm=matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const dark=()=>matchMedia("(prefers-color-scheme: dark)").matches
-    || document.documentElement.dataset.theme==="dark";
-  let w=0,h=0,dpr=1,dots=[];
-
-  // Three depth layers. Nearer dots are bigger, brighter and shift further
-  // under tilt, which is what makes the parallax read as depth.
-  const LAYERS=[{{n:70,r:[0.9,1.7],a:[.05,.11],p:6,  v:0.006}},
-                {{n:46,r:[1.5,2.6],a:[.08,.16],p:14, v:0.009}},
-                {{n:24,r:[2.3,3.6],a:[.11,.21],p:26, v:0.013}}];
-
-  const rand=(lo,hi)=>lo+Math.random()*(hi-lo);
-
-  function seed(){{
-    dots=[];
-    for(const L of LAYERS) for(let i=0;i<L.n;i++){{
-      const ang=Math.random()*6.2832, sp=L.v*rand(.6,1.4);
-      dots.push({{
-        hx:Math.random(), hy:Math.random(),          // drifting home point
-        vx:Math.cos(ang)*sp, vy:Math.sin(ang)*sp,    // units per SECOND
-        r:rand(L.r[0],L.r[1]), a:rand(L.a[0],L.a[1]), p:L.p,
-        // Two sine components per axis at unrelated periods. Sums of sines are
-        // smooth by construction and never settle into a visible loop, which a
-        // per-frame random walk cannot manage without looking jittery.
-        fx1:rand(.10,.26), fx2:rand(.29,.55), phx1:Math.random()*6.28, phx2:Math.random()*6.28,
-        fy1:rand(.10,.26), fy2:rand(.29,.55), phy1:Math.random()*6.28, phy2:Math.random()*6.28,
-        ax1:rand(.008,.020), ax2:rand(.003,.009),
-        ay1:rand(.008,.020), ay2:rand(.003,.009)
-      }});
-    }}
-  }}
-
-  function size(){{
-    dpr=Math.min(devicePixelRatio||1,2);
-    w=innerWidth; h=innerHeight;
-    c.width=w*dpr; c.height=h*dpr;
-    x.setTransform(dpr,0,0,dpr,0,0);
-  }}
-
-  // Parallax follows the cursor only. Device orientation was removed: it made
-  // iOS ask for motion access on first tap, which is a poor greeting for a
-  // background effect. On touch devices the drift simply runs untargeted.
-  let tx=0,ty=0,cx=0,cy=0;
-  addEventListener("mousemove",e=>{{
-    tx=(e.clientX/w-.5)*2; ty=(e.clientY/h-.5)*2;
-  }},{{passive:true}});
-
-  let last=performance.now(), T=0;
-  function frame(now){{
-    // Time based, not frame based: a 120Hz phone must not run at double speed.
-    // Clamped so a backgrounded tab does not teleport everything on return.
-    let dt=Math.min((now-last)/1000, 0.05); last=now;
-    if(!calm) T+=dt;
-
-    const k=1-Math.pow(0.001, dt);          // frame-rate independent easing
-    cx+=(tx-cx)*k; cy+=(ty-cy)*k;
-
-    x.clearRect(0,0,w,h);
-    const base=dark()?"255,255,255":"0,0,0";
-    for(const d of dots){{
-      if(!calm){{
-        d.hx+=d.vx*dt; d.hy+=d.vy*dt;
-        if(d.hx<-.05)d.hx=1.05; else if(d.hx>1.05)d.hx=-.05;
-        if(d.hy<-.05)d.hy=1.05; else if(d.hy>1.05)d.hy=-.05;
-      }}
-      const px=(d.hx + Math.sin(T*d.fx1+d.phx1)*d.ax1 + Math.sin(T*d.fx2+d.phx2)*d.ax2)*w
-               - cx*d.p;
-      const py=(d.hy + Math.sin(T*d.fy1+d.phy1)*d.ay1 + Math.sin(T*d.fy2+d.phy2)*d.ay2)*h
-               - cy*d.p;
-      x.beginPath();
-      x.arc(px,py,d.r,0,6.2832);
-      x.fillStyle="rgba("+base+","+d.a+")";
-      x.fill();
-    }}
-    requestAnimationFrame(frame);
-  }}
-
-  size(); seed();
-  addEventListener("resize",()=>{{size();}},{{passive:true}});
-  requestAnimationFrame(n=>{{last=n; frame(n);}});
-}})();
-</script>
 __TICKERJS__</body></html>
 """
 
@@ -466,66 +372,6 @@ def inject_meta(html: str, path: str, domain: str, companies: str = "",
     return html[:i + 8] + tags + html[i + 8:] if i != -1 else tags + html
 
 
-PAGER_JS = """<script>
-// The three tiles page like a home screen. Snap scrolling does the swipe for
-// free on touch; the dots and arrows exist because a mouse has no thumb, and
-// the arrow keys because a keyboard has neither.
-(function(){
-  var pager=document.getElementById("pager"),
-      dots=document.getElementById("pdots"),
-      prev=document.getElementById("pprev"),
-      next=document.getElementById("pnext");
-  if(!pager||!dots) return;
-  var cards=[].slice.call(pager.querySelectorAll(".card"));
-  if(cards.length<2){ document.querySelector(".pnav").style.display="none"; return; }
-
-  cards.forEach(function(c,i){
-    var b=document.createElement("button");
-    b.type="button";
-    b.setAttribute("aria-label","Go to "+(c.querySelector("h2")||{}).textContent);
-    b.addEventListener("click",function(){ go(i); });
-    dots.appendChild(b);
-  });
-  var buttons=[].slice.call(dots.children), at=0;
-
-  function go(i){
-    at=Math.max(0,Math.min(i,cards.length-1));
-    // scrollIntoView would also scroll the PAGE to the pager; setting
-    // scrollLeft moves only the strip, which is what a page flick does
-    pager.scrollLeft=cards[at].offsetLeft-pager.offsetLeft;
-    paint();
-  }
-  function paint(){
-    buttons.forEach(function(b,i){ b.setAttribute("aria-current", i===at?"true":"false"); });
-    prev.disabled = at===0;
-    next.disabled = at===cards.length-1;
-  }
-  // derive the current page from where the strip actually sits, so a finger
-  // swipe and a dot click cannot disagree
-  var tick;
-  pager.addEventListener("scroll",function(){
-    clearTimeout(tick);
-    tick=setTimeout(function(){
-      var mid=pager.scrollLeft+pager.clientWidth/2, best=0, bd=Infinity;
-      cards.forEach(function(c,i){
-        var d=Math.abs((c.offsetLeft-pager.offsetLeft)+c.offsetWidth/2-mid);
-        if(d<bd){ bd=d; best=i; }
-      });
-      at=best; paint();
-    },60);
-  },{passive:true});
-
-  prev.addEventListener("click",function(){ go(at-1); });
-  next.addEventListener("click",function(){ go(at+1); });
-  pager.addEventListener("keydown",function(e){
-    if(e.key==="ArrowRight"){ e.preventDefault(); go(at+1); }
-    if(e.key==="ArrowLeft"){  e.preventDefault(); go(at-1); }
-  });
-  paint();
-})();
-</script>"""
-
-
 def _brandify(html: str) -> str:
     """Insert the shared tokens after formatting.
 
@@ -539,7 +385,7 @@ def _brandify(html: str) -> str:
     return (html.replace("__TOKENS__", brand.TOKENS + brand.TRANSITION_CSS + brand.MASTHEAD_CSS)
                 .replace("__FONTS__", brand.FONTS)
                 .replace("__MASTHEAD__", brand.masthead())
-                .replace("__TICKERJS__", brand.NAV_JS + PAGER_JS))
+                .replace("__TICKERJS__", brand.NAV_JS))
 
 
 def write_sitemap(site: Path, domain: str, paths, lastmod: str):
