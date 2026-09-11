@@ -269,6 +269,22 @@ footer{background:var(--ink);color:rgba(255,255,255,.75)}
   .foot{grid-template-columns:1fr}
   .trust .sep{display:none}
 }
+
+/* privacy modal */
+.modal{position:fixed;inset:0;z-index:120;display:none;align-items:flex-start;justify-content:center;
+  padding:5vh 20px;background:rgba(17,23,34,.55);backdrop-filter:blur(3px);overflow-y:auto}
+.modal.open{display:flex}
+.modal-card{background:var(--card);max-width:680px;width:100%;border-radius:16px;padding:38px 40px;
+  box-shadow:0 40px 80px -30px rgba(15,39,66,.6);position:relative}
+.modal-card h2{font-size:1.7rem;margin-bottom:6px}
+.modal-card .upd{font-size:.8rem;color:var(--ink3);margin-bottom:22px}
+.modal-card h3{font-family:var(--disp);font-size:1.02rem;margin:22px 0 6px}
+.modal-card p{font-size:.94rem;color:var(--ink2);line-height:1.6}
+.modal-card a{color:var(--sky-deep);text-decoration:underline}
+.modal-x{position:absolute;top:16px;right:18px;width:38px;height:38px;border-radius:50%;
+  border:1px solid var(--line2);background:var(--paper);font-size:1.2rem;line-height:1;cursor:pointer;color:var(--ink2)}
+.modal-x:hover{border-color:var(--navy);color:var(--ink)}
+@media (max-width:600px){.modal-card{padding:30px 22px}}
 </style>
 </head>
 <body>
@@ -302,7 +318,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.75)}
       <a href="#how">How it works</a>
       <a href="#pricing">Pricing</a>
       <a href="#areas">Areas</a>
-      <a href="#quote" class="hphone">0151 000 0000</a>
+      <a href="#quote" class="hphone">0151 378 7833</a>
     </nav>
     <button class="burger" id="burger" aria-label="Menu" aria-expanded="false">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="17" x2="21" y2="17"/></svg>
@@ -318,7 +334,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.75)}
       <span class="eyebrow">Merseyside &amp; Greater Manchester</span>
       <h1 style="margin-top:16px">Misted glass?<br>Keep the frame.<br><span class="accent">Restore the light.</span></h1>
       <p class="lede">We replace failed double-glazing units and worn window hardware —
-        for a fraction of the cost of new windows, guaranteed for 25 years.</p>
+        for a fraction of the cost of new windows, guaranteed for 5 years.</p>
       <div class="cta-row">
         <a href="#quote" class="btn pri">Get my free quote
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
@@ -326,7 +342,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.75)}
       </div>
       <div class="assure">
         <span><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg> Free, no-obligation survey</span>
-        <span><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg> 25-year guarantee</span>
+        <span><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg> 5-year guarantee</span>
         <span><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg> No frames replaced</span>
       </div>
     </div>
@@ -360,11 +376,11 @@ footer{background:var(--ink);color:rgba(255,255,255,.75)}
 <!-- ===== TRUST STRIP ===== -->
 <div class="trust">
   <div class="wrap">
-    <div class="item"><span class="g">★★★★★</span> <b>Rated by local homeowners</b></div>
+    <div class="item"><b>5-year</b> workmanship guarantee</div>
     <div class="sep"></div>
-    <div class="item">Insurance-backed <b>25-year guarantee</b></div>
+    <div class="item">Free, <b>no-obligation</b> survey</div>
     <div class="sep"></div>
-    <div class="item">Registered installers &middot; <b>FENSA / TrustMark</b></div>
+    <div class="item">Fitted by <b>experienced</b> glazing tradespeople</div>
     <div class="sep"></div>
     <div class="item">Most units fitted in <b>under an hour</b></div>
   </div>
@@ -428,7 +444,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.75)}
       <div class="step"><div class="n">2</div><h3>We fit</h3>
         <p>A registered installer fits your new units or hardware into the frames you already have. Most jobs are done in a single, tidy visit.</p></div>
       <div class="step"><div class="n">3</div><h3>Guaranteed</h3>
-        <p>Every sealed unit is covered by a 25-year insurance-backed guarantee, registered in your name and honoured for the life of the glass.</p></div>
+        <p>Every job we do is covered by our five-year guarantee. If a seal fails or a fitting lets go within five years, we come back and put it right — free.</p></div>
     </div>
   </div>
 </section>
@@ -444,15 +460,15 @@ footer{background:var(--ink);color:rgba(255,255,255,.75)}
     <div class="price-grid">
       <div class="ptable">
         <div class="prow"><div class="l"><h4>Standard misted unit</h4><p>Up to 0.5m² &middot; fitted into your frame</p></div>
-          <div class="p">from £65<small>per unit</small></div></div>
+          <div class="p">from £59<small>per unit</small></div></div>
         <div class="prow"><div class="l"><h4>Large unit</h4><p>Patio, bay &amp; feature windows</p></div>
-          <div class="p">from £95<small>per unit</small></div></div>
+          <div class="p">from £99<small>per unit</small></div></div>
         <div class="prow"><div class="l"><h4>Obscure / toughened glass</h4><p>Bathrooms, doors &amp; low-level glazing</p></div>
-          <div class="p">from £110<small>per unit</small></div></div>
+          <div class="p">from £115<small>per unit</small></div></div>
         <div class="prow"><div class="l"><h4>Locks, handles &amp; hinges</h4><p>Supplied &amp; fitted</p></div>
-          <div class="p">from £45<small>per item</small></div></div>
+          <div class="p">from £49<small>per item</small></div></div>
         <div class="prow"><div class="l"><h4>A-rated energy upgrade</h4><p>Added to any unit replacement</p></div>
-          <div class="p">+£20<small>per unit</small></div></div>
+          <div class="p">+£25<small>per unit</small></div></div>
       </div>
       <div class="pnote">
         <span class="eyebrow">Why it&rsquo;s cheaper</span>
@@ -461,6 +477,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.75)}
         <a href="#quote" class="btn pri">Get my fixed price</a>
       </div>
     </div>
+    <p style="font-size:.82rem;color:var(--ink3);margin-top:16px;max-width:60ch">Indicative starting prices, based on typical rates across the North West. Your free survey confirms an exact, fixed quote before any work begins.</p>
   </div>
 </section>
 
@@ -497,8 +514,8 @@ footer{background:var(--ink);color:rgba(255,255,255,.75)}
   <div class="wrap">
     <div class="seal"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2 4 5v6c0 5 3.4 8.5 8 11 4.6-2.5 8-6 8-11V5z"/><path d="M9 12l2 2 4-4"/></svg></div>
     <span class="eyebrow" style="color:var(--gold)">The Northlight guarantee</span>
-    <h2 style="margin-top:12px">25 years, in writing, in your name.</h2>
-    <p>Every sealed unit we fit is covered by a 25-year insurance-backed guarantee — so if a seal ever fails again, it&rsquo;s our problem, not yours. That&rsquo;s the standard we&rsquo;d want in our own homes.</p>
+    <h2 style="margin-top:12px">Five years, in writing.</h2>
+    <p>Every job we do carries a straightforward five-year guarantee: if anything we&rsquo;ve fitted fails within five years, we come back and fix it, at no cost to you. We&rsquo;re a new name &mdash; but not new to the trade. The people behind Northlight have spent years fitting and repairing double glazing across the North West.</p>
   </div>
 </section>
 
@@ -510,7 +527,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.75)}
       <h2 style="margin-top:12px">Tell us what&rsquo;s foggy.</h2>
       <p class="lede">Send a few details and we&rsquo;ll call you back the same working day to book a free survey. No call centres — you&rsquo;ll speak to the person who does the work.</p>
       <div class="qcontact">
-        <a href="tel:01510000000"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2 4.2 2 2 0 0 1 4 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.6a16 16 0 0 0 6 6l1.1-1.1a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.7.7A2 2 0 0 1 22 16.9z"/></svg></span><b>0151 000 0000<span>Mon–Sat, 8am–7pm</span></b></a>
+        <a href="tel:01513787833"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2 4.2 2 2 0 0 1 4 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.6a16 16 0 0 0 6 6l1.1-1.1a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.7.7A2 2 0 0 1 22 16.9z"/></svg></span><b>0151 378 7833<span>Mon–Sat, 9am–6pm</span></b></a>
         <a href="mailto:hello@northlightglazing.co.uk"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></span><b>hello@northlightglazing.co.uk<span>We reply the same day</span></b></a>
       </div>
     </div>
@@ -531,6 +548,12 @@ footer{background:var(--ink);color:rgba(255,255,255,.75)}
         </div>
         <div class="field"><label for="f-msg">How many units, roughly? (optional)</label>
           <textarea id="f-msg" name="message" placeholder="e.g. 3 misted windows upstairs, 1 door lock sticking"></textarea></div>
+        <div class="field" style="margin-bottom:14px">
+          <label style="display:flex;gap:10px;align-items:flex-start;font-weight:400;color:var(--ink2);font-size:.86rem">
+            <input type="checkbox" id="f-consent" required style="width:auto;margin-top:3px;box-shadow:none">
+            <span>I&rsquo;m happy for Northlight to use these details to respond to my enquiry. See our <a href="#" class="privlink" style="color:var(--sky-deep);text-decoration:underline">privacy notice</a>.</span>
+          </label>
+        </div>
         <button class="btn pri" type="submit">Request my free survey
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
         <p class="formnote">No obligation &middot; we never share your details</p>
@@ -562,12 +585,42 @@ footer{background:var(--ink);color:rgba(255,255,255,.75)}
   </div>
   <div class="foot-bar">
     <div class="wrap">
-      <span>&copy; 2026 Northlight Glazing. FENSA reg. no. 000000. Registered in England.</span>
+      <span>&copy; 2026 Northlight Glazing. <a href="#" class="privlink">Privacy notice</a></span>
       <span>Clear glass. True light.</span>
     </div>
   </div>
 </footer>
 
+
+<div class="modal" id="privacy" aria-hidden="true">
+  <div class="modal-card" role="dialog" aria-modal="true" aria-label="Privacy notice">
+    <button class="modal-x" id="privclose" aria-label="Close privacy notice">&times;</button>
+    <h2>Privacy notice</h2>
+    <p class="upd">How Northlight Glazing handles the details you send us.</p>
+    <h3>Who we are</h3>
+    <p>Northlight Glazing (&ldquo;we&rdquo;) is the controller of the personal data you provide through this website.
+      You can reach us at <a href="mailto:hello@northlightglazing.co.uk">hello@northlightglazing.co.uk</a> or 0151 378 7833.
+      [Registered / trading address to be added before launch.]</p>
+    <h3>What we collect</h3>
+    <p>When you request a quote or contact us we collect your name, phone number, email address, postcode and the
+      details of the work you describe. That is all &mdash; this site uses no tracking or advertising cookies.</p>
+    <h3>Why we use it, and our lawful basis</h3>
+    <p>We use your details only to respond to your enquiry, arrange a free survey and provide a quote &mdash; steps
+      taken at your request before entering a contract (UK GDPR Article 6(1)(b)), and on the consent you give by
+      submitting the form (Article 6(1)(a)). If you become a customer, we keep the records needed to carry out and
+      guarantee the work and to meet our legal and tax obligations.</p>
+    <h3>Who we share it with</h3>
+    <p>We never sell your data or use it for marketing by third parties. Enquiries reach us through
+      [our email / form provider], which processes them under contract and only on our instructions.</p>
+    <h3>How long we keep it</h3>
+    <p>Enquiries that do not become jobs are deleted within 12 months. Customer records are kept for up to six years
+      after the work, to honour the guarantee and meet HMRC requirements.</p>
+    <h3>Your rights</h3>
+    <p>You can ask to see, correct, delete or restrict your data, object to its use, receive a copy, or withdraw
+      consent at any time &mdash; just email us. If you are unhappy with how we handle your data you can complain to
+      the Information Commissioner&rsquo;s Office at <a href="https://ico.org.uk" target="_blank" rel="noopener">ico.org.uk</a>.</p>
+  </div>
+</div>
 <script>
 // ---- place the animated window mark into every .mark, and play it
 const tpl = document.getElementById("winmark-tpl").content;
@@ -622,6 +675,14 @@ form.addEventListener("submit",e=>{
   form.style.display="none"; ok.classList.add("show");
   window.location.href=`mailto:hello@northlightglazing.co.uk?subject=Free%20survey%20request%20-%20${encodeURIComponent(d.get("postcode")||"")}&body=${body}`;
 });
+
+// privacy modal
+const pm=document.getElementById("privacy"), pmx=document.getElementById("privclose");
+document.querySelectorAll(".privlink").forEach(l=>l.addEventListener("click",e=>{e.preventDefault();pm.classList.add("open");}));
+function closePriv(){pm.classList.remove("open");}
+pmx.addEventListener("click",closePriv);
+pm.addEventListener("click",e=>{if(e.target===pm)closePriv();});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closePriv();});
 </script>
 </body>
 </html>
