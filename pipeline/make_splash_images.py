@@ -25,7 +25,6 @@ from PIL import Image
 HERE = Path(__file__).resolve().parent
 SITE = HERE.parent / "docs"
 OUT = SITE / "splash"
-ICON = SITE / "icon-512.png"
 BG = (0, 0, 0)
 
 # device-width, device-height, device-pixel-ratio. CSS pixels, portrait.
@@ -56,10 +55,27 @@ def icon_px(css_w: int, dpr: int) -> int:
     return int(round(min(css_w * 0.44, 184) * dpr))
 
 
+def axes_art(size: int) -> Image.Image:
+    """The axes alone, at the size and colour the CSS splash draws them.
+
+    NOT the icon. The launch image has to be the animation's FIRST frame, and
+    the animation opens with the axes drawn and no points -- the points land
+    afterwards. Embedding the finished icon here produced the opposite: the
+    complete chart on launch, then a blank splash, then the whole thing
+    redrawing. Handing over mid-sequence makes the seam invisible.
+    """
+    from PIL import ImageDraw
+    n = size * 4                                  # supersample for a clean edge
+    im = Image.new("RGBA", (n, n), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    k = n / 512                                   # icon coordinates are 512-space
+    w = max(1, int(round(6 * k)))
+    d.line([(85 * k, 71 * k), (85 * k, 425 * k)], fill=(51, 51, 51, 255), width=w)
+    d.line([(83 * k, 425 * k), (440 * k, 425 * k)], fill=(51, 51, 51, 255), width=w)
+    return im.resize((size, size), Image.LANCZOS)
+
+
 def build() -> list[tuple[str, int, int, int, str]]:
-    if not ICON.exists():
-        sys.exit(f"  {ICON} not found")
-    icon = Image.open(ICON).convert("RGBA")
     OUT.mkdir(exist_ok=True)
     made = []
     for w, h, dpr in DEVICES:
@@ -69,7 +85,7 @@ def build() -> list[tuple[str, int, int, int, str]]:
             # stays the same physical size when the device is turned
             size = icon_px(min(w, h), dpr)
             canvas = Image.new("RGB", (px_w, px_h), BG)
-            art = icon.resize((size, size), Image.LANCZOS)
+            art = axes_art(size)
             canvas.paste(art, ((px_w - size) // 2, (px_h - size) // 2), art)
             name = f"{cw}x{ch}@{dpr}x-{orient}.png"
             # the art is three flat colours on black, so a palette costs nothing

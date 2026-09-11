@@ -208,25 +208,24 @@ a, button, input, select, summary, [role="button"] {
              z-index: 10000; background: #000; pointer-events: none;
              /* the disclaimer modal is also 9999 and is appended at runtime,
                 so on a tie it would draw over the splash */
-             animation: splashOut .40s ease 1.15s forwards; }
+             animation: splashOut .40s ease .92s forwards; }
   #splash svg { width: min(44vw, 184px); height: auto; }
+  /* No draw-in. The native launch image already has the axes on screen, so
+     animating them here would wipe them and redraw them -- the splash has to
+     open in the state the launch image left. Only the points animate. */
   #splash .ax { fill: none; stroke: #333333; stroke-width: 6;
-                 stroke-linecap: round; stroke-linejoin: round;
-                 stroke-dasharray: 709; stroke-dashoffset: 709;
-                 animation: axDraw .38s ease-out forwards; }
+                 stroke-linecap: round; stroke-linejoin: round; }
   #splash .d { transform-box: fill-box; transform-origin: center;
                 transform: scale(0);
                 animation: dotIn .26s cubic-bezier(.34,1.56,.64,1) forwards;
-                animation-delay: calc(.30s + var(--i) * .042s); }
+                animation-delay: calc(.05s + var(--i) * .042s); }
   #splash .o { fill: #FF9900; }
   #splash .g { fill: #474747; }
   @media (prefers-reduced-motion: reduce) {
-    #splash .ax { animation: none; stroke-dashoffset: 0; }
     #splash .d  { animation: none; transform: scale(1); }
     #splash     { animation: splashOut .3s ease .45s forwards; }
   }
 }
-@keyframes axDraw  { to { stroke-dashoffset: 0; } }
 @keyframes dotIn   { to { transform: scale(1); } }
 @keyframes splashOut { to { opacity: 0; visibility: hidden; } }
 
