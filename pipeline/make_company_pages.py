@@ -138,7 +138,7 @@ period ended {mdna.get('period','&mdash;')}, filed {mdna.get('filed','&mdash;')}
         separators=(",",":"))
 
     return f"""<!doctype html><html lang="en-GB"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>{title}</title>
 <meta name="description" content="{desc}">
 <link rel="canonical" href="https://{DOMAIN}/c/{tk}/">

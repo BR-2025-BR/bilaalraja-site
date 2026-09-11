@@ -1,4 +1,4 @@
-const V="r3k-2026-09-09-9bf4f15cbe-r2";
+const V="r3k-2026-09-11-dd6d82c396-r2";
 
 // Cloudflare Pages 308s /russell3000 to /russell3000/. A response that followed
 // a redirect carries redirected:true, and Safari refuses to accept one of those

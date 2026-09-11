@@ -496,9 +496,6 @@ __TICKERHTML__
     <div class="tip" id="tip" role="status"></div>
   </div>
   <div class="legend" id="leg"></div>
-  <p class="note" style="margin-top:11px">Selecting a sector highlights it against the rest of the market
-    rather than colouring all twelve at once &mdash; at this density twelve hues are neither readable nor
-    colour-blind separable. Use the panels below to compare sectors.</p>
 </section>
 
 <section class="panel" id="strategy">

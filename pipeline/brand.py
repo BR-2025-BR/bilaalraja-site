@@ -462,3 +462,102 @@ A2HS_JS = """<script>
   });
 })();
 </script>"""
+
+# Phone layout. Two things the desktop rules do not cover.
+#
+# The notch. Without viewport-fit=cover Safari letterboxes the page away from
+# it, which on a dark site leaves visible bars down one side in landscape. With
+# it the background reaches the edges, and the content has to be padded clear of
+# the sensor housing by hand -- hence the env() insets. The @supports guard is
+# there because a browser that does not know env() would otherwise drop the whole
+# declaration.
+#
+# Landscape height. Portrait on an iPhone gives ~844px of height and landscape
+# gives ~390px, so in landscape the scarce resource is vertical space, not width.
+# Padding tuned for a desktop column spends a quarter of a landscape screen
+# before any content appears, and a 25-row table scrolls its own header off the
+# top almost immediately -- so the header sticks.
+RESPONSIVE_CSS = """
+@supports (padding: max(0px)) {
+  body { padding-left: env(safe-area-inset-left);
+         padding-right: env(safe-area-inset-right); }
+}
+@media (orientation: landscape) and (max-height: 520px) {
+  .wrap { padding-top: 20px; padding-bottom: 34px; }
+  h1 { font-size: 1.62rem; line-height: 1.14; }
+  h2 { margin-top: 26px; }
+  .lede { font-size: 15px; }
+  .chart { height: 172px; }
+  .ctl { padding: 9px 12px; }
+  .kv { gap: 14px; }
+}
+@media (max-height: 560px) {
+  .scroll { max-height: 74vh; overflow-y: auto; }
+  .scroll thead th { position: sticky; top: 0; z-index: 2;
+                     background: var(--paper, var(--bg, #12100E)); }
+}
+"""
+
+# Splash screen: the app icon drawing itself.
+#
+# The icon is a scatter plot -- axes, eight orange points, four grey. Every
+# coordinate below was read off icon-512.png rather than eyeballed, so the last
+# frame of the animation is the icon exactly: axes at x=85 (y 71-428) and y=425
+# (x 83-440) in #333333 at 6px, orange #FF9900 at r=21, grey #474747 at r=15.
+#
+# It animates the thing the site actually does: the axes draw from the origin,
+# then the points land left to right, which is a cross-section being plotted.
+#
+# Shown only in standalone mode. A splash on an ordinary web visit is an
+# obstacle, not a welcome, and @media (display-mode: standalone) settles it in
+# CSS so there is no flash of it on a normal page load while JS decides.
+SPLASH_CSS = """
+#splash { display: none; }
+@media (display-mode: standalone) {
+  #splash { display: grid; place-items: center; position: fixed; inset: 0;
+             z-index: 10000; background: #000; pointer-events: none;
+             /* the disclaimer modal is also 9999 and is appended at runtime,
+                so on a tie it would draw over the splash */
+             animation: splashOut .40s ease 1.15s forwards; }
+  #splash svg { width: min(44vw, 184px); height: auto; }
+  #splash .ax { fill: none; stroke: #333333; stroke-width: 6;
+                 stroke-linecap: round; stroke-linejoin: round;
+                 stroke-dasharray: 709; stroke-dashoffset: 709;
+                 animation: axDraw .38s ease-out forwards; }
+  #splash .d { transform-box: fill-box; transform-origin: center;
+                transform: scale(0);
+                animation: dotIn .26s cubic-bezier(.34,1.56,.64,1) forwards;
+                animation-delay: calc(.30s + var(--i) * .042s); }
+  #splash .o { fill: #FF9900; }
+  #splash .g { fill: #474747; }
+  @media (prefers-reduced-motion: reduce) {
+    #splash .ax { animation: none; stroke-dashoffset: 0; }
+    #splash .d  { animation: none; transform: scale(1); }
+    #splash     { animation: splashOut .3s ease .45s forwards; }
+  }
+}
+@keyframes axDraw  { to { stroke-dashoffset: 0; } }
+@keyframes dotIn   { to { transform: scale(1); } }
+@keyframes splashOut { to { opacity: 0; visibility: hidden; } }
+"""
+
+SPLASH_HTML = """
+<div id="splash" aria-hidden="true">
+<svg viewBox="0 0 512 512" role="presentation" focusable="false">
+  <path class="ax" d="M85 71 V425 H440"/>
+  <circle class="d g" cx="150" cy="339" r="15" style="--i:0"/>
+  <circle class="d o" cx="175" cy="378" r="21" style="--i:1"/>
+  <circle class="d o" cx="195" cy="268" r="21" style="--i:2"/>
+  <circle class="d o" cx="237" cy="300" r="21" style="--i:3"/>
+  <circle class="d g" cx="262" cy="195" r="15" style="--i:4"/>
+  <circle class="d g" cx="276" cy="351" r="15" style="--i:5"/>
+  <circle class="d o" cx="299" cy="244" r="21" style="--i:6"/>
+  <circle class="d o" cx="329" cy="150" r="21" style="--i:7"/>
+  <circle class="d g" cx="352" cy="207" r="15" style="--i:8"/>
+  <circle class="d o" cx="357" cy="300" r="21" style="--i:9"/>
+  <circle class="d o" cx="385" cy="124" r="21" style="--i:10"/>
+  <circle class="d o" cx="403" cy="244" r="21" style="--i:11"/>
+</svg>
+</div>
+<script>setTimeout(function(){var s=document.getElementById("splash");if(s)s.remove();},2200);</script>
+"""

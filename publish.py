@@ -141,7 +141,7 @@ UPDATE_JS = """// Tells a page that it is out of date, and offers a way out.
 
 LANDING = """<!doctype html>
 <html lang="en-GB"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Bilaal Raja | Equity Research and Quantitative Analysis</title>
 <meta name="description" content="Bilaal Raja. Cross-sectional equity screening built from primary SEC EDGAR filings: the full Russell 3000, metrics computed point in time, management commentary parsed alongside.">
 <meta name="author" content="Bilaal Raja">
@@ -349,7 +349,7 @@ def inject_meta(html: str, path: str, domain: str, companies: str = "",
         desc = desc.format(companies=companies)
     url = f"https://{domain}/{path}"
     tags = f"""
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="{desc}">
 <meta name="author" content="Bilaal Raja">
 <meta name="x-build" content="{build}">
@@ -369,7 +369,29 @@ def inject_meta(html: str, path: str, domain: str, companies: str = "",
 """ + PWA_HEAD
     # insert straight after the existing <title>...</title>
     i = html.find("</title>")
-    return html[:i + 8] + tags + html[i + 8:] if i != -1 else tags + html
+    html = html[:i + 8] + tags + html[i + 8:] if i != -1 else tags + html
+    # The phone rules go LAST in <head>, not with the meta tags at the top. The
+    # tags are inserted immediately after <head>, which puts them ahead of each
+    # page's own stylesheet -- and a rule of equal specificity that arrives first
+    # loses. Appending before </head> lets these override without !important.
+    j = html.find("</head>")
+    css = f"<style>{brand.RESPONSIVE_CSS}{brand.SPLASH_CSS}</style>\n"
+    html = html[:j] + css + html[j:] if j != -1 else html + css
+    # The splash markup goes first in the body, before anything it is meant to
+    # cover can paint. The dashboard has no <html>, <head> or <body> at all --
+    # it opens straight at <meta charset> and lets the parser imply the rest --
+    # so fall back to the first block element, which is where the body
+    # effectively begins.
+    k = html.find("<body")
+    if k != -1:
+        k = html.find(">", k) + 1
+    else:
+        cands = [html.find(t) for t in ("<main", "<header", "<nav", "<section", "<div")]
+        cands = [c for c in cands if c != -1]
+        k = min(cands) if cands else -1
+    if k != -1:
+        html = html[:k] + brand.SPLASH_HTML + html[k:]
+    return html
 
 
 def _brandify(html: str) -> str:
@@ -382,7 +404,9 @@ def _brandify(html: str) -> str:
     # make_r3k_dash. It was arriving here too, so the landing page, the 404 and
     # the methodology note all carried a filings ticker that has nothing to do
     # with what is on them -- and each fetched SEC on load to fill it.
-    return (html.replace("__TOKENS__", brand.TOKENS + brand.TRANSITION_CSS + brand.MASTHEAD_CSS)
+    return (html.replace("__TOKENS__", brand.TOKENS + brand.TRANSITION_CSS + brand.MASTHEAD_CSS
+                          + brand.RESPONSIVE_CSS + brand.SPLASH_CSS)
+                .replace("__MASTHEAD__", brand.SPLASH_HTML + "__MASTHEAD__", 1)
                 .replace("__FONTS__", brand.FONTS)
                 .replace("__MASTHEAD__", brand.masthead())
                 .replace("__TICKERJS__", brand.NAV_JS))
@@ -441,7 +465,7 @@ def build_referrers(site: Path, domain: str, target: str = "/russell3000") -> li
 
 METHODOLOGY = """<!doctype html>
 <html lang="en-GB"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Methodology | Bilaal Raja</title>
 <meta name="description" content="How the Russell 3000 cross-section is built from SEC EDGAR filings: universe construction, point-in-time discipline, metric definitions, and the defects found along the way.">
 <link rel="canonical" href="https://{domain}/methodology">
@@ -633,7 +657,7 @@ __TICKERJS__</div></body></html>
 
 NOT_FOUND = """<!doctype html>
 <html lang="en-GB"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Not found | Bilaal Raja</title>
 <meta name="robots" content="noindex">
 __FONTS__
