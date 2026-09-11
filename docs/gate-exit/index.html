@@ -92,6 +92,29 @@ input[type=range]{flex:1 1 260px;min-width:160px;accent-color:var(--s1)}
   /* The splash deliberately does NOT inset: it is position:fixed inset:0 and
      should reach the edges, behind the Island, the way a launch screen does. */
 }
+/* iOS zooms the page whenever a focused input is under 16px, and every control
+   on the screen panel is 12.5-13.5px -- so tapping a threshold box zoomed the
+   layout and left you pinching back out. 16px only on phones; the desktop sizes
+   are unaffected. */
+@media (max-width: 640px) {
+  /* !important is warranted here and nowhere else in this file. The screen
+     panel styles its number boxes with a more specific selector, so an
+     unqualified `input` rule loses on specificity no matter where it sits in
+     the cascade -- and what is being overridden is not a design choice but an
+     iOS behaviour that makes the control unusable. */
+  input, select, textarea { font-size: 16px !important; }
+}
+/* Safari inflates text when a phone rotates to landscape, which would undo the
+   type scale set for that orientation below. */
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+/* No grey flash on tap, and no double-tap-zoom delay on things you press. */
+a, button, input, select, summary, [role="button"] {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+/* The tables scroll inside themselves now that they are height-capped, so stop
+   a flick at the end of one rubber-banding the page behind it. */
+.scroll { overscroll-behavior: contain; }
 @media (orientation: landscape) and (max-height: 520px) {
   .wrap { padding-top: 20px; padding-bottom: 34px; }
   h1 { font-size: 1.62rem; line-height: 1.14; }
