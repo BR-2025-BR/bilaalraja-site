@@ -99,8 +99,18 @@ html[data-nav="traverse"]::view-transition-old(root){animation-name:vt-out-right
 }
 
 @supports (padding: max(0px)) {
-  body { padding-left: env(safe-area-inset-left);
-         padding-right: env(safe-area-inset-right); }
+  /* viewport-fit=cover hands the page the whole screen, including the parts
+     hardware sits in front of. Left and right matter in landscape, where the
+     sensor housing is on one side. Top matters in portrait -- that is where the
+     Dynamic Island is, and without this the masthead runs underneath it. Bottom
+     clears the home indicator. max() so a device with no inset still gets the
+     site's own spacing rather than zero. */
+  body { padding-left:  env(safe-area-inset-left);
+         padding-right: env(safe-area-inset-right);
+         padding-top:   env(safe-area-inset-top);
+         padding-bottom: env(safe-area-inset-bottom); }
+  /* The splash deliberately does NOT inset: it is position:fixed inset:0 and
+     should reach the edges, behind the Island, the way a launch screen does. */
 }
 @media (orientation: landscape) and (max-height: 520px) {
   .wrap { padding-top: 20px; padding-bottom: 34px; }
