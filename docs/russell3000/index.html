@@ -3,7 +3,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="Every relevant line item pulled from SEC EDGAR filings for the Russell 3000, with key financial metrics computed point in time. 2,583 companies, 35 metrics, sector-neutral percentile ranking.">
 <meta name="author" content="Bilaal Raja">
-<meta name="x-build" content="dd6d82c396">
+<meta name="x-build" content="97996fd4ea">
 <link rel="canonical" href="https://bilaalraja.com/russell3000">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Bilaal Raja">
@@ -385,6 +385,54 @@ html[data-nav="traverse"]::view-transition-old(root){animation-name:vt-out-right
 
 </style>
 
+<style>
+@supports (padding: max(0px)) {
+  body { padding-left: env(safe-area-inset-left);
+         padding-right: env(safe-area-inset-right); }
+}
+@media (orientation: landscape) and (max-height: 520px) {
+  .wrap { padding-top: 20px; padding-bottom: 34px; }
+  h1 { font-size: 1.62rem; line-height: 1.14; }
+  h2 { margin-top: 26px; }
+  .lede { font-size: 15px; }
+  .chart { height: 172px; }
+  .ctl { padding: 9px 12px; }
+  .kv { gap: 14px; }
+}
+@media (max-height: 560px) {
+  .scroll { max-height: 74vh; overflow-y: auto; }
+  .scroll thead th { position: sticky; top: 0; z-index: 2;
+                     background: var(--paper, var(--bg, #12100E)); }
+}
+
+#splash { display: none; }
+@media (display-mode: standalone) {
+  #splash { display: grid; place-items: center; position: fixed; inset: 0;
+             z-index: 10000; background: #000; pointer-events: none;
+             /* the disclaimer modal is also 9999 and is appended at runtime,
+                so on a tie it would draw over the splash */
+             animation: splashOut .40s ease 1.15s forwards; }
+  #splash svg { width: min(44vw, 184px); height: auto; }
+  #splash .ax { fill: none; stroke: #333333; stroke-width: 6;
+                 stroke-linecap: round; stroke-linejoin: round;
+                 stroke-dasharray: 709; stroke-dashoffset: 709;
+                 animation: axDraw .38s ease-out forwards; }
+  #splash .d { transform-box: fill-box; transform-origin: center;
+                transform: scale(0);
+                animation: dotIn .26s cubic-bezier(.34,1.56,.64,1) forwards;
+                animation-delay: calc(.30s + var(--i) * .042s); }
+  #splash .o { fill: #FF9900; }
+  #splash .g { fill: #474747; }
+  @media (prefers-reduced-motion: reduce) {
+    #splash .ax { animation: none; stroke-dashoffset: 0; }
+    #splash .d  { animation: none; transform: scale(1); }
+    #splash     { animation: splashOut .3s ease .45s forwards; }
+  }
+}
+@keyframes axDraw  { to { stroke-dashoffset: 0; } }
+@keyframes dotIn   { to { transform: scale(1); } }
+@keyframes splashOut { to { opacity: 0; visibility: hidden; } }
+</style>
 
 <div id="splash" aria-hidden="true">
 <svg viewBox="0 0 512 512" role="presentation" focusable="false">
@@ -1873,51 +1921,3 @@ if(ENTER<1){
   });
 })();
 </script>
-<style>
-@supports (padding: max(0px)) {
-  body { padding-left: env(safe-area-inset-left);
-         padding-right: env(safe-area-inset-right); }
-}
-@media (orientation: landscape) and (max-height: 520px) {
-  .wrap { padding-top: 20px; padding-bottom: 34px; }
-  h1 { font-size: 1.62rem; line-height: 1.14; }
-  h2 { margin-top: 26px; }
-  .lede { font-size: 15px; }
-  .chart { height: 172px; }
-  .ctl { padding: 9px 12px; }
-  .kv { gap: 14px; }
-}
-@media (max-height: 560px) {
-  .scroll { max-height: 74vh; overflow-y: auto; }
-  .scroll thead th { position: sticky; top: 0; z-index: 2;
-                     background: var(--paper, var(--bg, #12100E)); }
-}
-
-#splash { display: none; }
-@media (display-mode: standalone) {
-  #splash { display: grid; place-items: center; position: fixed; inset: 0;
-             z-index: 10000; background: #000; pointer-events: none;
-             /* the disclaimer modal is also 9999 and is appended at runtime,
-                so on a tie it would draw over the splash */
-             animation: splashOut .40s ease 1.15s forwards; }
-  #splash svg { width: min(44vw, 184px); height: auto; }
-  #splash .ax { fill: none; stroke: #333333; stroke-width: 6;
-                 stroke-linecap: round; stroke-linejoin: round;
-                 stroke-dasharray: 709; stroke-dashoffset: 709;
-                 animation: axDraw .38s ease-out forwards; }
-  #splash .d { transform-box: fill-box; transform-origin: center;
-                transform: scale(0);
-                animation: dotIn .26s cubic-bezier(.34,1.56,.64,1) forwards;
-                animation-delay: calc(.30s + var(--i) * .042s); }
-  #splash .o { fill: #FF9900; }
-  #splash .g { fill: #474747; }
-  @media (prefers-reduced-motion: reduce) {
-    #splash .ax { animation: none; stroke-dashoffset: 0; }
-    #splash .d  { animation: none; transform: scale(1); }
-    #splash     { animation: splashOut .3s ease .45s forwards; }
-  }
-}
-@keyframes axDraw  { to { stroke-dashoffset: 0; } }
-@keyframes dotIn   { to { transform: scale(1); } }
-@keyframes splashOut { to { opacity: 0; visibility: hidden; } }
-</style>

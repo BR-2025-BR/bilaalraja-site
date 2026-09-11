@@ -374,14 +374,11 @@ def inject_meta(html: str, path: str, domain: str, companies: str = "",
     # tags are inserted immediately after <head>, which puts them ahead of each
     # page's own stylesheet -- and a rule of equal specificity that arrives first
     # loses. Appending before </head> lets these override without !important.
-    j = html.find("</head>")
     css = f"<style>{brand.RESPONSIVE_CSS}{brand.SPLASH_CSS}</style>\n"
-    html = html[:j] + css + html[j:] if j != -1 else html + css
-    # The splash markup goes first in the body, before anything it is meant to
-    # cover can paint. The dashboard has no <html>, <head> or <body> at all --
-    # it opens straight at <meta charset> and lets the parser imply the rest --
-    # so fall back to the first block element, which is where the body
-    # effectively begins.
+
+    # Where the body effectively begins. The dashboard has no <html>, <head> or
+    # <body> at all -- it opens straight at <meta charset> and lets the parser
+    # imply the rest -- so fall back to the first block element.
     k = html.find("<body")
     if k != -1:
         k = html.find(">", k) + 1
@@ -389,6 +386,23 @@ def inject_meta(html: str, path: str, domain: str, companies: str = "",
         cands = [html.find(t) for t in ("<main", "<header", "<nav", "<section", "<div")]
         cands = [c for c in cands if c != -1]
         k = min(cands) if cands else -1
+
+    # The CSS must precede the content it hides. Appending it at the end when
+    # there is no </head> meant the dashboard painted all 2 MB of itself and
+    # only then read the rule putting the splash over the top -- a visible flash
+    # of the whole page before the splash appeared. So without a </head> the
+    # style goes immediately before the first content instead.
+    j = html.find("</head>")
+    if j != -1:
+        html = html[:j] + css + html[j:]
+        if k != -1 and k > j:
+            k += len(css)
+    elif k != -1:
+        html = html[:k] + css + html[k:]
+        k += len(css)
+    else:
+        html += css
+
     if k != -1:
         html = html[:k] + brand.SPLASH_HTML + html[k:]
     return html
