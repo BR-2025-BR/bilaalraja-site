@@ -159,6 +159,50 @@ UPDATE_JS = """// Tells a page that it is out of date, and offers a way out.
     if (!document.hidden) check();
   });
 })();
+
+
+// ---- data-refresh indicator ------------------------------------------------
+// While a pipeline rebuild is running, /status.json holds {"refreshing":true};
+// this shows a small badge until it flips back to false, polling so it clears
+// itself with no second deploy. Fails silent if status.json is absent.
+(function(){
+  var el=null, styled=false;
+  function ensureStyle(){
+    if(styled) return; styled=true;
+    var s=document.createElement("style");
+    s.textContent=
+      '#nl-refresh{position:fixed;left:16px;bottom:16px;z-index:9998;display:flex;align-items:center;gap:9px;'+
+      'font:500 13px/1.2 -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;'+
+      'padding:9px 15px;border-radius:999px;color:var(--ink,#f5f2ec);max-width:calc(100vw - 32px);'+
+      'background:var(--panel,var(--raise,#1c1917));border:1px solid var(--rule,rgba(255,255,255,.15));'+
+      'box-shadow:0 10px 28px -10px rgba(0,0,0,.55);opacity:0;transform:translateY(6px);'+
+      'transition:opacity .3s ease,transform .3s ease;pointer-events:none}'+
+      '#nl-refresh.in{opacity:1;transform:none}'+
+      '#nl-refresh .sp{width:13px;height:13px;flex:0 0 auto;border-radius:50%;'+
+      'border:2px solid var(--s1,#E0762F);border-top-color:transparent;animation:nlspin .8s linear infinite}'+
+      '#nl-refresh b{color:var(--s1,#E0762F);font-weight:600}'+
+      '@keyframes nlspin{to{transform:rotate(360deg)}}'+
+      '@media(prefers-reduced-motion:reduce){#nl-refresh .sp{animation:none;border-top-color:var(--s1,#E0762F)}'+
+      '#nl-refresh{transition:opacity .3s ease}}';
+    document.head.appendChild(s);
+  }
+  function show(){
+    ensureStyle();
+    if(el) return;
+    el=document.createElement("div"); el.id="nl-refresh"; el.setAttribute("role","status"); el.setAttribute("aria-live","polite");
+    el.innerHTML='<span class="sp" aria-hidden="true"></span><span><b>Refreshing</b> the dataset… figures may change shortly</span>';
+    document.body.appendChild(el); requestAnimationFrame(function(){el.classList.add("in");});
+  }
+  function hide(){ if(!el) return; el.classList.remove("in"); var e=el; el=null; setTimeout(function(){if(e&&e.parentNode)e.parentNode.removeChild(e);},350); }
+  function poll(){
+    fetch("/status.json?t="+Date.now(),{cache:"no-store"})
+      .then(function(r){return r.ok?r.json():null;})
+      .then(function(j){ (j&&j.refreshing)?show():hide(); })
+      .catch(function(){hide();});
+  }
+  if(document.body) poll(); else addEventListener("DOMContentLoaded",poll);
+  setInterval(poll,45000);
+})();
 """
 
 LANDING = """<!doctype html>
@@ -814,7 +858,7 @@ self.addEventListener("fetch",e=>{{
   // The freshness check must never be answered from this cache. asset() is
   // stale-while-revalidate, so serving version.json from here would compare a
   // stale page against a stale version file and conclude all was well.
-  if(u.pathname==="/version.json"||u.pathname==="/update.js") return;
+  if(u.pathname==="/version.json"||u.pathname==="/update.js"||u.pathname==="/status.json") return;
   e.respondWith(r.mode==="navigate" ? navigate(r) : asset(r));
 }});
 """
@@ -891,6 +935,7 @@ def main():
         "/sw.js\n  Cache-Control: no-store\n"
         "/version.json\n  Cache-Control: no-store\n"
         "/update.js\n  Cache-Control: no-store\n"
+          "/status.json\n  Cache-Control: no-store\n"
         "/api/*\n  Cache-Control: no-store\n")
     (SITE / ".nojekyll").write_text("")
     (SITE / "manifest.webmanifest").write_text(

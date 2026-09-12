@@ -72,6 +72,6 @@ self.addEventListener("fetch",e=>{
   // The freshness check must never be answered from this cache. asset() is
   // stale-while-revalidate, so serving version.json from here would compare a
   // stale page against a stale version file and conclude all was well.
-  if(u.pathname==="/version.json"||u.pathname==="/update.js") return;
+  if(u.pathname==="/version.json"||u.pathname==="/update.js"||u.pathname==="/status.json") return;
   e.respondWith(r.mode==="navigate" ? navigate(r) : asset(r));
 });
