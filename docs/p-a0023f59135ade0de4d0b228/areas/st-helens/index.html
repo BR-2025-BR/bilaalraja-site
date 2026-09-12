@@ -2,9 +2,10 @@
 <html lang="en-GB"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Double Glazing Repairs in St Helens | Northlight Glazing</title>
+<meta name="robots" content="noindex,nofollow">
+<title>Double Glazing Repairs in St Helens | Demistify</title>
 <meta name="description" content="Misted, broken or draughty double glazing repaired in St Helens (WA9–WA11). New sealed units, locks and glass upgrades. Free quote, 5-year guarantee.">
-<link rel="canonical" href="https://northlightglazing.co.uk/areas/st-helens/">
+<link rel="canonical" href="https://demistify.co.uk/areas/st-helens/">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -331,27 +332,21 @@ footer{background:var(--ink);color:rgba(255,255,255,.75)}
 .credits .cr .t{color:var(--ink)}.credits .cr .t b{font-weight:600}
 .credits .cr .m{color:var(--ink3);white-space:nowrap;font-size:.85rem}
 .credits .cr a{color:var(--sky-deep)}
+/* The wordmark is the logo: the "mist" letters start frosted and clear on load. */
+.wordmark .lt{display:inline-block;will-change:filter,opacity;animation:demist 1.5s cubic-bezier(.33,0,.2,1) both}
+.wordmark .lt::after{content:"";}
+@keyframes demist{
+  0%{filter:blur(7px);opacity:.25}
+  55%{filter:blur(2.4px);opacity:.72}
+  100%{filter:blur(0);opacity:1}
+}
+/* replay on hover of the header logo, so it is not a one-time-only touch */
+#brand:hover .wordmark .lt{animation:demist 1.5s cubic-bezier(.33,0,.2,1) both}
+@media(prefers-reduced-motion:reduce){.wordmark .lt{animation:none;filter:none;opacity:1}}
 </style>
 </head><body>
-<template id="winmark-tpl">
-  <span class="winmark" aria-hidden="true">
-    <svg viewBox="0 0 34 34">
-      <rect class="pane" x="3" y="3" width="12.5" height="12.5" rx="1"/>
-      <rect class="pane" x="18.5" y="3" width="12.5" height="12.5" rx="1"/>
-      <rect class="pane" x="3" y="18.5" width="12.5" height="12.5" rx="1"/>
-      <rect class="pane" x="18.5" y="18.5" width="12.5" height="12.5" rx="1"/>
-      <rect class="frost f1" x="3" y="3" width="12.5" height="12.5" rx="1"/>
-      <rect class="frost f2" x="18.5" y="3" width="12.5" height="12.5" rx="1"/>
-      <rect class="frost f3" x="3" y="18.5" width="12.5" height="12.5" rx="1"/>
-      <rect class="frost f4" x="18.5" y="18.5" width="12.5" height="12.5" rx="1"/>
-      <line class="mullion" x1="17" y1="3" x2="17" y2="31"/>
-      <line class="mullion" x1="3" y1="17" x2="31" y2="17"/>
-    </svg>
-    <span class="glintbar"></span>
-  </span>
-</template>
 <header><div class="wrap bar">
-      <a class="mark" href="../../" id="brand" aria-label="Northlight Glazing, home"><span class="wordmark">North<span class="lt">light</span></span></a>
+      <a class="mark" href="../../" id="brand" aria-label="Demistify, home"><span class="wordmark">De<span class="lt">mist</span>ify</span></a>
       <nav class="top" id="nav">
       <a href="../../services/">Services</a>
       <a href="../../areas/">Areas</a>
@@ -390,21 +385,16 @@ footer{background:var(--ink);color:rgba(255,255,255,.75)}
       <a href="../../contact/" class="btn ghost">Request a survey</a>
     </div></div></section>
 <footer><div class="wrap foot">
-      <div><a class="mark" href="../../"><span class="wordmark" style="color:#fff">North<span class="lt">light</span></span></a>
+      <div><a class="mark" href="../../"><span class="wordmark" style="color:#fff">De<span class="lt">mist</span>ify</span></a>
         <p>Misted and failed double glazing, repaired across Merseyside and Greater Manchester. Keep your frames &mdash; restore the light.</p>
-        <p style="margin-top:10px"><a href="tel:01513787833" style="color:#fff">0151 378 7833</a> &middot; <a href="mailto:hello@northlightglazing.co.uk" style="color:#fff">hello@northlightglazing.co.uk</a></p></div>
+        <p style="margin-top:10px"><a href="tel:01513787833" style="color:#fff">0151 378 7833</a> &middot; <a href="mailto:hello@demistify.co.uk" style="color:#fff">hello@demistify.co.uk</a></p></div>
       <div><h4>Services</h4><a href="../../services/misted-units/">Misted &amp; failed units</a><a href="../../services/broken-glass/">Broken &amp; cracked glass</a><a href="../../services/locks-and-hardware/">Locks, handles &amp; hinges</a><a href="../../services/draughts-and-leaks/">Draughts &amp; leaks</a><a href="../../services/glass-upgrades/">Glass upgrades</a></div>
       <div><h4>Areas</h4><a href="../../areas/liverpool/">Liverpool</a><a href="../../areas/manchester/">Manchester</a><a href="../../areas/wirral/">Wirral</a><a href="../../areas/bolton/">Bolton</a><a href="../../areas/stockport/">Stockport</a><a href="../../areas/warrington/">Warrington</a><a href="../../areas/">All areas &rarr;</a></div>
       <div><h4>Company</h4><a href="../../pricing/">Pricing</a><a href="../../contact/">Contact</a><a href="../../privacy/">Privacy notice</a><a href="../../credits/">Image credits</a></div>
     </div>
-    <div class="foot-bar"><div class="wrap"><span>&copy; 2026 Northlight Glazing. Clear glass. True light.</span><span>Serving Merseyside &amp; Greater Manchester</span></div></div></footer>
+    <div class="foot-bar"><div class="wrap"><span>&copy; 2026 Demistify. Mist gone. Job done.</span><span>Serving Merseyside &amp; Greater Manchester</span></div></div></footer>
 <script>
-const tpl=document.getElementById("winmark-tpl").content;
-document.querySelectorAll(".mark").forEach(m=>m.insertBefore(tpl.cloneNode(true),m.firstChild));
-const bm=document.querySelector("#brand .winmark");
-function play(el){if(!el)return;el.classList.remove("play");void el.offsetWidth;el.classList.add("play");}
-window.addEventListener("load",()=>play(bm));
-const b=document.getElementById("brand");if(b)b.addEventListener("mouseenter",()=>play(bm));
+// the wordmark is the logo; the "mist" letters demist via CSS on load
 const burger=document.getElementById("burger"),nav=document.getElementById("nav");
 if(burger){burger.addEventListener("click",()=>{const o=nav.classList.toggle("open");burger.setAttribute("aria-expanded",String(o));});
 nav.addEventListener("click",e=>{if(e.target.tagName==="A"){nav.classList.remove("open");burger.setAttribute("aria-expanded","false");}});}
@@ -421,6 +411,6 @@ const form=document.getElementById("qform");
 if(form){const ok=document.getElementById("qok");form.addEventListener("submit",e=>{e.preventDefault();const d=new FormData(form);
 const body=`Name: ${d.get("name")}%0D%0APhone: ${d.get("phone")}%0D%0APostcode: ${d.get("postcode")}%0D%0AJob: ${d.get("job")}%0D%0ADetails: ${d.get("message")||"-"}`;
 form.style.display="none";ok.classList.add("show");
-window.location.href=`mailto:hello@northlightglazing.co.uk?subject=Free%20survey%20request%20-%20${encodeURIComponent(d.get("postcode")||"")}&body=${body}`;});}
+window.location.href=`mailto:hello@demistify.co.uk?subject=Free%20survey%20request%20-%20${encodeURIComponent(d.get("postcode")||"")}&body=${body}`;});}
 </script>
 </body></html>

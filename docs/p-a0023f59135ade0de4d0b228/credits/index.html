@@ -2,9 +2,10 @@
 <html lang="en-GB"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Image Credits | Northlight Glazing</title>
-<meta name="description" content="Photograph credits and Creative Commons licences for the location images used on the Northlight Glazing website.">
-<link rel="canonical" href="https://northlightglazing.co.uk/credits/">
+<meta name="robots" content="noindex,nofollow">
+<title>Image Credits | Demistify</title>
+<meta name="description" content="Photograph credits and Creative Commons licences for the location images used on the Demistify website.">
+<link rel="canonical" href="https://demistify.co.uk/credits/">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -331,27 +332,21 @@ footer{background:var(--ink);color:rgba(255,255,255,.75)}
 .credits .cr .t{color:var(--ink)}.credits .cr .t b{font-weight:600}
 .credits .cr .m{color:var(--ink3);white-space:nowrap;font-size:.85rem}
 .credits .cr a{color:var(--sky-deep)}
+/* The wordmark is the logo: the "mist" letters start frosted and clear on load. */
+.wordmark .lt{display:inline-block;will-change:filter,opacity;animation:demist 1.5s cubic-bezier(.33,0,.2,1) both}
+.wordmark .lt::after{content:"";}
+@keyframes demist{
+  0%{filter:blur(7px);opacity:.25}
+  55%{filter:blur(2.4px);opacity:.72}
+  100%{filter:blur(0);opacity:1}
+}
+/* replay on hover of the header logo, so it is not a one-time-only touch */
+#brand:hover .wordmark .lt{animation:demist 1.5s cubic-bezier(.33,0,.2,1) both}
+@media(prefers-reduced-motion:reduce){.wordmark .lt{animation:none;filter:none;opacity:1}}
 </style>
 </head><body>
-<template id="winmark-tpl">
-  <span class="winmark" aria-hidden="true">
-    <svg viewBox="0 0 34 34">
-      <rect class="pane" x="3" y="3" width="12.5" height="12.5" rx="1"/>
-      <rect class="pane" x="18.5" y="3" width="12.5" height="12.5" rx="1"/>
-      <rect class="pane" x="3" y="18.5" width="12.5" height="12.5" rx="1"/>
-      <rect class="pane" x="18.5" y="18.5" width="12.5" height="12.5" rx="1"/>
-      <rect class="frost f1" x="3" y="3" width="12.5" height="12.5" rx="1"/>
-      <rect class="frost f2" x="18.5" y="3" width="12.5" height="12.5" rx="1"/>
-      <rect class="frost f3" x="3" y="18.5" width="12.5" height="12.5" rx="1"/>
-      <rect class="frost f4" x="18.5" y="18.5" width="12.5" height="12.5" rx="1"/>
-      <line class="mullion" x1="17" y1="3" x2="17" y2="31"/>
-      <line class="mullion" x1="3" y1="17" x2="31" y2="17"/>
-    </svg>
-    <span class="glintbar"></span>
-  </span>
-</template>
 <header><div class="wrap bar">
-      <a class="mark" href="../" id="brand" aria-label="Northlight Glazing, home"><span class="wordmark">North<span class="lt">light</span></span></a>
+      <a class="mark" href="../" id="brand" aria-label="Demistify, home"><span class="wordmark">De<span class="lt">mist</span>ify</span></a>
       <nav class="top" id="nav">
       <a href="../services/">Services</a>
       <a href="../areas/">Areas</a>
@@ -367,21 +362,16 @@ footer{background:var(--ink);color:rgba(255,255,255,.75)}
     <section style="padding:10px 0 60px"><div class="wrap credits"><div class="cr"><span class="t"><b>Liverpool</b> &mdash; &ldquo;Liverpool Skyline 2023.jpg&rdquo; by Scouse1980liverpool</span><span class="m"><a href="https://creativecommons.org/licenses/by-sa/4.0" target="_blank" rel="noopener">CC BY-SA 4.0</a> &middot; <a href="https://commons.wikimedia.org/wiki/File:Liverpool_Skyline_2023.jpg" target="_blank" rel="noopener">Wikimedia Commons</a></span></div><div class="cr"><span class="t"><b>Wirral</b> &mdash; &ldquo;Promenade Stage Rally, New Brighton, The Wirral - geograph.org.uk - 5102352.jpg&rdquo; by Brian Deegan</span><span class="m"><a href="https://creativecommons.org/licenses/by-sa/2.0" target="_blank" rel="noopener">CC BY-SA 2.0</a> &middot; <a href="https://commons.wikimedia.org/wiki/File:Promenade_Stage_Rally,_New_Brighton,_The_Wirral_-_geograph.org.uk_-_5102352.jpg" target="_blank" rel="noopener">Wikimedia Commons</a></span></div><div class="cr"><span class="t"><b>Southport</b> &mdash; &ldquo;Southport Pier Tram.jpg&rdquo; by Photograph by Mike Peel (www.mikepeel.net).</span><span class="m"><a href="https://creativecommons.org/licenses/by-sa/4.0" target="_blank" rel="noopener">CC BY-SA 4.0</a> &middot; <a href="https://commons.wikimedia.org/wiki/File:Southport_Pier_Tram.jpg" target="_blank" rel="noopener">Wikimedia Commons</a></span></div><div class="cr"><span class="t"><b>St Helens</b> &mdash; &ldquo;Milk Street, St Helens Town Centre - geograph.org.uk - 6078043.jpg&rdquo; by Gary Rogers</span><span class="m"><a href="https://creativecommons.org/licenses/by-sa/2.0" target="_blank" rel="noopener">CC BY-SA 2.0</a> &middot; <a href="https://commons.wikimedia.org/wiki/File:Milk_Street,_St_Helens_Town_Centre_-_geograph.org.uk_-_6078043.jpg" target="_blank" rel="noopener">Wikimedia Commons</a></span></div><div class="cr"><span class="t"><b>Warrington</b> &mdash; &ldquo;Fountain, Warrington town centre - DSC05926.JPG&rdquo; by Rept0n1x</span><span class="m"><a href="https://creativecommons.org/licenses/by-sa/3.0" target="_blank" rel="noopener">CC BY-SA 3.0</a> &middot; <a href="https://commons.wikimedia.org/wiki/File:Fountain,_Warrington_town_centre_-_DSC05926.JPG" target="_blank" rel="noopener">Wikimedia Commons</a></span></div><div class="cr"><span class="t"><b>Widnes</b> &mdash; &ldquo;Silver Jubilee Bridge, Runcorn,.jpg&rdquo; by Rosser1954</span><span class="m"><a href="https://creativecommons.org/licenses/by-sa/4.0" target="_blank" rel="noopener">CC BY-SA 4.0</a> &middot; <a href="https://commons.wikimedia.org/wiki/File:Silver_Jubilee_Bridge,_Runcorn,.jpg" target="_blank" rel="noopener">Wikimedia Commons</a></span></div><div class="cr"><span class="t"><b>Wigan</b> &mdash; &ldquo;The Orwell at Wigan Pier, 2010.jpg&rdquo; by Ben Sutherland from Catford, London, UK</span><span class="m"><a href="https://creativecommons.org/licenses/by/2.0" target="_blank" rel="noopener">CC BY 2.0</a> &middot; <a href="https://commons.wikimedia.org/wiki/File:The_Orwell_at_Wigan_Pier,_2010.jpg" target="_blank" rel="noopener">Wikimedia Commons</a></span></div><div class="cr"><span class="t"><b>Bolton</b> &mdash; &ldquo;Old Town Hall, Bolton.jpg&rdquo; by Plucas58</span><span class="m"><a href="https://creativecommons.org/licenses/by-sa/4.0" target="_blank" rel="noopener">CC BY-SA 4.0</a> &middot; <a href="https://commons.wikimedia.org/wiki/File:Old_Town_Hall,_Bolton.jpg" target="_blank" rel="noopener">Wikimedia Commons</a></span></div><div class="cr"><span class="t"><b>Bury</b> &mdash; &ldquo;Bury Parish Church HDR.jpg&rdquo; by Mdbeckwith</span><span class="m"><a href="https://creativecommons.org/licenses/by-sa/3.0" target="_blank" rel="noopener">CC BY-SA 3.0</a> &middot; <a href="https://commons.wikimedia.org/wiki/File:Bury_Parish_Church_HDR.jpg" target="_blank" rel="noopener">Wikimedia Commons</a></span></div><div class="cr"><span class="t"><b>Rochdale</b> &mdash; &ldquo;Rochdale Town Hall, 2010.jpg&rdquo; by Tim Green</span><span class="m"><a href="https://creativecommons.org/licenses/by/2.0" target="_blank" rel="noopener">CC BY 2.0</a> &middot; <a href="https://commons.wikimedia.org/wiki/File:Rochdale_Town_Hall,_2010.jpg" target="_blank" rel="noopener">Wikimedia Commons</a></span></div><div class="cr"><span class="t"><b>Oldham</b> &mdash; &ldquo;Oldham Road, Saddleworth - geograph.org.uk - 2526684.jpg&rdquo; by Steven Haslington</span><span class="m"><a href="https://creativecommons.org/licenses/by-sa/2.0" target="_blank" rel="noopener">CC BY-SA 2.0</a> &middot; <a href="https://commons.wikimedia.org/wiki/File:Oldham_Road,_Saddleworth_-_geograph.org.uk_-_2526684.jpg" target="_blank" rel="noopener">Wikimedia Commons</a></span></div><div class="cr"><span class="t"><b>Manchester</b> &mdash; &ldquo;Great Northern Warehouse and Beetham Tower (edit).jpg&rdquo; by John Beswick from Manchester, UK</span><span class="m"><a href="https://creativecommons.org/licenses/by/2.0" target="_blank" rel="noopener">CC BY 2.0</a> &middot; <a href="https://commons.wikimedia.org/wiki/File:Great_Northern_Warehouse_and_Beetham_Tower_(edit).jpg" target="_blank" rel="noopener">Wikimedia Commons</a></span></div><div class="cr"><span class="t"><b>Salford</b> &mdash; &ldquo;The Ontario Basin, Salford Quays, Manchester.jpg&rdquo; by Rosser1954</span><span class="m"><a href="https://creativecommons.org/licenses/by/4.0" target="_blank" rel="noopener">CC BY 4.0</a> &middot; <a href="https://commons.wikimedia.org/wiki/File:The_Ontario_Basin,_Salford_Quays,_Manchester.jpg" target="_blank" rel="noopener">Wikimedia Commons</a></span></div><div class="cr"><span class="t"><b>Trafford</b> &mdash; &ldquo;Altrincham - Old Market Tavern (geograph 3802158).jpg&rdquo; by Dave Bevis</span><span class="m"><a href="https://creativecommons.org/licenses/by-sa/2.0" target="_blank" rel="noopener">CC BY-SA 2.0</a> &middot; <a href="https://commons.wikimedia.org/wiki/File:Altrincham_-_Old_Market_Tavern_(geograph_3802158).jpg" target="_blank" rel="noopener">Wikimedia Commons</a></span></div><div class="cr"><span class="t"><b>Stockport</b> &mdash; &ldquo;Stockport Viaduct in 2012.jpg&rdquo; by Steven Haslington</span><span class="m"><a href="https://creativecommons.org/licenses/by-sa/2.0" target="_blank" rel="noopener">CC BY-SA 2.0</a> &middot; <a href="https://commons.wikimedia.org/wiki/File:Stockport_Viaduct_in_2012.jpg" target="_blank" rel="noopener">Wikimedia Commons</a></span></div>
       <p style="margin-top:26px;color:var(--ink3);font-size:.86rem">Each image links to its source and licence. The before/after window photograph elsewhere on the site is a placeholder, to be replaced with our own job photography.</p></div></section>
 <footer><div class="wrap foot">
-      <div><a class="mark" href="../"><span class="wordmark" style="color:#fff">North<span class="lt">light</span></span></a>
+      <div><a class="mark" href="../"><span class="wordmark" style="color:#fff">De<span class="lt">mist</span>ify</span></a>
         <p>Misted and failed double glazing, repaired across Merseyside and Greater Manchester. Keep your frames &mdash; restore the light.</p>
-        <p style="margin-top:10px"><a href="tel:01513787833" style="color:#fff">0151 378 7833</a> &middot; <a href="mailto:hello@northlightglazing.co.uk" style="color:#fff">hello@northlightglazing.co.uk</a></p></div>
+        <p style="margin-top:10px"><a href="tel:01513787833" style="color:#fff">0151 378 7833</a> &middot; <a href="mailto:hello@demistify.co.uk" style="color:#fff">hello@demistify.co.uk</a></p></div>
       <div><h4>Services</h4><a href="../services/misted-units/">Misted &amp; failed units</a><a href="../services/broken-glass/">Broken &amp; cracked glass</a><a href="../services/locks-and-hardware/">Locks, handles &amp; hinges</a><a href="../services/draughts-and-leaks/">Draughts &amp; leaks</a><a href="../services/glass-upgrades/">Glass upgrades</a></div>
       <div><h4>Areas</h4><a href="../areas/liverpool/">Liverpool</a><a href="../areas/manchester/">Manchester</a><a href="../areas/wirral/">Wirral</a><a href="../areas/bolton/">Bolton</a><a href="../areas/stockport/">Stockport</a><a href="../areas/warrington/">Warrington</a><a href="../areas/">All areas &rarr;</a></div>
       <div><h4>Company</h4><a href="../pricing/">Pricing</a><a href="../contact/">Contact</a><a href="../privacy/">Privacy notice</a><a href="../credits/">Image credits</a></div>
     </div>
-    <div class="foot-bar"><div class="wrap"><span>&copy; 2026 Northlight Glazing. Clear glass. True light.</span><span>Serving Merseyside &amp; Greater Manchester</span></div></div></footer>
+    <div class="foot-bar"><div class="wrap"><span>&copy; 2026 Demistify. Mist gone. Job done.</span><span>Serving Merseyside &amp; Greater Manchester</span></div></div></footer>
 <script>
-const tpl=document.getElementById("winmark-tpl").content;
-document.querySelectorAll(".mark").forEach(m=>m.insertBefore(tpl.cloneNode(true),m.firstChild));
-const bm=document.querySelector("#brand .winmark");
-function play(el){if(!el)return;el.classList.remove("play");void el.offsetWidth;el.classList.add("play");}
-window.addEventListener("load",()=>play(bm));
-const b=document.getElementById("brand");if(b)b.addEventListener("mouseenter",()=>play(bm));
+// the wordmark is the logo; the "mist" letters demist via CSS on load
 const burger=document.getElementById("burger"),nav=document.getElementById("nav");
 if(burger){burger.addEventListener("click",()=>{const o=nav.classList.toggle("open");burger.setAttribute("aria-expanded",String(o));});
 nav.addEventListener("click",e=>{if(e.target.tagName==="A"){nav.classList.remove("open");burger.setAttribute("aria-expanded","false");}});}
@@ -398,6 +388,6 @@ const form=document.getElementById("qform");
 if(form){const ok=document.getElementById("qok");form.addEventListener("submit",e=>{e.preventDefault();const d=new FormData(form);
 const body=`Name: ${d.get("name")}%0D%0APhone: ${d.get("phone")}%0D%0APostcode: ${d.get("postcode")}%0D%0AJob: ${d.get("job")}%0D%0ADetails: ${d.get("message")||"-"}`;
 form.style.display="none";ok.classList.add("show");
-window.location.href=`mailto:hello@northlightglazing.co.uk?subject=Free%20survey%20request%20-%20${encodeURIComponent(d.get("postcode")||"")}&body=${body}`;});}
+window.location.href=`mailto:hello@demistify.co.uk?subject=Free%20survey%20request%20-%20${encodeURIComponent(d.get("postcode")||"")}&body=${body}`;});}
 </script>
 </body></html>
