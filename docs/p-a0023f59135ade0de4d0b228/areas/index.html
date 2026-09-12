@@ -313,6 +313,24 @@ footer{background:var(--ink);color:rgba(255,255,255,.75)}
 .townchips a:hover{border-color:var(--sky);color:var(--sky-deep)}
 .pcline{font-family:var(--sans);font-size:.9rem;color:var(--ink3);margin-top:10px}
 @media (max-width:940px){.two{grid-template-columns:1fr;gap:30px}.related{grid-template-columns:1fr}}
+.subhero.photo{position:relative;background-size:cover;background-position:center;padding:64px 0 56px;overflow:hidden}
+.subhero.photo::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(15,39,66,.74),rgba(11,26,42,.86)),linear-gradient(90deg,rgba(11,31,24,.5),transparent 60%)}
+.subhero.photo .wrap{position:relative;z-index:1}
+.subhero.photo .crumb{color:rgba(255,255,255,.72)}
+.subhero.photo .crumb a{color:#fff}
+.subhero.photo h1{color:#fff}
+.subhero.photo .lede{color:rgba(255,255,255,.92)}
+.subhero.photo .pcline{color:rgba(255,255,255,.72)}
+.subhero.photo .btn.ghost{border-color:rgba(255,255,255,.45);color:#fff}
+.subhero.photo .btn.ghost:hover{background:#fff;color:var(--navy)}
+.hcredit{position:absolute;right:10px;bottom:8px;z-index:2;font-size:.62rem;color:rgba(255,255,255,.62);
+  background:rgba(0,0,0,.3);padding:3px 9px;border-radius:10px;max-width:70%;text-align:right;line-height:1.3}
+.hcredit a{color:rgba(255,255,255,.8)}
+.credits{max-width:760px}
+.credits .cr{display:flex;justify-content:space-between;gap:20px;padding:15px 0;border-bottom:1px solid var(--line);font-size:.92rem}
+.credits .cr .t{color:var(--ink)}.credits .cr .t b{font-weight:600}
+.credits .cr .m{color:var(--ink3);white-space:nowrap;font-size:.85rem}
+.credits .cr a{color:var(--sky-deep)}
 </style>
 </head><body>
 <template id="winmark-tpl">
@@ -436,7 +454,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.75)}
         <p style="margin-top:10px"><a href="tel:01513787833" style="color:#fff">0151 378 7833</a> &middot; <a href="mailto:hello@northlightglazing.co.uk" style="color:#fff">hello@northlightglazing.co.uk</a></p></div>
       <div><h4>Services</h4><a href="../services/misted-units/">Misted &amp; failed units</a><a href="../services/broken-glass/">Broken &amp; cracked glass</a><a href="../services/locks-and-hardware/">Locks, handles &amp; hinges</a><a href="../services/draughts-and-leaks/">Draughts &amp; leaks</a><a href="../services/glass-upgrades/">Glass upgrades</a></div>
       <div><h4>Areas</h4><a href="../areas/liverpool/">Liverpool</a><a href="../areas/manchester/">Manchester</a><a href="../areas/wirral/">Wirral</a><a href="../areas/bolton/">Bolton</a><a href="../areas/stockport/">Stockport</a><a href="../areas/warrington/">Warrington</a><a href="../areas/">All areas &rarr;</a></div>
-      <div><h4>Company</h4><a href="../pricing/">Pricing</a><a href="../contact/">Contact</a><a href="../privacy/">Privacy notice</a></div>
+      <div><h4>Company</h4><a href="../pricing/">Pricing</a><a href="../contact/">Contact</a><a href="../privacy/">Privacy notice</a><a href="../credits/">Image credits</a></div>
     </div>
     <div class="foot-bar"><div class="wrap"><span>&copy; 2026 Northlight Glazing. Clear glass. True light.</span><span>Serving Merseyside &amp; Greater Manchester</span></div></div></footer>
 <script>
