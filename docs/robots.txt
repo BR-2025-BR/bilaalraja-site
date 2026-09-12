@@ -1,5 +1,4 @@
 User-agent: *
 Disallow: /r/
-Disallow: /p-a0023f59135ade0de4d0b228/
 Allow: /
 Sitemap: https://bilaalraja.com/sitemap.xml

@@ -29,9 +29,9 @@ def _strat_json():
     Hand-pasting this once was fine; leaving it hand-pasted means the chart and
     the numbers drift apart the moment the backtest is re-run.
     """
-    f = HERE.parent / "research" / "strategy_results.json"
+    f = HERE.parent / "research" / "beta_strategy_results.json"
     if not f.exists():
-        print("  note: research/strategy_results.json absent, strategy chart will be empty")
+        print("  note: research/beta_strategy_results.json absent, strategy chart will be empty")
         return "[]"
     return f.read_text().strip()
 rows = json.load(open(HERE/"r3k_scored.json"))
@@ -500,36 +500,37 @@ __TICKERHTML__
 
 <section class="panel" id="strategy">
   <div class="phead">
-    <div><h2>Does the score actually pick anything?</h2>
-      <p class="sub">A composite is only worth having if a portfolio built from it
-      beats what you would have got by picking at random. That is a testable claim,
-      and this is the test.</p></div>
+    <div><h2>Does the beta-capped book beat luck?</h2>
+      <p class="sub">A strategy is only worth running if it beats what you would
+      have got by picking at random. The <a href="/beta-capped/">beta-capped
+      book</a> is the test case here, and this is the test.</p></div>
   </div>
 
   <div class="strat" style="margin-top:6px">
-    <div class="step"><b>1 &middot; Rank inside each sector</b>
-      <p>Every company gets a percentile on value, quality, cash generation,
-      balance sheet and growth &mdash; compared only with its own sector, so a
-      software company is never called expensive for not looking like a utility.
-      The five combine into one score out of a hundred.</p></div>
-    <div class="step"><b>2 &middot; Take the best few in each sector</b>
-      <p>The ten highest scorers in each of the twelve sectors, about 120
-      companies. Equal amounts in each, so one large holding cannot decide the
-      outcome.</p></div>
-    <div class="step"><b>3 &middot; Hold for a year, change nothing</b>
-      <p>Bought on the first trading day of January, sold twelve months later.
-      No trading in between, no reacting to news.</p></div>
-    <div class="step"><b>4 &middot; Compare with luck, not with an index</b>
+    <div class="step"><b>1 &middot; Six gates, plus a beta cap</b>
+      <p>A company is eligible only if it clears all six: revenue growth &ge; 20%,
+      positive net income, positive free cash flow, ROIC &ge; 10%, net debt
+      &le; 3&times; EBITDA and FCF conversion &ge; 50% &mdash; and only if its own
+      trailing one-year beta is 1.3 or lower.</p></div>
+    <div class="step"><b>2 &middot; Take the best 25 by score</b>
+      <p>The twenty-five highest composite scores among those that pass, held in
+      equal amounts, with no sector cap. Fewer than 25 qualify when the market is
+      dear, so the book is smaller in those quarters.</p></div>
+    <div class="step"><b>3 &middot; Rebuilt every quarter</b>
+      <p>Formed on the first trading day of each quarter. A holding is cut once it
+      stops qualifying, and a winner is kept only while it still makes the new 25 &mdash;
+      about 22 names at a time, held a mean of 2.2 quarters.</p></div>
+    <div class="step"><b>4 &middot; Compare with luck, not just an index</b>
       <p>Beating the S&amp;P would only show these companies are smaller than the
-      S&amp;P. So each basket is compared with 2,000 random baskets of the same size,
-      drawn from the same companies on the same day. That asks the real question:
-      was the <em>choosing</em> worth anything? The S&amp;P is drawn too, because
-      the answer to that turned out to matter.</p></div>
+      S&amp;P. So each calendar year is compared with 2,000 random baskets of the same
+      size, drawn from the same scored companies over the same quarters and
+      compounded the same way. That asks the real question: was the
+      <em>choosing</em> worth anything? The S&amp;P is drawn too.</p></div>
   </div>
 
   <div class="stratbox">
     <svg id="stratchart" viewBox="0 0 900 360" role="img"
-      aria-label="Yearly return of the composite basket against the range a random basket would have produced"></svg>
+      aria-label="Yearly return of the beta-capped book against the range a random basket of the same size would have produced"></svg>
     <div class="stip" id="stratTip"></div>
   </div>
   <div class="sthold" id="stratHold"></div>
@@ -543,54 +544,56 @@ __TICKERHTML__
   </div>
 
   <div class="verdict">
-    <h3>It beat the coin flip and lost to the index</h3>
-    <p>Over the seven years the basket returned <b>+146%</b>. The companies it
-    drew from returned +94%, so the score really did pick better than the pond it
-    was fishing in &mdash; about 3.9 points a year better, and in four of the seven
-    years by more than luck can account for.</p>
-    <p>The S&amp;P 500 returned <b>+206%</b> over the same seven years.
-    $10,000 became <b>$24,600</b> in the basket and <b>$30,600</b> in an index
+    <h3>Better than random selection, and ahead of the index</h3>
+    <p>Over the twelve full years 2014&ndash;2025 the book returned <b>+650%</b>.
+    The scored companies it drew from returned +156%, so the choosing beat the
+    pond it was fishing in by roughly ten points a year. It cleared the range of
+    luck in four of the twelve years, and the typical year sat at the 73rd
+    percentile of random selection &mdash; better than chance more often than not,
+    and in no year meaningfully worse.</p>
+    <p>The S&amp;P 500 returned <b>+353%</b> over the same years.
+    $10,000 became <b>$75,000</b> in the book and <b>$45,300</b> in an index
     fund &mdash; both in dollars, since a sterling investor would also have worn
-    the exchange rate, which is not modelled here. The basket beat the S&amp;P in
-    two years of seven, and trailed it by 3.6 points a year.</p>
-    <p>Both are true at once, and the second is the one that decides anything.
-    The score adds value <em>relative to its universe</em>. That universe &mdash;
-    the smaller end of the US market &mdash; was a worse place to have been than
-    the mega-caps carrying the index, and picking well inside it did not close
-    the gap.</p>
+    the exchange rate, which is not modelled here. The book beat the S&amp;P in
+    eight of the twelve years.</p>
+    <p>The book&rsquo;s own reckoning is more careful, and it is worth repeating.
+    Split in half, the return advantage flips sign &mdash; about +6 points a year
+    in 2014&ndash;2019 and about &minus;5 in 2020&ndash;2025 &mdash; so the
+    outperformance is not something to bank on. What <em>is</em> robust is the
+    risk: the beta cap holds the book&rsquo;s own beta near 1.05 in both halves
+    and lowers volatility, at no cost to Sharpe. Read the chart as evidence the
+    choosing beats a coin toss, not as a promise to beat the index.</p>
   </div>
 
   <p class="note" style="margin-top:14px"><b>Read it this way.</b> Each marker sits at what the
-  basket actually returned; the grey band behind it is where nine out of ten random
-  baskets of the same size landed. A filled marker is a year that finished clear of
-  that band; a hollow one is a year the score cannot be told apart from luck,
-  whether it landed inside the band or below it.
-  The score cleared the band in four of the seven years, and the median year sat at the 98th
-  percentile of random selection &mdash; something that happens by luck about twice
-  in ten thousand tries.</p>
+  book actually returned that calendar year; the grey band behind it is where nine out of ten
+  random books of the same size landed, and the dashed line is the S&amp;P. A filled marker is
+  a year that finished clear of the band; a hollow one is a year the book cannot be told apart
+  from luck, whether it landed inside the band or below it.
+  The book cleared the band in four of the twelve full years, and the median year sat at the
+  73rd percentile of random selection. 2026 is still running.</p>
 
   <details style="margin-top:12px">
     <summary>What this still does not prove</summary>
     <div class="body"><div>
-    <p class="note"><b>2020 was bad, not just unlucky.</b> The basket returned
-    5.8% while the average random basket returned 15.8% &mdash; the 3rd percentile.
-    A method that wins by ten points in four years and loses by ten in a fifth is
-    harder to live with than one that wins by four every year, even where the
-    averages match. Across all seven years the average advantage is +3.8
-    percentage points, and that average is <b>not</b> statistically significant
-    (t = 1.21).</p>
+    <p class="note"><b>The return edge is not stable.</b> It is large in some
+    years and negative in others, and splits into a positive first half and a
+    negative second half &mdash; about +6 points a year to 2019, about &minus;5
+    after. A book that wins big in a handful of years and gives some back in
+    others is harder to live with than a steady one, even where the long-run
+    total looks good. The robust part is the risk control, not the outperformance.</p>
     <p class="note" style="margin-top:9px"><b>The method was designed while
-    looking at this data.</b> Using return on capital employed rather than ROIC,
-    capping quality, capping growth at 50% &mdash; each of those was decided by
-    examining this universe and fixing what looked wrong. The <em>data</em> in
-    this test is out-of-sample; the <em>method</em> is not. The only cure is to
-    fix the rules now and test them on years that have not happened yet.</p>
+    looking at this data.</b> The six gates, the composite score and the 1.3 beta
+    line were each decided by examining this history and fixing what looked wrong.
+    The <em>data</em> each year is out-of-sample by construction; the
+    <em>method</em> is not. The only real cure is to fix the rules now and watch
+    years that have not happened yet.</p>
     <p class="note" style="margin-top:9px"><b>What is genuinely solid.</b> The
-    universe at each January is rebuilt from companies that had a price and had
+    universe at each quarter is rebuilt from companies that had a price and had
     filed accounts <em>on that day</em> &mdash; including the ones that have since
-    delisted, which most backtests quietly drop. Two thirds of the companies in
-    the price history no longer trade. Leaving them out is the single most common
-    way a backtest flatters itself.</p>
+    delisted, priced at their last real print rather than dropped. Two thirds of
+    the companies in the price history no longer trade. Leaving them out is the
+    single most common way a backtest flatters itself.</p>
     </div></div>
   </details>
 </section>
@@ -1477,7 +1480,7 @@ function renderTables(){
   });
   g+=`<text transform="translate(15,${T+ph/2}) rotate(-90)" text-anchor="middle"
       font-family="var(--mono)" font-size="10.5" fill="var(--ink3)"
-      letter-spacing="0.06em">RETURN OVER THE 12 MONTHS HELD</text>`;
+      letter-spacing="0.06em">RETURN OVER THE CALENDAR YEAR</text>`;
   el.innerHTML=g;
   const tip=$("stratTip");
   el.addEventListener("pointermove",e=>{
@@ -1519,14 +1522,15 @@ function renderTables(){
     if(!d||!d.h||!d.h.length) return;
     const pc=v=>(v>0?'+':'')+v.toFixed(1)+'%';
     const rows=d.h.map((x,k)=>`<tr><td>${k+1}</td><td><b>${x.t}</b></td>`
-      +`<td>${x.n}</td><td>${x.s}</td><td>${x.sc.toFixed(1)}</td>`
+      +`<td>${x.n}</td><td>${x.s}</td><td>${x.sc==null?'&mdash;':x.sc.toFixed(1)}</td>`
+      +`<td>${x.beta==null?'&mdash;':x.beta.toFixed(2)}</td>`
       +`<td>${x.r==null?'&mdash;':pc(x.r)}</td></tr>`).join('');
     const sp=d.spy==null?'':` &middot; S&amp;P 500 ${pc(d.spy)}`;
-    box.innerHTML=`<h4><span>${d.y} basket &middot; ${d.h.length} holdings `
+    box.innerHTML=`<h4><span>${d.y} book &middot; ${d.h.length} names held `
       +`&middot; ${pc(d.ret)}${sp}</span>`
       +`<button class="stclose" type="button">close</button></h4>`
       +`<div class="wrap"><table><thead><tr><th>#</th><th>Ticker</th><th>Company</th>`
-      +`<th>Sector</th><th>Score</th><th>Return</th></tr></thead><tbody>${rows}</tbody>`
+      +`<th>Sector</th><th>Score</th><th>Beta</th><th>Return</th></tr></thead><tbody>${rows}</tbody>`
       +`</table></div>`;
     box.classList.add("on");
     box.querySelector(".stclose").onclick=()=>box.classList.remove("on");
