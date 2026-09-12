@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en-GB"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Beta-Capped Book</title>
+<title>The Gate Exit Rule</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -61,14 +61,18 @@ input[type=range]{flex:1 1 240px;min-width:150px;accent-color:var(--s1)}
 .ln-spy{fill:none;stroke:var(--ink3);stroke-width:1.6;stroke-dasharray:5 4}
 .ln-st{fill:none;stroke:var(--s1);stroke-width:2.2}
 .foot{margin-top:40px;padding-top:15px;border-top:1px solid var(--line);color:var(--ink3);font-size:.8rem}
+.fnref{font-size:.62em;line-height:0}.fnref a{color:var(--s1);text-decoration:none}
+p.fn{font-size:.82rem;color:var(--ink3);border-left:2px solid var(--line);padding-left:13px;margin-top:14px;max-width:66ch}
+p.fn b{color:var(--ink2);font-weight:600}
 </style></head><body><div class="wrap">
 
-<h1>The beta-capped book</h1>
+<h1>The gate exit rule</h1>
 <div class="sub">Every buy and sell, December 2013 to July 2026 &middot; point-in-time SEC XBRL &middot; generated 9 September 2026</div>
 
-<p class="lede">The six gates, with one addition: a company is only eligible if its own
-trailing one-year beta is at or below 1.3. That single constraint pulls portfolio beta from
-1.34 to 1.05 and holds it there in both halves of the sample.</p>
+<p class="lede">The criterion that buys a company is the criterion that sells it. A name is
+held only while it still clears all six quality gates, and it is dropped the quarter it stops.
+The book is rebuilt from scratch every quarter, so a holding persists only by re-qualifying on
+its own merits &mdash; not on how far it has already run.<sup class="fnref"><a href="#fn1">1</a></sup></p>
 
 <div class="rule">
 UNIVERSE US operating companies, financials and real estate excluded<br>
@@ -88,11 +92,13 @@ HOLD&nbsp;&nbsp;&nbsp;&nbsp; one quarter, equal weight, then rebuild
 <tr><td>2020&ndash;2025</td><td class="num">22.82%</td><td class="num win">1.04</td><td class="num">24.18%</td><td class="num">0.84</td></tr>
 <tr><td><i>same rules, no beta cap</i></td><td class="num">17.50%</td><td class="num">1.34</td><td class="num">24.68%</td><td class="num">0.61</td></tr>
 </tbody></table></div>
-<p><b>The beta control is the robust part.</b> It delivers 1.05 and 1.04 in the two halves from
-starting points of 1.17 and 1.38, and volatility falls in both. Sharpe improves sharply in the
-early period and is unchanged in the late one, so the constraint never costs anything
-risk-adjusted. The <i>return</i> improvement is not robust &mdash; it is +6.2pp in the first half
-and &minus;5.3pp in the second, which is a sign flip and should be ignored.</p>
+<p class="fn" id="fn1"><b>1. The beta cap.</b> The book also requires a constituent&rsquo;s
+trailing one-year beta to be <b>&le; 1.30</b>, measured only on prices before formation (the
+<i>same rules, no beta cap</i> row above is the book without it). That single constraint pulls
+portfolio beta from 1.34 to 1.05 and holds it there in both halves, and volatility falls in both
+while Sharpe is never worse. The <i>return</i> effect is not robust &mdash; +6.2pp in the first
+half and &minus;5.3pp in the second, a sign flip that should be ignored &mdash; so the cap is a
+risk control, not a return engine. It is a footnote to the exit rule, not the point of it.</p>
 
 <h2>Trading activity</h2>
 <div class="kv">

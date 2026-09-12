@@ -22,9 +22,11 @@ PAGES = [                      # source file, url path, human title
     (SRC / "r3k_dashboard.html", "russell3000", "Russell 3000 Cross-Section"),
     (SRC / "commentary.html",    "commentary",  "Results Commentary"),
     # must stay after the dashboard: inject_meta reads the universe count that
-    # only the dashboard entry populates
-    (SRC / "gate_exit.html",     "gate-exit",   "The Gate Exit Rule"),
-    (SRC / "beta_book.html",     "beta-capped", "The Beta-Capped Book"),
+    # only the dashboard entry populates.
+    # The gate-exit rule is now the beta-capped book: same six-gate exit rule,
+    # with the beta cap kept as a footnote. The old gate_exit.html essay is
+    # retired, and /beta-capped/ redirects here.
+    (SRC / "beta_book.html",     "gate-exit",   "The Gate Exit Rule"),
 ]
 
 # Any Claude artifact link becomes a local path, so the site stands alone.
@@ -348,15 +350,10 @@ __MASTHEAD__
 </a>
 <a href="/gate-exit/">
   <span class="t">The Gate Exit Rule</span>
-  <span class="v">49 formations</span>
-  <span class="d">A screen where the criterion that buys a company is the criterion that
-  sells it, with the holdings at every quarterly rebalance since 2013.</span>
-</a>
-<a href="/beta-capped/">
-  <span class="t">The Beta-Capped Book</span>
   <span class="v">51 formations</span>
-  <span class="d">The same screen with a ceiling on constituent beta, which holds portfolio
-  beta at 1.05 across two market regimes. Every buy and sell.</span>
+  <span class="d">A screen where the criterion that buys a company is the criterion that
+  sells it &mdash; held while it keeps passing, dropped the quarter it stops. Every buy and
+  sell across 51 quarterly formations since 2013.</span>
 </a>
 <a href="/methodology/">
   <span class="t">How this was built</span>
@@ -392,14 +389,10 @@ DESCRIPTIONS = {
  "commentary": ("Russell 3000 Results Commentary | Bilaal Raja",
    "Management's own discussion of results, parsed from 10-Q and 10-K filings "
    "for thousands of US listed companies and matched to the reported figures."),
- "beta-capped": ("The Beta-Capped Book | Bilaal Raja",
-   "A quality screen with a constituent beta ceiling, which holds portfolio beta at "
-   "1.05 across two market regimes. Every buy and sell across 51 quarterly "
-   "formations, December 2013 to July 2026."),
  "gate-exit": ("The Gate Exit Rule | Bilaal Raja",
    "A quality screen where the criterion that buys a company is the criterion "
-   "that sells it. Six gates, 25 names, held while they keep passing. Twelve "
-   "years of point-in-time formations, with the holdings at every rebalance."),
+   "that sells it. Six gates, 25 names, held while they keep passing. Every buy "
+   "and sell across 51 quarterly formations, December 2013 to July 2026."),
 }
 
 
@@ -991,8 +984,7 @@ def main():
               if (SITE / "c").exists() else []
     write_sitemap(SITE, DOMAIN,
                   [("", "1.0"), ("russell3000", "0.9"), ("commentary", "0.8"),
-                   ("methodology", "0.85"), ("learn", "0.85"), ("gate-exit", "0.85"),
-                   ("beta-capped", "0.85")]
+                   ("methodology", "0.85"), ("learn", "0.85"), ("gate-exit", "0.85")]
                   + [(f"c/{t}", "0.6") for t in tickers],
                   meta["built"])
     n_urls = (SITE / "sitemap.xml").read_text().count("<url>")

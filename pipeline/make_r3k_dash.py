@@ -500,18 +500,18 @@ __TICKERHTML__
 
 <section class="panel" id="strategy">
   <div class="phead">
-    <div><h2>Does the beta-capped book beat luck?</h2>
+    <div><h2>Does the gate exit rule beat luck?</h2>
       <p class="sub">A strategy is only worth running if it beats what you would
-      have got by picking at random. The <a href="/beta-capped/">beta-capped
-      book</a> is the test case here, and this is the test.</p></div>
+      have got by picking at random. The <a href="/gate-exit/">gate exit
+      rule</a> is the test case here, and this is the test.</p></div>
   </div>
 
   <div class="strat" style="margin-top:6px">
-    <div class="step"><b>1 &middot; Six gates, plus a beta cap</b>
+    <div class="step"><b>1 &middot; Six quality gates</b>
       <p>A company is eligible only if it clears all six: revenue growth &ge; 20%,
       positive net income, positive free cash flow, ROIC &ge; 10%, net debt
-      &le; 3&times; EBITDA and FCF conversion &ge; 50% &mdash; and only if its own
-      trailing one-year beta is 1.3 or lower.</p></div>
+      &le; 3&times; EBITDA and FCF conversion &ge; 50%. (A trailing-beta &le; 1.3
+      filter is also applied, which changes the risk more than the return.)</p></div>
     <div class="step"><b>2 &middot; Take the best 25 by score</b>
       <p>The twenty-five highest composite scores among those that pass, held in
       equal amounts, with no sector cap. Fewer than 25 qualify when the market is
@@ -530,7 +530,7 @@ __TICKERHTML__
 
   <div class="stratbox">
     <svg id="stratchart" viewBox="0 0 900 360" role="img"
-      aria-label="Yearly return of the beta-capped book against the range a random basket of the same size would have produced"></svg>
+      aria-label="Yearly return of the gate exit rule against the range a random basket of the same size would have produced"></svg>
     <div class="stip" id="stratTip"></div>
   </div>
   <div class="sthold" id="stratHold"></div>
