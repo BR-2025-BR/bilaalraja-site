@@ -93,15 +93,12 @@ nav.top a:hover{color:var(--sky-deep)}
 .compare .frame::after{top:calc(50% - 5px);left:0;right:0;height:10px}
 .compare .misted{clip-path:inset(0 calc(100% - var(--pos,55%)) 0 0);z-index:2}
 .compare .scene-img{width:100%;height:100%;object-fit:cover;display:block}
-.compare .misted .scene-img{filter:blur(5px) saturate(.55) brightness(1.06)}
-.compare .fog{position:absolute;inset:0;background:
-   radial-gradient(120% 90% at 30% 20%,rgba(180,198,214,.10),rgba(157,178,198,.62) 90%);}
-.compare .drops{position:absolute;inset:0;opacity:.5;background-image:
-   radial-gradient(2px 2px at 20% 30%,rgba(255,255,255,.9),transparent),
-   radial-gradient(1.5px 1.5px at 60% 60%,rgba(255,255,255,.8),transparent),
-   radial-gradient(2.5px 2.5px at 40% 75%,rgba(255,255,255,.85),transparent),
-   radial-gradient(1.5px 1.5px at 80% 40%,rgba(255,255,255,.8),transparent),
-   radial-gradient(2px 2px at 15% 65%,rgba(255,255,255,.85),transparent)}
+.compare .misted .scene-img{filter:blur(8px) saturate(.32) brightness(1.14) contrast(.9)}
+.compare .fog{position:absolute;inset:0;background:radial-gradient(150% 130% at 30% 12%,rgba(234,239,244,.34),rgba(214,224,231,.68) 62%,rgba(200,212,222,.8) 100%)}
+.compare .fog::before{content:"";position:absolute;inset:0;opacity:.7;background:radial-gradient(55% 42% at 72% 26%,rgba(255,255,255,.55),transparent 62%),radial-gradient(48% 40% at 18% 68%,rgba(255,255,255,.42),transparent 62%),radial-gradient(42% 34% at 88% 82%,rgba(255,255,255,.36),transparent 62%),radial-gradient(38% 30% at 45% 45%,rgba(255,255,255,.30),transparent 62%)}
+.compare .drops{position:absolute;inset:0;opacity:.9;background-repeat:repeat;background-size:58px 58px;background-image:radial-gradient(1.6px 1.6px at 14% 22%,rgba(255,255,255,.95),transparent 55%),radial-gradient(1.1px 1.1px at 62% 38%,rgba(255,255,255,.85),transparent 55%),radial-gradient(2px 2px at 82% 16%,rgba(255,255,255,.95),transparent 55%),radial-gradient(1px 1px at 38% 68%,rgba(255,255,255,.8),transparent 55%),radial-gradient(1.5px 1.5px at 30% 90%,rgba(255,255,255,.9),transparent 55%),radial-gradient(1.1px 1.1px at 90% 72%,rgba(255,255,255,.82),transparent 55%),radial-gradient(1px 1px at 55% 84%,rgba(255,255,255,.78),transparent 55%)}
+.compare .drops::before{content:"";position:absolute;inset:0;opacity:.85;background-repeat:repeat;background-size:127px 127px;background-image:radial-gradient(3.4px 3.4px at 24% 30%,rgba(255,255,255,.98),rgba(255,255,255,.2) 45%,transparent 66%),radial-gradient(2.6px 2.6px at 70% 60%,rgba(255,255,255,.95),transparent 60%),radial-gradient(3px 3px at 52% 12%,rgba(255,255,255,.95),transparent 62%),radial-gradient(2.4px 2.4px at 88% 84%,rgba(255,255,255,.9),transparent 60%)}
+.compare .drops::after{content:"";position:absolute;inset:0;opacity:.55;background:radial-gradient(3px 150px at 22% 55%,rgba(255,255,255,.28),transparent 70%),radial-gradient(2px 110px at 41% 60%,rgba(255,255,255,.22),transparent 72%),radial-gradient(4px 190px at 63% 50%,rgba(255,255,255,.26),transparent 70%),radial-gradient(2px 130px at 78% 62%,rgba(255,255,255,.22),transparent 72%),radial-gradient(3px 160px at 90% 48%,rgba(255,255,255,.24),transparent 70%)}
 .compare .handle{position:absolute;top:0;bottom:0;left:var(--pos,55%);width:2px;
   background:#fff;z-index:6;transform:translateX(-1px);box-shadow:0 0 0 1px rgba(15,39,66,.15)}
 .compare .knob{position:absolute;top:50%;left:var(--pos,55%);width:46px;height:46px;z-index:7;
