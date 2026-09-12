@@ -349,7 +349,7 @@ __MASTHEAD__
   filings and matched to the reported figures.</span>
 </a>
 <a href="/gate-exit/">
-  <span class="t">The Gate Exit Rule</span>
+  <span class="t">This strategy put to the test</span>
   <span class="v">51 formations</span>
   <span class="d">A screen where the criterion that buys a company is the criterion that
   sells it &mdash; held while it keeps passing, dropped the quarter it stops. Every buy and
