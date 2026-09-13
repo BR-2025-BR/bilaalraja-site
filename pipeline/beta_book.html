@@ -250,7 +250,14 @@ render(Q.length-1);
   // axis labels in portrait.
   svg.removeAttribute("preserveAspectRatio");
   wrap.style.touchAction="pan-y";                       // horizontal drag scrubs, vertical scrolls
-  const tip=document.createElement("div"); tip.className="cscrub"; tip.hidden=true; wrap.appendChild(tip);
+  // styles set inline (not via a class) so the tooltip is always positioned and
+  // never falls back to inline document flow if the stylesheet is slow/cached.
+  const tip=document.createElement("div");
+  Object.assign(tip.style,{position:"absolute",display:"none",flexDirection:"column",gap:"1px",
+    background:"var(--raise)",border:"1px solid var(--line)",borderRadius:"6px",padding:"6px 9px",
+    fontFamily:"var(--mono)",fontSize:"11px",color:"var(--ink2)",whiteSpace:"nowrap",
+    pointerEvents:"none",zIndex:"6",boxShadow:"0 6px 18px rgba(0,0,0,.3)"});
+  wrap.appendChild(tip);
   const H=240, P={l:52,r:8,t:10,b:22};
   let W,N,ST,SP,x,y;
   const niceStep=v=>{const e=Math.pow(10,Math.floor(Math.log10(v))),f=v/e;return (f<1.5?1:f<3?2:f<7?5:10)*e;};
@@ -283,14 +290,15 @@ render(Q.length-1);
   let scrub=false;
   const show=cx=>{const i=idxAt(cx);
     blip.style.transition="none"; bl.style.transition="none"; moveBlip(i);
-    tip.hidden=false;
-    tip.innerHTML=`<b>${Q[i].formed.slice(0,7)}</b><span>Book ${money(ST[i])}</span><span>S&amp;P ${money(SP[i])}</span>`;
+    tip.style.display="flex";
+    tip.innerHTML=`<b style="color:var(--s1);font-weight:600">${Q[i].formed.slice(0,7)}</b>`
+      +`<span>Book ${money(ST[i])}</span><span>S&amp;P ${money(SP[i])}</span>`;
     // Percent left is scale-independent; flip the box to the inner side near an
     // edge so it never runs off, without measuring its width.
     const fr=x(i)/W;
     tip.style.top="4px"; tip.style.left=(fr*100)+"%";
     tip.style.transform=fr>0.6?"translate(calc(-100% - 7px),0)":"translate(7px,0)";};
-  const end=()=>{ if(!scrub)return; scrub=false; tip.hidden=true;
+  const end=()=>{ if(!scrub)return; scrub=false; tip.style.display="none";
     blip.style.transition=""; bl.style.transition=""; moveBlip(typeof sl!=="undefined"?+sl.value:N-1);};
   wrap.addEventListener("pointerdown",e=>{scrub=true; try{wrap.setPointerCapture(e.pointerId);}catch(_){} show(e.clientX); e.preventDefault();});
   wrap.addEventListener("pointermove",e=>{if(scrub){show(e.clientX); e.preventDefault();}});
