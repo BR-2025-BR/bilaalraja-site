@@ -298,6 +298,17 @@ canvas{width:100%;height:auto;display:block;border-radius:10px;cursor:crosshair}
   border-bottom:1px solid var(--grid)}
 .sthold td:nth-child(-n+3){text-align:left}
 .sthold tr:last-child td{border-bottom:0}
+/* On a phone the ticker names the row, so drop the rank, company and sector
+   columns and pin the ticker, leaving the figures readable without scrolling. */
+@media(max-width:640px){
+  .sthold table{font-size:11px}
+  .sthold th,.sthold td{padding:5px 7px}
+  .sthold th:nth-child(1),.sthold td:nth-child(1),
+  .sthold th:nth-child(3),.sthold td:nth-child(3),
+  .sthold th:nth-child(4),.sthold td:nth-child(4){display:none}
+  .sthold th:nth-child(2),.sthold td:nth-child(2){position:sticky;left:0;
+    background:var(--bg);z-index:1;box-shadow:6px 0 6px -6px rgba(0,0,0,.5)}
+}
 .stclose{background:none;border:1px solid var(--rule);border-radius:6px;color:var(--ink2);
   cursor:pointer;font:inherit;font-size:11.5px;padding:3px 9px}
 .stip.on{opacity:1}

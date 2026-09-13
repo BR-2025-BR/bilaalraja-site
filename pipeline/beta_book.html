@@ -33,6 +33,18 @@ tbody tr:last-child td{border-bottom:1.5px solid var(--ink)}
 .pos{color:var(--pos)} .neg{color:var(--neg)}
 .win{background:color-mix(in oklab,var(--s1) 9%,transparent)}
 .scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+/* Mobile tables: pin the row's identifier (first column) so the figures never
+   lose their label while scrolling, and on a phone drop the wide text columns
+   the ticker already stands in for, so the key figures fit without scrolling. */
+.scroll td:first-child,.scroll th:first-child{position:sticky;left:0;background:var(--paper);z-index:1}
+.scroll thead th:first-child{z-index:2}
+@media(max-width:640px){
+  table{font-size:.8rem}
+  th,td{padding:6px 8px}
+  .scroll td:first-child,.scroll th:first-child{box-shadow:6px 0 6px -6px rgba(0,0,0,.5)}
+  .holds th:nth-child(2),.holds td:nth-child(2),
+  .holds th:nth-child(3),.holds td:nth-child(3){display:none}
+}
 .ctl{display:flex;gap:12px;align-items:center;flex-wrap:wrap;background:var(--raise);border:1px solid var(--line);border-radius:6px;padding:12px 14px;margin:18px 0 4px}
 select,button{font-family:var(--sans);font-size:.87rem;padding:6px 10px;border-radius:5px;border:1px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer}
 button:hover{border-color:var(--s1)}
@@ -124,7 +136,7 @@ formation is shown. Open the file in a browser to step through all of them.</b><
 </div>
 <div class="kv" id="stats"><span>Formed <b>2026-07-01</b></span><span>Priced to <b>2026-09-04</b></span><span>Held <b>25</b></span><span>Cleared the gates <b>60</b></span><span>Mean name beta <b>0.74</b></span><span>Book <b>£864,354</b> &rarr; <b>£899,141</b></span></div>
 <div class="trades" id="trades"><div class="tbox"><h4>Bought &mdash; 12</h4><span class="tick b">CF</span><span class="tick b">ANIP</span><span class="tick b">GMED</span><span class="tick b">FIVE</span><span class="tick b">FICO</span><span class="tick b">LGND</span><span class="tick b">FSS</span><span class="tick b">HUBS</span><span class="tick b">PNTG</span><span class="tick b">ISRG</span><span class="tick b">GWRE</span><span class="tick b">COCO</span></div><div class="tbox"><h4>Sold &mdash; 12</h4><span class="tick s">ADUS</span><span class="tick s">EQT</span><span class="tick s">FSLR</span><span class="tick s">HL</span><span class="tick s">HRMY</span><span class="tick s">KEQU</span><span class="tick s">NXT</span><span class="tick s">OPXS</span><span class="tick s">PRGS</span><span class="tick s">RDVT</span><span class="tick s">SD</span><span class="tick s">WLDN</span></div></div>
-<div class="scroll"><table>
+<div class="scroll"><table class="holds">
 <thead><tr><th>Ticker</th><th>Company</th><th>Sector</th><th>Score</th><th>Beta</th>
 <th>Growth</th><th>Market cap</th><th id="rethead">Return</th><th>Status</th></tr></thead>
 <tbody id="rows"><tr><td><b>CF</b></td><td style="color:var(--ink2)">CF INDUSTRIES HOLDINGS INC</td><td style="color:var(--ink2)">Materials</td><td class="num">79.6</td><td class="num">-0.74</td><td class="num">21%</td><td class="num">$16.5bn</td><td class="num"><span class="pos">+23.9%</span></td><td><span class="tag new">new</span></td></tr>
