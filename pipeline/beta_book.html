@@ -67,7 +67,11 @@ input[type=range]{flex:1 1 240px;min-width:150px;accent-color:var(--s1)}
  transition:left .22s ease,top .22s ease}
 .blipline{position:absolute;width:1px;background:var(--ink3);opacity:.45;
  transform:translateX(-.5px);pointer-events:none;transition:left .22s ease}
-@media (prefers-reduced-motion:reduce){.blip,.blipline{transition:none}}
+@media (prefers-reduced-motion:reduce){.blip,.blipline{transition:none}
+.cscrub{position:absolute;transform:translate(-50%,0);background:var(--raise);border:1px solid var(--line);
+  border-radius:6px;padding:6px 9px;font-family:var(--mono);font-size:11px;color:var(--ink);white-space:nowrap;
+  pointer-events:none;z-index:6;box-shadow:0 6px 18px rgba(0,0,0,.3);display:flex;flex-direction:column;gap:1px}
+.cscrub b{color:var(--s1);font-weight:600;margin-bottom:1px}.cscrub span{color:var(--ink2)}}
 .ax-line{stroke:var(--line);stroke-width:1}
 .ax-text{fill:var(--ink3);font-size:11px;font-family:var(--mono)}
 .ln-spy{fill:none;stroke:var(--ink3);stroke-width:1.6;stroke-dasharray:5 4}
@@ -239,32 +243,66 @@ document.getElementById("prev").onclick=()=>render(Math.max(0,+sl.value-1));
 document.getElementById("next").onclick=()=>render(Math.min(Q.length-1,+sl.value+1));
 render(Q.length-1);
 (function(){
-  const svg=document.getElementById("chart"),W=1000,H=240,P={l:56,r:10,t:10,b:22};
-  svg.setAttribute("viewBox",`0 0 ${W} ${H}`);
-  const st=Q.map(q=>q.end),sp=Q.map(q=>q.spy),hi=Math.max(...st,...sp),lo=0;
-  const x=i=>P.l+(W-P.l-P.r)*i/(Q.length-1), y=v=>H-P.b-(H-P.t-P.b)*(v-lo)/(hi-lo);
-  const path=a=>a.map((v,i)=>(i?"L":"M")+x(i).toFixed(1)+" "+y(v).toFixed(1)).join(" ");
-  let g="";
-  for(let k=0;k<=4;k++){const v=lo+(hi-lo)*k/4,yy=y(v);
-    g+=`<line class="ax-line" x1="${P.l}" y1="${yy}" x2="${W-P.r}" y2="${yy}"/>`
-      +`<text class="ax-text" x="${P.l-8}" y="${yy+4}" text-anchor="end">£${(v/1000).toFixed(0)}k</text>`;}
-  const ticks=[0,Math.floor(Q.length/3),Math.floor(2*Q.length/3),Q.length-1];
-  ticks.forEach((i,k)=>{const anc=k===0?"start":k===ticks.length-1?"end":"middle";
-    g+=`<text class="ax-text" x="${x(i)}" y="${H-6}" text-anchor="${anc}">${Q[i].formed.slice(0,7)}</text>`;});
-  g+=`<path class="ln-spy" d="${path(sp)}"/><path class="ln-st" d="${path(st)}"/>`;
-  svg.innerHTML=g;
-  // percentages, so the marker tracks the svg however it is stretched
+  const svg=document.getElementById("chart"), wrap=svg.parentElement;
   const blip=document.getElementById("blip"), bl=document.getElementById("blipline");
-  moveBlip=i=>{
-    const px=x(i)/W*100, py=y(st[i])/H*100;
+  // Render at the container's real pixel size (viewBox == element box, 1:1) so
+  // text is never stretched -- the old preserveAspectRatio="none" distorted the
+  // axis labels in portrait.
+  svg.removeAttribute("preserveAspectRatio");
+  wrap.style.touchAction="pan-y";                       // horizontal drag scrubs, vertical scrolls
+  const tip=document.createElement("div"); tip.className="cscrub"; tip.hidden=true; wrap.appendChild(tip);
+  const H=240, P={l:52,r:8,t:10,b:22};
+  let W,N,ST,SP,x,y;
+  const niceStep=v=>{const e=Math.pow(10,Math.floor(Math.log10(v))),f=v/e;return (f<1.5?1:f<3?2:f<7?5:10)*e;};
+  const fmtk=v=>v>=1e6?"£"+(v/1e6).toFixed(v%1e6?1:0)+"m":"£"+Math.round(v/1e3)+"k";
+  moveBlip=i=>{ if(!x)return; i=Math.max(0,Math.min(N-1,i|0));
+    const px=x(i)/W*100, py=y(ST[i])/H*100;
     blip.style.left=px+"%"; blip.style.top=py+"%";
-    bl.style.left=px+"%"; bl.style.top=py+"%";
-    bl.style.height=(100-py-(P.b/H*100))+"%";
-  };
-  moveBlip(+sl.value);
+    bl.style.left=px+"%"; bl.style.top=py+"%"; bl.style.height=(100-py-(P.b/H*100))+"%"; };
+  function render(){
+    W=Math.max(280, wrap.clientWidth||wrap.getBoundingClientRect().width||900);
+    svg.setAttribute("viewBox",`0 0 ${W} ${H}`);
+    ST=Q.map(q=>q.end); SP=Q.map(q=>q.spy); N=Q.length;
+    const dmax=Math.max(...ST,...SP), step=niceStep(dmax/4), hi=dmax*1.04;
+    x=i=>P.l+(W-P.l-P.r)*i/(N-1); y=v=>H-P.b-(H-P.t-P.b)*v/hi;
+    const path=a=>a.map((v,i)=>(i?"L":"M")+x(i).toFixed(1)+" "+y(v).toFixed(1)).join(" ");
+    let g="";
+    for(let v=0;v<=dmax;v+=step){const yy=y(v);
+      g+=`<line class="ax-line" x1="${P.l}" y1="${yy.toFixed(1)}" x2="${(W-P.r).toFixed(1)}" y2="${yy.toFixed(1)}"/>`
+        +`<text class="ax-text" x="${P.l-8}" y="${(yy+4).toFixed(1)}" text-anchor="end">${fmtk(v)}</text>`;}
+    const ti=[0,Math.round((N-1)/3),Math.round(2*(N-1)/3),N-1];
+    ti.forEach((i,k)=>{const anc=k===0?"start":k===ti.length-1?"end":"middle";
+      g+=`<text class="ax-text" x="${x(i).toFixed(1)}" y="${H-6}" text-anchor="${anc}">${Q[i].formed.slice(0,7)}</text>`;});
+    g+=`<path class="ln-spy" d="${path(SP)}"/><path class="ln-st" d="${path(ST)}"/>`;
+    svg.innerHTML=g;
+    moveBlip(typeof sl!=="undefined"?+sl.value:N-1);
+  }
+  const idxAt=cx=>{const r=svg.getBoundingClientRect();
+    const rel=(cx-r.left)/r.width*W, frac=(rel-P.l)/(W-P.l-P.r);
+    return Math.max(0,Math.min(N-1,Math.round(frac*(N-1))));};
+  let scrub=false;
+  const show=cx=>{const i=idxAt(cx);
+    blip.style.transition="none"; bl.style.transition="none"; moveBlip(i);
+    tip.hidden=false;
+    tip.innerHTML=`<b>${Q[i].formed.slice(0,7)}</b><span>Book ${money(ST[i])}</span><span>S&amp;P ${money(SP[i])}</span>`;
+    // Percent left is scale-independent; flip the box to the inner side near an
+    // edge so it never runs off, without measuring its width.
+    const fr=x(i)/W;
+    tip.style.top="4px"; tip.style.left=(fr*100)+"%";
+    tip.style.transform=fr>0.6?"translate(calc(-100% - 7px),0)":"translate(7px,0)";};
+  const end=()=>{ if(!scrub)return; scrub=false; tip.hidden=true;
+    blip.style.transition=""; bl.style.transition=""; moveBlip(typeof sl!=="undefined"?+sl.value:N-1);};
+  wrap.addEventListener("pointerdown",e=>{scrub=true; try{wrap.setPointerCapture(e.pointerId);}catch(_){} show(e.clientX); e.preventDefault();});
+  wrap.addEventListener("pointermove",e=>{if(scrub){show(e.clientX); e.preventDefault();}});
+  wrap.addEventListener("pointerup",end); wrap.addEventListener("pointercancel",end);
+  render();
+  // ResizeObserver redraws once the element actually has a width (covers late
+  // layout and orientation changes); clientWidth can read 0 before first layout.
+  if(window.ResizeObserver){new ResizeObserver(()=>render()).observe(wrap);}
+  else{let rt;addEventListener("resize",()=>{clearTimeout(rt);rt=setTimeout(render,150);});}
   document.getElementById("cstats").innerHTML=
-    `<span style="color:var(--s1)">&#9644; Book <b>${money(st[st.length-1])}</b></span>`
-   +`<span>&#9644; S&amp;P 500 <b>${money(sp[sp.length-1])}</b></span>`
+    `<span style="color:var(--s1)">&#9644; Book <b>${money(Q[Q.length-1].end)}</b></span>`
+   +`<span>&#9644; S&amp;P 500 <b>${money(Q[Q.length-1].spy)}</b></span>`
    +`<span>${Q.length} formations, ${Q[0].formed} to ${Q[Q.length-1].formed}</span>`;
 })();
 </script></body></html>
