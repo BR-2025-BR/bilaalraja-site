@@ -54,3 +54,5 @@ prices/
 research/signal.parquet
 research/panel_returns.parquet
 research/mcap.parquet
+research/factor_panel.parquet
+research/factor_spy_q.json
