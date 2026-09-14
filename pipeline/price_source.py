@@ -201,6 +201,14 @@ def latest(tickers):
 
 
 if __name__ == "__main__":
+    # Batch mode: read tickers from a file, write {ticker:{price,date}} JSON to
+    # another, and exit -- so a caller can fetch one batch per fresh process and
+    # reclaim all of yfinance's accumulated memory between batches.
+    if len(sys.argv) >= 4 and sys.argv[1] == "--batch":
+        import json
+        tks = [ln.strip() for ln in open(sys.argv[2]) if ln.strip()]
+        json.dump(latest(tks), open(sys.argv[3], "w"))
+        sys.exit(0)
     tk = sys.argv[1:] or ["AAPL", "MSFT", "NVDA", "JPM", "XOM"]
     print(f"  PRICE_SOURCE={SOURCE} -> {resolve()}")
     for t, v in sorted(latest(tk).items()):

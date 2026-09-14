@@ -126,6 +126,32 @@ def fetch_facts(ciks):
 DELISTED_REMOVED = 0          # set by fetch_prices, read by gates
 
 
+def _fetch_yf_batched(tickers, batch=800):
+    """Fetch yfinance prices one batch per fresh subprocess, so memory is
+    released between batches and never spikes on a loaded machine."""
+    import tempfile
+    got, n = {}, len(tickers)
+    for i in range(0, n, batch):
+        part = tickers[i:i + batch]
+        tf = tempfile.NamedTemporaryFile("w", suffix=".txt", delete=False)
+        tf.write("\n".join(part)); tf.close()
+        tout = tf.name + ".json"
+        r = subprocess.run([PY, str(HERE / "price_source.py"), "--batch", tf.name, tout],
+                           cwd=HERE, capture_output=True, text=True)
+        if r.returncode == 0 and Path(tout).exists():
+            got.update(json.load(open(tout)))
+        else:
+            log(f"  WARNING price batch {i//batch + 1} failed (rc {r.returncode}): "
+                f"{((r.stderr or r.stdout) or '')[-200:]}")
+        for p in (tf.name, tout):
+            try:
+                Path(p).unlink()
+            except OSError:
+                pass
+        log(f"    {min(i + batch, n)}/{n} priced={len(got)}", flush=True)
+    return got
+
+
 def fetch_prices(tickers, snap):
     """Merge into the existing snapshot; never replace it wholesale.
 
@@ -139,8 +165,19 @@ def fetch_prices(tickers, snap):
     variable, not a rewrite.
     """
     import price_source
-    log(f"  source: {price_source.resolve()}")
-    got = price_source.latest(tickers)
+    src = price_source.resolve()
+    log(f"  source: {src}")
+    want = list(dict.fromkeys(tickers))
+    if src == "yfinance":
+        # yfinance/pandas accumulate memory across a long chunked download and
+        # OOM near the end on a loaded machine. Fetch each batch in a FRESH
+        # subprocess so all of that memory is released between batches; peak
+        # stays bounded to one batch regardless of what else is running. (This
+        # path sets no LAST_RAW, so no session archiving -- unchanged from the
+        # original yfinance behaviour.)
+        got = _fetch_yf_batched(want)
+    else:
+        got = price_source.latest(want)
 
     # Fold the session into the permanent store before anything else touches it.
     # The snapshot below is a CURRENT view and is overwritten every build; this
