@@ -148,7 +148,7 @@ def _fetch_yf_batched(tickers, batch=800):
                 Path(p).unlink()
             except OSError:
                 pass
-        log(f"    {min(i + batch, n)}/{n} priced={len(got)}", flush=True)
+        log(f"    {min(i + batch, n)}/{n} priced={len(got)}")
     return got
 
 
