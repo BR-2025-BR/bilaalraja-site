@@ -245,10 +245,12 @@ render(Q.length-1);
 (function(){
   const svg=document.getElementById("chart"), wrap=svg.parentElement;
   const blip=document.getElementById("blip"), bl=document.getElementById("blipline");
-  // Render at the container's real pixel size (viewBox == element box, 1:1) so
-  // text is never stretched -- the old preserveAspectRatio="none" distorted the
-  // axis labels in portrait.
-  svg.removeAttribute("preserveAspectRatio");
+  // viewBox tracks the container width (via render below), so "none" scales 1:1
+  // in the settled state -- text stays crisp -- while GUARANTEEING the chart
+  // always fills its box and the blip/crosshair stay aligned even if a re-render
+  // lags a rotation. (With the default "meet", a stale width left the chart
+  // drawn narrow-and-centred in landscape with the blip detached to the right.)
+  svg.setAttribute("preserveAspectRatio", "none");
   wrap.style.touchAction="pan-y";                       // horizontal drag scrubs, vertical scrolls
   // styles set inline (not via a class) so the tooltip is always positioned and
   // never falls back to inline document flow if the stylesheet is slow/cached.
@@ -307,7 +309,10 @@ render(Q.length-1);
   // ResizeObserver redraws once the element actually has a width (covers late
   // layout and orientation changes); clientWidth can read 0 before first layout.
   if(window.ResizeObserver){new ResizeObserver(()=>render()).observe(wrap);}
-  else{let rt;addEventListener("resize",()=>{clearTimeout(rt);rt=setTimeout(render,150);});}
+  let rt;addEventListener("resize",()=>{clearTimeout(rt);rt=setTimeout(render,150);});
+  // iOS reports the new width only after the rotation settles, so re-render on a
+  // delay too -- keeps the viewBox (and so the label scaling) matched to landscape.
+  addEventListener("orientationchange",()=>setTimeout(render,300));
   document.getElementById("cstats").innerHTML=
     `<span style="color:var(--s1)">&#9644; Book <b>${money(Q[Q.length-1].end)}</b></span>`
    +`<span>&#9644; S&amp;P 500 <b>${money(Q[Q.length-1].spy)}</b></span>`
