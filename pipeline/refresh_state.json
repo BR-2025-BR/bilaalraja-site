@@ -1,11 +1,11 @@
 {
  "split_mismatch": [],
  "price_mismatch": 0,
- "n": 2580,
- "total_mcap": 80340.1186107144,
- "floor": 0.1255572043,
+ "n": 2579,
+ "total_mcap": 79264.223689078,
+ "floor": 0.12317849850000001,
  "priced": 6795,
- "price_date": "2026-09-11",
- "built": "2026-09-12",
+ "price_date": "2026-09-16",
+ "built": "2026-09-16",
  "unread_days": []
 }

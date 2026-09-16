@@ -46,5 +46,13 @@
   "latest_filing": "2026-09-10",
   "total_mcap_bn": 76312.4,
   "bytes": 753399
+ },
+ {
+  "date": "2026-09-16",
+  "built": "2026-09-16",
+  "n": 2579,
+  "latest_filing": "2026-09-14",
+  "total_mcap_bn": 75269.1,
+  "bytes": 748994
  }
 ]
