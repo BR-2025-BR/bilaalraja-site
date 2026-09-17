@@ -27,6 +27,7 @@ PAGES = [                      # source file, url path, human title
     # with the beta cap kept as a footnote. The old gate_exit.html essay is
     # retired, and /beta-capped/ redirects here.
     (SRC / "beta_book.html",     "gate-exit",   "The Gate Exit Rule"),
+    (SRC / "rates.html",         "rates",       "US Treasury Yields"),
 ]
 
 # Any Claude artifact link becomes a local path, so the site stands alone.
@@ -355,6 +356,12 @@ __MASTHEAD__
   sells it &mdash; held while it keeps passing, dropped the quarter it stops. Every buy and
   sell across 51 quarterly formations since 2013.</span>
 </a>
+<a href="/rates/">
+  <span class="t">US Treasury yields &amp; the Fed</span>
+  <span class="v">rates</span>
+  <span class="d">The Fed funds rate against 2, 10 and 30-year Treasury yields since 2015 &mdash;
+  an interactive chart you can drag to read any day, with the 10y&ndash;2y spread.</span>
+</a>
 <a href="/methodology/">
   <span class="t">How this was built</span>
   <span class="v">method</span>
@@ -393,6 +400,10 @@ DESCRIPTIONS = {
    "A quality screen where the criterion that buys a company is the criterion "
    "that sells it. Six gates, 25 names, held while they keep passing. Every buy "
    "and sell across 51 quarterly formations, December 2013 to July 2026."),
+ "rates": ("US Treasury Yields & the Fed | Bilaal Raja",
+   "The effective federal funds rate against 2, 10 and 30-year US Treasury yields, "
+   "daily since 2015 — an interactive chart with the 10y-2y spread. Data from the "
+   "US Treasury and the New York Fed."),
 }
 
 
@@ -871,6 +882,15 @@ def main():
         if r.returncode:
             sys.stderr.write(r.stderr)
             sys.exit("build failed — nothing staged, site/ left untouched")
+        # regenerate the rates page from the latest history (offline; the network
+        # fetch lives in refresh.py). Non-fatal if the data file is absent.
+        if (SRC / "rates_history.json").exists():
+            print("regenerating rates page ...")
+            rr = subprocess.run([PY, str(SRC / "make_rates.py")],
+                                capture_output=True, text=True, cwd=SRC)
+            sys.stdout.write(rr.stdout)
+            if rr.returncode:
+                sys.stderr.write(rr.stderr)
 
     # One id per published state, taken from the sources before staging so it is
     # not a hash of a file that ends up containing it. Everything that has to
@@ -984,7 +1004,8 @@ def main():
               if (SITE / "c").exists() else []
     write_sitemap(SITE, DOMAIN,
                   [("", "1.0"), ("russell3000", "0.9"), ("commentary", "0.8"),
-                   ("methodology", "0.85"), ("learn", "0.85"), ("gate-exit", "0.85")]
+                   ("methodology", "0.85"), ("learn", "0.85"), ("gate-exit", "0.85"),
+                   ("rates", "0.8")]
                   + [(f"c/{t}", "0.6") for t in tickers],
                   meta["built"])
     n_urls = (SITE / "sitemap.xml").read_text().count("<url>")

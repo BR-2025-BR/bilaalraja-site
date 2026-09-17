@@ -473,6 +473,7 @@ def main():
 
     step("8. Market context and insiders")
     log("  " + run("fetch_rates.py").strip().splitlines()[-1])
+    log("  " + run("fetch_rates_history.py").strip().splitlines()[-1])   # history for the rates chart
     if a.prices_only:
         log("  prices-only: keeping the existing Form 4 record")
     else:
