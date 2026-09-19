@@ -241,8 +241,14 @@ __FONTS__
 __TOKENS__
 .wrap{{position:relative;z-index:1}}
 @supports (corner-shape: squircle){{.card{{corner-shape:squircle}}}}
-body{{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;
- line-height:1.55;-webkit-font-smoothing:antialiased}}
+body{{color:var(--ink);font-family:var(--serif);font-size:16px;
+ line-height:1.6;-webkit-font-smoothing:antialiased;
+ background:
+   radial-gradient(72vw 72vw at 6% -12%, color-mix(in srgb,var(--ember) 13%,transparent), transparent 60%),
+   radial-gradient(62vw 62vw at 102% 6%, color-mix(in srgb,var(--pos) 11%,transparent), transparent 60%),
+   var(--bg);
+ background-attachment:fixed}}
+.num,.mono{{font-family:var(--mono)}}
 .wrap{{max-width:760px;margin:0 auto;padding:64px 22px 80px}}
 h1{{font-family:var(--serif);font-size:34px;font-weight:600;letter-spacing:-.021em;line-height:1.08;margin-bottom:6px;text-wrap:balance}}
 /* Identity band. Tighter than the old hero: the masthead already carries the
@@ -563,8 +569,14 @@ METHODOLOGY = """<!doctype html>
 __FONTS__
 <style>
 __TOKENS__
-body{{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;
- line-height:1.68;-webkit-font-smoothing:antialiased}}
+body{{color:var(--ink);font-family:var(--serif);font-size:16px;
+ line-height:1.68;-webkit-font-smoothing:antialiased;
+ background:
+   radial-gradient(72vw 72vw at 6% -12%, color-mix(in srgb,var(--ember) 13%,transparent), transparent 60%),
+   radial-gradient(62vw 62vw at 102% 6%, color-mix(in srgb,var(--pos) 11%,transparent), transparent 60%),
+   var(--bg);
+ background-attachment:fixed}}
+.num,.mono{{font-family:var(--mono)}}
 .wrap{{max-width:760px;margin:0 auto;padding:56px 22px 90px}}
 a{{color:var(--s1)}}
 .back{{font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-decoration:none;
@@ -580,12 +592,16 @@ p strong,li strong{{color:var(--ink);font-weight:600}}
 ul{{margin:0 0 16px 20px}} li{{margin-bottom:9px;color:var(--ink2)}}
 code{{font-family:var(--mono);font-size:.88em;background:var(--panel);
  padding:1px 5px;border-radius:5px;color:var(--ink)}}
-.note{{background:var(--panel);border-left:3px solid var(--s1);border-radius:12px;
- padding:15px 18px;margin:22px 0}}
+.note{{background:var(--glass);border:1px solid var(--glass-brd);border-left:3px solid var(--s1);
+ border-radius:12px;padding:15px 18px;margin:22px 0;
+ -webkit-backdrop-filter:blur(9px) saturate(150%);backdrop-filter:blur(9px) saturate(150%);
+ box-shadow:0 1px 0 var(--glass-gloss) inset}}
 .note p:last-child{{margin-bottom:0}}
 ol.defects{{list-style:none;counter-reset:d;margin:0;padding:0}}
-ol.defects li{{counter-increment:d;background:var(--panel);border:1px solid var(--rule2);
- border-radius:14px;padding:16px 18px;margin-bottom:10px}}
+ol.defects li{{counter-increment:d;background:var(--glass);border:1px solid var(--glass-brd);
+ border-radius:14px;padding:16px 18px;margin-bottom:10px;
+ -webkit-backdrop-filter:blur(9px) saturate(150%);backdrop-filter:blur(9px) saturate(150%);
+ box-shadow:0 1px 0 var(--glass-gloss) inset}}
 ol.defects li::before{{content:counter(d,decimal-leading-zero);font-family:var(--mono);
  font-size:11px;color:var(--s1);display:block;margin-bottom:5px;letter-spacing:.08em}}
 ol.defects b{{display:block;color:var(--ink);font-size:15.5px;margin-bottom:5px}}
@@ -747,7 +763,12 @@ NOT_FOUND = """<!doctype html>
 __FONTS__
 <style>
 __TOKENS__
-body{{background:var(--bg);color:var(--ink);font-family:var(--sans);
+body{{color:var(--ink);font-family:var(--serif);
+ background:
+   radial-gradient(72vw 72vw at 6% -12%, color-mix(in srgb,var(--ember) 14%,transparent), transparent 60%),
+   radial-gradient(62vw 62vw at 102% 6%, color-mix(in srgb,var(--pos) 12%,transparent), transparent 60%),
+   var(--bg);
+ background-attachment:fixed;
  min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}}
 .c{{max-width:38ch}}
 h1{{font-family:var(--serif);font-size:30px;font-weight:600;letter-spacing:-.02em;margin-bottom:9px}}

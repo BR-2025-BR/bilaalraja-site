@@ -48,9 +48,18 @@ TOKENS = """
   --bg:#12100E; --panel:#1C1917; --s1:#E0762F;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--paper);color:var(--ink);font-family:var(--sans);
-  font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;
-  font-feature-settings:"kern" 1}
+body{color:var(--ink);font-family:var(--serif);
+  font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;
+  font-feature-settings:"kern" 1;
+  /* ambient wash: a faint bloom the frosted glass has depth to sit over */
+  background:
+    radial-gradient(72vw 72vw at 6% -12%, color-mix(in srgb,var(--ember) 13%,transparent), transparent 60%),
+    radial-gradient(62vw 62vw at 102% 6%, color-mix(in srgb,var(--pos) 11%,transparent), transparent 60%),
+    radial-gradient(58vw 58vw at 50% 116%, color-mix(in srgb,var(--ink3) 12%,transparent), transparent 62%),
+    var(--paper);
+  background-attachment:fixed}
+/* keep the data crisp; reading text takes the serif */
+.num,.mono,code,kbd{font-family:var(--mono)}
 a{color:inherit}
 .num,.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
 """
@@ -153,8 +162,12 @@ def masthead(current=""):
 # afternoon leaves no empty furniture on the page.
 
 TICKER_CSS = """
-.tkr{border-bottom:1px solid var(--rule);overflow:hidden;display:none;
-  margin-bottom:22px;position:relative}
+.tkr{overflow:hidden;display:none;margin-bottom:22px;position:relative;
+  border:1px solid var(--glass-brd);border-radius:12px;padding:10px 14px 4px;background:var(--glass);
+  -webkit-backdrop-filter:blur(10px) saturate(160%);backdrop-filter:blur(10px) saturate(160%);
+  box-shadow:0 1px 0 var(--glass-gloss) inset}
+.lg-refract .tkr{-webkit-backdrop-filter:url(#lg-refract) blur(3px) saturate(150%);
+  backdrop-filter:url(#lg-refract) blur(3px) saturate(150%)}
 .tkr.on{display:block}
 .tkr-i{font-family:var(--mono);font-size:10px;letter-spacing:.13em;
   text-transform:uppercase;color:var(--ink3);padding:0 0 6px}
@@ -382,9 +395,11 @@ NAV_JS = """<script>
     ".dscrim{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;"+
     "justify-content:center;padding:20px;background:rgba(10,8,6,.62);"+
     "-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}"+
-    ".dsc{background:var(--paper,var(--bg,#fff));color:var(--ink,#111);border:1px solid var(--rule,#ddd);"+
-    "border-radius:13px;max-width:520px;width:100%;max-height:88vh;overflow:auto;"+
-    "padding:24px 26px;box-shadow:0 18px 60px rgba(0,0,0,.35)}"+
+    ".dsc{background:var(--glass,var(--paper,#fff));color:var(--ink,#111);"+
+    "border:1px solid var(--glass-brd,var(--rule,#ddd));"+
+    "-webkit-backdrop-filter:blur(20px) saturate(180%);backdrop-filter:blur(20px) saturate(180%);"+
+    "border-radius:16px;max-width:520px;width:100%;max-height:88vh;overflow:auto;"+
+    "padding:24px 26px;box-shadow:0 1px 0 var(--glass-gloss) inset,0 18px 60px rgba(0,0,0,.4)}"+
     ".dsc h2{font-family:var(--serif);font-size:23px;line-height:1.2;margin-bottom:10px;"+
     "font-weight:600;text-wrap:balance}"+
     ".dsc p{color:var(--ink2,#444);font-size:14px;line-height:1.6;margin-bottom:12px}"+
@@ -464,8 +479,10 @@ NAV_JS = """<script>
 # where it is actually possible.
 
 A2HS_CSS = """
-.a2hs{display:none;align-items:flex-start;gap:11px;margin:0 0 18px;padding:12px 13px;
-  background:var(--raise);border:1px solid var(--rule);border-radius:9px;
+.a2hs{display:none;align-items:flex-start;gap:11px;margin:0 0 18px;padding:12px 14px;
+  background:var(--glass);border:1px solid var(--glass-brd);border-radius:12px;
+  -webkit-backdrop-filter:blur(10px) saturate(160%);backdrop-filter:blur(10px) saturate(160%);
+  box-shadow:0 1px 0 var(--glass-gloss) inset;
   font-size:13.5px;line-height:1.45;color:var(--ink2)}
 .a2hs.on{display:flex}
 .a2hs svg{flex:0 0 auto;width:19px;height:19px;color:var(--ember);margin-top:1px}

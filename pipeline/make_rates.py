@@ -47,9 +47,10 @@ CHART_JS = r"""
   let W,x,y,hi;
   const tip=document.createElement("div");
   Object.assign(tip.style,{position:"absolute",display:"none",flexDirection:"column",gap:"2px",
-    background:"var(--raise)",border:"1px solid var(--line)",borderRadius:"6px",padding:"7px 10px",
+    background:"var(--glass)",border:"1px solid var(--glass-brd)",borderRadius:"9px",padding:"7px 10px",
+    webkitBackdropFilter:"blur(12px) saturate(170%)",backdropFilter:"blur(12px) saturate(170%)",
     fontFamily:"var(--mono)",fontSize:"11px",color:"var(--ink2)",whiteSpace:"nowrap",
-    pointerEvents:"none",zIndex:"6",boxShadow:"0 6px 18px rgba(0,0,0,.3)"});
+    pointerEvents:"none",zIndex:"6",boxShadow:"0 8px 22px -6px rgba(0,0,0,.28),0 1px 0 var(--glass-gloss) inset"});
   wrap.appendChild(tip);
   const vline=document.createElement("div"); vline.className="rvline"; wrap.appendChild(vline);
   const fmt=v=>v==null?"—":v.toFixed(2)+"%";

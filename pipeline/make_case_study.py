@@ -160,7 +160,9 @@ h2 .no{font-family:var(--mono);font-size:12px;font-weight:500;color:var(--ember)
   letter-spacing:.1em;display:block;margin-bottom:9px}
 p{max-width:68ch;margin-top:13px;color:var(--ink2)}
 p strong{color:var(--ink);font-weight:600}
-.stmt{margin-top:22px;border:1px solid var(--rule);border-radius:6px;overflow:hidden}
+.stmt{margin-top:22px;border:1px solid var(--glass-brd);border-radius:12px;overflow:hidden;
+  background:var(--glass);-webkit-backdrop-filter:blur(8px) saturate(150%);backdrop-filter:blur(8px) saturate(150%);
+  box-shadow:0 1px 0 var(--glass-gloss) inset}
 .sthead{display:flex;justify-content:space-between;align-items:baseline;
   padding:12px 16px;background:var(--raise);border-bottom:1px solid var(--rule)}
 .sthead h3{font-family:var(--sans);font-size:14px;font-weight:600;letter-spacing:-.005em}
@@ -183,7 +185,9 @@ p strong{color:var(--ink);font-weight:600}
 .tie b{color:var(--ember);font-weight:500}
 .rgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));
   gap:14px;margin-top:22px}
-.rc{border:1px solid var(--rule);border-radius:6px;padding:14px 15px}
+.rc{border:1px solid var(--glass-brd);border-radius:12px;padding:14px 15px;
+  background:var(--glass);-webkit-backdrop-filter:blur(8px) saturate(150%);backdrop-filter:blur(8px) saturate(150%);
+  box-shadow:0 1px 0 var(--glass-gloss) inset}
 .rk{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;
   text-transform:uppercase;color:var(--ink3)}
 .rv{font-family:var(--mono);font-size:25px;font-weight:500;margin:5px 0 7px;

@@ -52,8 +52,9 @@ h2{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.14em;
   text-transform:uppercase;color:var(--ink3);margin:34px 0 11px;
   padding-bottom:7px;border-bottom:1px solid var(--rule)}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));
-  border:1px solid var(--rule);border-radius:5px;overflow:hidden;
-  background:var(--paper)}
+  border:1px solid var(--glass-brd);border-radius:12px;overflow:hidden;
+  background:var(--glass);-webkit-backdrop-filter:blur(8px) saturate(150%);backdrop-filter:blur(8px) saturate(150%);
+  box-shadow:0 1px 0 var(--glass-gloss) inset}
 /* separators drawn as shadows, not as a background behind 1px gaps: a row that
    does not divide evenly would otherwise leave a block of rule colour hanging */
 .cell{padding:13px 15px;box-shadow:1px 0 0 var(--rule),0 1px 0 var(--rule)}
@@ -63,8 +64,10 @@ h2{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.14em;
   font-variant-numeric:tabular-nums;letter-spacing:-.015em}
 .v.pos{color:var(--pos)} .v.neg{color:var(--neg)}
 .note{font-size:13.5px;color:var(--ink2);margin-top:11px;max-width:70ch}
-blockquote{background:var(--raise);border-left:2px solid var(--ember);
-  padding:17px 19px;border-radius:0 4px 4px 0;margin-top:5px;
+blockquote{background:var(--glass);border:1px solid var(--glass-brd);border-left:2px solid var(--ember);
+  -webkit-backdrop-filter:blur(8px) saturate(150%);backdrop-filter:blur(8px) saturate(150%);
+  box-shadow:0 1px 0 var(--glass-gloss) inset;
+  padding:17px 19px;border-radius:0 10px 10px 0;margin-top:5px;
   font-family:var(--serif);font-size:16px;line-height:1.6;color:var(--ink2)}
 blockquote cite{display:block;margin-top:12px;font-family:var(--mono);
   font-size:11px;letter-spacing:.03em;color:var(--ink3);font-style:normal}
