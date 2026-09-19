@@ -78,6 +78,12 @@ html[data-nav="traverse"]::view-transition-old(root){animation-name:vt-out-right
 .mast::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
   border-radius:inherit;background:linear-gradient(135deg,var(--glass-gloss) 0%,transparent 46%)}
 @media (min-width:641px){.mast{position:sticky;top:8px;z-index:50}}
+/* Chromium-only refraction: default stays plain glass; the .lg-refract class is
+   added by feature-detection (see REFRACT_DEFS) only where SVG filters work in
+   backdrop-filter. Safari / iOS / Firefox never get the class, so they keep the
+   blur and nothing breaks. */
+.lg-refract .mast{-webkit-backdrop-filter:url(#lg-refract) blur(3px) saturate(160%);
+  backdrop-filter:url(#lg-refract) blur(3px) saturate(160%)}
 .mast .wm{font-family:var(--serif);font-size:20px;font-weight:600;
   letter-spacing:-.014em;text-decoration:none;line-height:1;color:var(--ink)}
 .mast .wm i{font-style:normal;color:var(--ember)}

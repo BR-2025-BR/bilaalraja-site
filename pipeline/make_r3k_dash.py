@@ -220,6 +220,10 @@ header::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:non
 @media (hover:hover) and (prefers-reduced-motion:no-preference){header:hover::after{opacity:1}}
 /* the masthead is the site-wide floating nav now, so the hero stays a static
    frosted title card -- two sticky glass bars would collide at the top. */
+/* Chromium-only refraction enhancement (progressive; Safari keeps the blur). */
+.lg-refract header,.lg-refract .tip,.lg-refract .stip{
+  -webkit-backdrop-filter:url(#lg-refract) blur(3px) saturate(160%);
+  backdrop-filter:url(#lg-refract) blur(3px) saturate(160%)}
 h1{font-family:var(--serif);font-size:clamp(24px,4.4vw,36px);letter-spacing:-.021em;
   line-height:1.06;font-weight:600;text-wrap:balance}
 .sub{color:var(--ink2);font-size:14px;margin-top:4px;max-width:62ch}

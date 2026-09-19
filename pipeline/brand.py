@@ -75,6 +75,12 @@ MASTHEAD_CSS = """
 .mast::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
   border-radius:inherit;background:linear-gradient(135deg,var(--glass-gloss) 0%,transparent 46%)}
 @media (min-width:641px){.mast{position:sticky;top:8px;z-index:50}}
+/* Chromium-only refraction: default stays plain glass; the .lg-refract class is
+   added by feature-detection (see REFRACT_DEFS) only where SVG filters work in
+   backdrop-filter. Safari / iOS / Firefox never get the class, so they keep the
+   blur and nothing breaks. */
+.lg-refract .mast{-webkit-backdrop-filter:url(#lg-refract) blur(3px) saturate(160%);
+  backdrop-filter:url(#lg-refract) blur(3px) saturate(160%)}
 .mast .wm{font-family:var(--serif);font-size:20px;font-weight:600;
   letter-spacing:-.014em;text-decoration:none;line-height:1;color:var(--ink)}
 .mast .wm i{font-style:normal;color:var(--ember)}
@@ -94,6 +100,34 @@ MASTHEAD_CSS = """
 """
 
 
+# The refraction filter + a conservative feature-detect, shipped with the
+# masthead so it lands on every page that shows glass. The displacement map is
+# an edge-neutral R/G gradient (flat centre, ramps near the borders) so the
+# backdrop bends like a lens only at the panel's edges. scale is tunable.
+REFRACT_DEFS = (
+  '<svg width="0" height="0" aria-hidden="true" style="position:absolute">'
+  '<filter id="lg-refract" x="-20%" y="-20%" width="140%" height="140%" '
+  'color-interpolation-filters="sRGB">'
+  '<feImage preserveAspectRatio="none" result="map" href="data:image/svg+xml,'
+  "<svg xmlns='http://www.w3.org/2000/svg' width='320' height='120'><defs>"
+  "<linearGradient id='r' x1='0' y1='0' x2='1' y2='0'>"
+  "<stop offset='0%25' stop-color='%23ff0000'/><stop offset='33%25' stop-color='%23800000'/>"
+  "<stop offset='67%25' stop-color='%23800000'/><stop offset='100%25' stop-color='%23000000'/>"
+  "</linearGradient><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'>"
+  "<stop offset='0%25' stop-color='%2300ff00'/><stop offset='33%25' stop-color='%23008000'/>"
+  "<stop offset='67%25' stop-color='%23008000'/><stop offset='100%25' stop-color='%23000000'/>"
+  "</linearGradient></defs><rect width='100%25' height='100%25' fill='%23000000'/>"
+  "<rect width='100%25' height='100%25' fill='url(%23r)'/>"
+  "<rect width='100%25' height='100%25' fill='url(%23g)' style='mix-blend-mode:screen'/></svg>"
+  '"/><feDisplacementMap in="SourceGraphic" in2="map" scale="26" '
+  'xChannelSelector="R" yChannelSelector="G"/></filter></svg>'
+  '<script>(function(){try{var u=navigator.userAgent;'
+  'var ios=/iPhone|iPad|iPod|CriOS|FxiOS|EdgiOS/i.test(u);'
+  'var cr=/Chrome|Chromium|Edg\\//.test(u)&&!ios;'
+  'if(cr)document.documentElement.classList.add("lg-refract");}catch(e){}})();</script>'
+)
+
+
 def masthead(current=""):
     """current: '', 'russell3000', 'commentary' or 'methodology'."""
     # Trailing slashes are canonical. Cloudflare 308s the bare path, and a
@@ -108,7 +142,8 @@ def masthead(current=""):
     nav = "".join(
         '<a href="%s"%s>%s</a>' % (href, CUR if key == current else "", label)
         for href, key, label in items)
-    return (f'<header class="mast"><a class="wm" href="/">Bilaal<i>.</i>Raja</a>'
+    return (REFRACT_DEFS
+            + f'<header class="mast"><a class="wm" href="/">Bilaal<i>.</i>Raja</a>'
             f'<nav>{nav}</nav></header>')
 
 
