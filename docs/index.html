@@ -131,8 +131,23 @@ html[data-nav="traverse"]::view-transition-old(root){animation-name:vt-out-right
   ::view-transition-new(root){animation:none!important}
 }
 
-.mast{display:flex;align-items:baseline;justify-content:space-between;gap:16px;
-  padding-bottom:13px;border-bottom:1.5px solid var(--ink);margin-bottom:26px}
+/* Liquid-glass tokens, bundled with the masthead so every page that shows it
+   resolves them regardless of its own palette block. */
+:root{--glass:rgba(251,250,247,.72);--glass-brd:rgba(20,17,14,.13);
+  --glass-gloss:rgba(255,255,255,.60);--glass-glare:rgba(180,83,30,.16)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --glass:rgba(18,16,14,.58);--glass-brd:rgba(245,242,236,.14);
+  --glass-gloss:rgba(255,255,255,.08);--glass-glare:rgba(224,118,47,.20)}}
+:root[data-theme="dark"]{--glass:rgba(18,16,14,.58);--glass-brd:rgba(245,242,236,.14);
+  --glass-gloss:rgba(255,255,255,.08);--glass-glare:rgba(224,118,47,.20)}
+.mast{position:relative;isolation:isolate;display:flex;align-items:center;
+  justify-content:space-between;gap:16px;padding:10px 16px;margin-bottom:26px;
+  border-radius:14px;border:1px solid var(--glass-brd);background:var(--glass);
+  -webkit-backdrop-filter:blur(16px) saturate(180%);backdrop-filter:blur(16px) saturate(180%);
+  box-shadow:0 1px 0 var(--glass-gloss) inset,0 8px 26px -14px rgba(0,0,0,.40)}
+.mast::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  border-radius:inherit;background:linear-gradient(135deg,var(--glass-gloss) 0%,transparent 46%)}
+@media (min-width:641px){.mast{position:sticky;top:8px;z-index:50}}
 .mast .wm{font-family:var(--serif);font-size:20px;font-weight:600;
   letter-spacing:-.014em;text-decoration:none;line-height:1;color:var(--ink)}
 .mast .wm i{font-style:normal;color:var(--ember)}
@@ -348,13 +363,13 @@ footer a{color:var(--s1)}
 <nav class="index" aria-label="Contents">
 <a href="/russell3000/">
   <span class="t">Russell 3000 Cross-Section</span>
-  <span class="v">rebuilt 17 September 2026</span>
+  <span class="v">rebuilt 19 September 2026</span>
   <span class="d">2,579 companies with computable trailing-twelve-month fundamentals,
   screened on 35 metrics with sector-neutral percentile ranking and a composite score.</span>
 </a>
 <a href="/commentary/">
   <span class="t">Results Commentary</span>
-  <span class="v">rebuilt 17 September 2026</span>
+  <span class="v">rebuilt 19 September 2026</span>
   <span class="d">Management&rsquo;s own discussion of results, extracted from 10-Q and 10-K
   filings and matched to the reported figures.</span>
 </a>

@@ -171,6 +171,9 @@ HTML = """<meta charset="utf-8">
   --ember:#B4531E; --ember2:#8F3F14; --raise:#F3F0E9;
   --dot:#A9A096; --accentbg:#F6EADF; --spy:#2E6F8E;
   --pos:#1F6F4A; --neg:#A32B1F;
+  /* Liquid-glass layer: translucent paper + a cool specular sheen. */
+  --glass:rgba(251,250,247,.72); --glass-brd:rgba(20,17,14,.13);
+  --glass-gloss:rgba(255,255,255,.60); --glass-glare:rgba(180,83,30,.16);
   --serif:"Newsreader",Georgia,"Times New Roman",serif;
   --mono:"IBM Plex Mono",ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace;
   --sans:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
@@ -182,6 +185,8 @@ HTML = """<meta charset="utf-8">
   --ember:#E0762F; --ember2:#F0A268; --raise:#1C1917;
   --dot:#6B635B; --accentbg:#2A1C10; --spy:#6FB2CE;
   --pos:#5FBE8C; --neg:#E8705F;
+  --glass:rgba(18,16,14,.58); --glass-brd:rgba(245,242,236,.14);
+  --glass-gloss:rgba(255,255,255,.08); --glass-glare:rgba(224,118,47,.20);
 }}
 :root[data-theme="dark"]{
   --bg:#12100E; --panel:#1C1917; --ink:#F5F2EC; --ink2:#C0B8AC; --ink3:#8A8177;
@@ -190,6 +195,8 @@ HTML = """<meta charset="utf-8">
   --ember:#E0762F; --ember2:#F0A268; --raise:#1C1917;
   --dot:#6B635B; --accentbg:#2A1C10; --spy:#6FB2CE;
   --pos:#5FBE8C; --neg:#E8705F;
+  --glass:rgba(18,16,14,.58); --glass-brd:rgba(245,242,236,.14);
+  --glass-gloss:rgba(255,255,255,.08); --glass-glare:rgba(224,118,47,.20);
 }
 *{box-sizing:border-box;margin:0;padding:0}
 @supports (corner-shape: squircle){
@@ -199,8 +206,20 @@ HTML = """<meta charset="utf-8">
 body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.5;
   -webkit-font-smoothing:antialiased}
 .wrap{max-width:1180px;margin:0 auto;padding:20px 18px 64px;display:flex;flex-direction:column;gap:13px}
-header{border-bottom:2px solid var(--ink);padding-bottom:12px;display:flex;
-  justify-content:space-between;align-items:flex-end;gap:14px;flex-wrap:wrap}
+header{position:relative;isolation:isolate;padding:15px 18px;display:flex;
+  justify-content:space-between;align-items:flex-end;gap:14px;flex-wrap:wrap;
+  border:1px solid var(--glass-brd);border-radius:16px;background:var(--glass);
+  -webkit-backdrop-filter:blur(16px) saturate(180%);backdrop-filter:blur(16px) saturate(180%);
+  box-shadow:0 1px 0 var(--glass-gloss) inset,0 10px 30px -14px rgba(0,0,0,.40)}
+/* static bevel sheen + a highlight that follows the pointer, like light on glass */
+header::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  border-radius:inherit;background:linear-gradient(135deg,var(--glass-gloss) 0%,transparent 44%)}
+header::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  border-radius:inherit;opacity:0;transition:opacity .3s ease;
+  background:radial-gradient(240px circle at var(--mx,50%) var(--my,-40%),var(--glass-glare),transparent 62%)}
+@media (hover:hover) and (prefers-reduced-motion:no-preference){header:hover::after{opacity:1}}
+/* the masthead is the site-wide floating nav now, so the hero stays a static
+   frosted title card -- two sticky glass bars would collide at the top. */
 h1{font-family:var(--serif);font-size:clamp(24px,4.4vw,36px);letter-spacing:-.021em;
   line-height:1.06;font-weight:600;text-wrap:balance}
 .sub{color:var(--ink2);font-size:14px;margin-top:4px;max-width:62ch}
@@ -243,18 +262,24 @@ a.tk{color:var(--s1);text-decoration:none;font-weight:600}
 a.tk:hover{text-decoration:underline}
 .tip .go{color:var(--s1)}
 label{font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--ink3);font-weight:600}
-select,input[type=search]{font:inherit;font-size:13.5px;padding:7px 9px;border:1px solid var(--rule);
-  border-radius:10px;background:var(--panel);color:var(--ink);width:100%}
+select,input[type=search]{font:inherit;font-size:13.5px;padding:7px 9px;border:1px solid var(--glass-brd);
+  border-radius:10px;background:var(--glass);color:var(--ink);width:100%;
+  -webkit-backdrop-filter:blur(10px) saturate(160%);backdrop-filter:blur(10px) saturate(160%);
+  box-shadow:0 1px 0 var(--glass-gloss) inset}
 select:focus,input:focus{outline:2px solid var(--s1);outline-offset:1px}
 .toggles{display:flex;gap:6px}
-button{font:inherit;font-size:12.5px;font-weight:600;padding:7px 13px;border:1px solid var(--rule);
-  border-radius:10px;background:var(--panel);color:var(--ink2);cursor:pointer}
+button{font:inherit;font-size:12.5px;font-weight:600;padding:7px 13px;border:1px solid var(--glass-brd);
+  border-radius:10px;background:var(--glass);color:var(--ink2);cursor:pointer;
+  -webkit-backdrop-filter:blur(10px) saturate(160%);backdrop-filter:blur(10px) saturate(160%);
+  box-shadow:0 1px 0 var(--glass-gloss) inset}
 button[aria-pressed="true"]{background:var(--s1);border-color:var(--s1);color:#fff}
 button:focus-visible{outline:2px solid var(--s1);outline-offset:2px}
 .chartbox{position:relative;width:100%}
 canvas{width:100%;height:auto;display:block;border-radius:10px;cursor:crosshair}
-.tip{position:absolute;pointer-events:none;background:var(--panel);border:1px solid var(--rule);
-  border-radius:12px;padding:9px 12px;font-size:12.5px;box-shadow:0 4px 14px rgba(0,0,0,.13);
+.tip{position:absolute;pointer-events:none;background:var(--glass);
+  -webkit-backdrop-filter:blur(14px) saturate(170%);backdrop-filter:blur(14px) saturate(170%);
+  border:1px solid var(--glass-brd);border-radius:12px;padding:9px 12px;font-size:12.5px;
+  box-shadow:0 8px 22px -6px rgba(0,0,0,.28),0 1px 0 var(--glass-gloss) inset;
   opacity:0;transition:opacity .1s;min-width:172px;z-index:5}
 .tip.on{opacity:1}
 .tip b{display:block;font-size:13px;margin-bottom:1px}
@@ -263,7 +288,8 @@ canvas{width:100%;height:auto;display:block;border-radius:10px;cursor:crosshair}
 .tip .kv span:first-child{color:var(--ink3)}
 .legend{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
 .chip{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;padding:5px 10px;
-  border:1px solid var(--rule);border-radius:999px;cursor:pointer;background:var(--panel);color:var(--ink2)}
+  border:1px solid var(--glass-brd);border-radius:999px;cursor:pointer;background:var(--glass);color:var(--ink2);
+  -webkit-backdrop-filter:blur(10px) saturate(160%);backdrop-filter:blur(10px) saturate(160%)}
 .chip[aria-pressed="true"]{background:var(--accentbg);border-color:var(--s1);color:var(--ink)}
 .chip i{width:9px;height:9px;border-radius:50%;background:var(--dot);display:inline-block}
 
@@ -276,10 +302,12 @@ canvas{width:100%;height:auto;display:block;border-radius:10px;cursor:crosshair}
 .stratbox{border:1px solid var(--rule);border-radius:10px;background:var(--panel);
   padding:16px 14px 10px;position:relative;margin-top:18px}
 .stratbox svg{display:block;width:100%;height:auto}
-.stip{position:absolute;pointer-events:none;background:var(--bg);border:1px solid var(--rule);
-  max-width:330px;
-  border-radius:7px;padding:9px 11px;font-family:var(--mono);font-size:11.5px;
-  box-shadow:0 4px 18px rgba(0,0,0,.16);opacity:0;transition:opacity .1s;z-index:6}
+.stip{position:absolute;pointer-events:none;background:var(--glass);
+  -webkit-backdrop-filter:blur(14px) saturate(170%);backdrop-filter:blur(14px) saturate(170%);
+  border:1px solid var(--glass-brd);max-width:330px;
+  border-radius:9px;padding:9px 11px;font-family:var(--mono);font-size:11.5px;
+  box-shadow:0 8px 22px -6px rgba(0,0,0,.28),0 1px 0 var(--glass-gloss) inset;
+  opacity:0;transition:opacity .1s;z-index:6}
 .stip table{border-collapse:collapse;width:100%;margin-top:5px}
 .stip td{padding:1px 0;font-size:11px}
 .stip td+td{text-align:right;padding-left:10px;font-variant-numeric:tabular-nums}
@@ -1664,6 +1692,14 @@ if(ENTER<1){
     if(ENTER<1) requestAnimationFrame(step);
   })(t0);
 }
+</script>
+<script>
+/* Liquid-glass specular glare: feed the pointer's position into the header so
+   its ::after highlight tracks the cursor, like light sweeping across glass. */
+(function(){var h=document.querySelector("header");if(!h)return;
+  h.addEventListener("pointermove",function(e){var r=h.getBoundingClientRect();
+    h.style.setProperty("--mx",(e.clientX-r.left)+"px");
+    h.style.setProperty("--my",(e.clientY-r.top)+"px");});})();
 </script>
 __TICKERJS__
 """
