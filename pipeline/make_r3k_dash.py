@@ -428,11 +428,23 @@ canvas{width:100%;height:auto;display:block;border-radius:10px;cursor:crosshair}
 /* screen ---------------------------------------------------------------- */
 .screen{display:grid;grid-template-columns:repeat(auto-fit,minmax(232px,1fr));
         gap:9px 15px;align-items:start}
-.chk{display:flex;gap:9px;align-items:flex-start;padding:9px 11px;border:1px solid var(--rule);
-     border-radius:8px;background:var(--bg);cursor:pointer;font-size:14px;line-height:1.35}
+.chk{display:flex;gap:12px;align-items:flex-start;padding:11px 13px;border:1px solid var(--glass-brd);
+     border-radius:12px;background:var(--glass);cursor:pointer;font-size:14px;line-height:1.35;
+     -webkit-backdrop-filter:blur(8px) saturate(150%);backdrop-filter:blur(8px) saturate(150%);
+     box-shadow:0 1px 0 var(--glass-gloss) inset;transition:border-color .15s}
 .chk:hover{border-color:var(--ink3)}
-.chk:has(input:checked){border-color:var(--s1);background:var(--accentbg)}
-.chk input[type=checkbox]{margin:2px 0 0;accent-color:var(--s1);width:15px;height:15px;flex:none}
+/* active gate = just a brighter ember edge; no solid fill (that clashed with the glass) */
+.chk:has(input:checked){border-color:var(--s1)}
+/* iOS-style switch, built from the native checkbox so behaviour/ids are unchanged */
+.chk input[type=checkbox]{appearance:none;-webkit-appearance:none;flex:none;margin:0;
+     width:40px;height:24px;border-radius:999px;position:relative;cursor:pointer;
+     background:color-mix(in srgb,var(--ink3) 42%,transparent);border:1px solid var(--glass-brd);
+     transition:background .18s ease,border-color .18s ease}
+.chk input[type=checkbox]::before{content:"";position:absolute;top:1px;left:1px;width:20px;height:20px;
+     border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.32);transition:transform .18s ease}
+.chk input[type=checkbox]:checked{background:var(--s1);border-color:var(--s1)}
+.chk input[type=checkbox]:checked::before{transform:translateX(16px)}
+.chk input[type=checkbox]:focus-visible{outline:2px solid var(--s1);outline-offset:2px}
 .chk span{display:block;color:var(--ink)}
 .chk i{display:block;font-style:normal;font-size:12px;color:var(--ink3);margin-top:2px}
 .chk input[type=number]{width:62px;padding:1px 5px;font-family:var(--mono);font-size:13px;
