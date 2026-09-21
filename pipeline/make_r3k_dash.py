@@ -1111,11 +1111,18 @@ $("cv").addEventListener("mousemove",ev=>{
   const mx=(ev.clientX-r.left)*sx, my=(ev.clientY-r.top)*sy;
   // Hover must obey the sector filter. Searching every point meant a greyed-out
   // company from another sector could claim the tooltip.
-  const pool = st.sector ? PLOT.pts.filter(p=>p.d.s===st.sector) : PLOT.pts;
+  let pool = st.sector ? PLOT.pts.filter(p=>p.d.s===st.sector) : PLOT.pts;
+  // Lock to the search: while a ticker is searched, only its point(s) are
+  // touchable, so a tap can't land on a neighbour. If it resolves to exactly
+  // one ticker, any touch anywhere on the chart selects it.
+  let locked=false;
+  if(st.q){ const q=pool.filter(p=>p.d.t.startsWith(st.q));
+            if(q.length){ pool=q; locked=(q.length===1); } }
   let best=null,bd=1e9;
   for(const p of pool){ const d2=(p.x-mx)**2+(p.y-my)**2; if(d2<bd){bd=d2;best=p;} }
-  // a filtered sector is sparser, so allow a slightly larger grab radius
-  const RAD = st.sector ? 2200 : 900;
+  // locked to one ticker -> no distance gate; else a filtered sector is sparser
+  // so allow a slightly larger grab radius
+  const RAD = locked ? Infinity : (st.sector ? 2200 : 900);
   const tip=$("tip");
   if(best&&bd<RAD){
     const d=best.d;
