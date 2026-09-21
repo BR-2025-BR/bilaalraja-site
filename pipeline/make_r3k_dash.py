@@ -238,7 +238,12 @@ h1{font-family:var(--serif);font-size:clamp(24px,4.4vw,36px);letter-spacing:-.02
   white-space:nowrap}
 .panel{background:var(--glass);border:1px solid var(--glass-brd);border-radius:16px;padding:16px 18px;
   -webkit-backdrop-filter:blur(8px) saturate(150%);backdrop-filter:blur(8px) saturate(150%);
-  box-shadow:0 1px 0 var(--glass-gloss) inset,0 12px 30px -22px rgba(0,0,0,.4)}
+  /* luminous specular rim, like the lit edge of the iOS glass */
+  box-shadow:inset 0 1px 1.5px rgba(255,255,255,.34),inset 0 -1px 1px rgba(255,255,255,.05),
+    0 14px 34px -22px rgba(0,0,0,.5)}
+/* iOS-style edge refraction on Chromium; WebKit keeps the frosted blur above */
+.lg-refract .panel{-webkit-backdrop-filter:url(#lg-glass) blur(2px) saturate(155%);
+  backdrop-filter:url(#lg-glass) blur(2px) saturate(155%)}
 .phead{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;
   margin-bottom:10px}
 h2{font-size:15px;font-weight:650;letter-spacing:-.01em}

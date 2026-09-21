@@ -129,7 +129,27 @@ REFRACT_DEFS = (
   "<rect width='100%25' height='100%25' fill='url(%23r)'/>"
   "<rect width='100%25' height='100%25' fill='url(%23g)' style='mix-blend-mode:screen'/></svg>"
   '"/><feDisplacementMap in="SourceGraphic" in2="map" scale="26" '
-  'xChannelSelector="R" yChannelSelector="G"/></filter></svg>'
+  'xChannelSelector="R" yChannelSelector="G"/></filter>'
+  # A second, stronger filter for the larger panels: the displacement stays
+  # neutral across a wide flat centre and ramps hard only in the outer ~15%, so
+  # the backdrop lenses in a thin band right at the rounded edge -- the iOS look
+  # -- then a slight blur smooths the bent pixels. Thin chrome keeps lg-refract.
+  '<filter id="lg-glass" x="-20%" y="-20%" width="140%" height="140%" '
+  'color-interpolation-filters="sRGB">'
+  '<feImage preserveAspectRatio="none" result="m2" href="data:image/svg+xml,'
+  "<svg xmlns='http://www.w3.org/2000/svg' width='320' height='120'><defs>"
+  "<linearGradient id='r2' x1='0' y1='0' x2='1' y2='0'>"
+  "<stop offset='0%25' stop-color='%23ff0000'/><stop offset='15%25' stop-color='%23800000'/>"
+  "<stop offset='85%25' stop-color='%23800000'/><stop offset='100%25' stop-color='%23000000'/>"
+  "</linearGradient><linearGradient id='g2' x1='0' y1='0' x2='0' y2='1'>"
+  "<stop offset='0%25' stop-color='%2300ff00'/><stop offset='15%25' stop-color='%23008000'/>"
+  "<stop offset='85%25' stop-color='%23008000'/><stop offset='100%25' stop-color='%23000000'/>"
+  "</linearGradient></defs><rect width='100%25' height='100%25' fill='%23000000'/>"
+  "<rect width='100%25' height='100%25' fill='url(%23r2)'/>"
+  "<rect width='100%25' height='100%25' fill='url(%23g2)' style='mix-blend-mode:screen'/></svg>"
+  '"/><feDisplacementMap in="SourceGraphic" in2="m2" scale="46" '
+  'xChannelSelector="R" yChannelSelector="G" result="d2"/>'
+  '<feGaussianBlur in="d2" stdDeviation="0.4"/></filter></svg>'
   '<script>(function(){try{var u=navigator.userAgent;'
   'var ios=/iPhone|iPad|iPod|CriOS|FxiOS|EdgiOS/i.test(u);'
   'var cr=/Chrome|Chromium|Edg\\//.test(u)&&!ios;'
