@@ -87,6 +87,17 @@ html[data-nav="traverse"]::view-transition-old(root){animation-name:vt-out-right
 .mast::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
   border-radius:inherit;background:linear-gradient(135deg,var(--glass-gloss) 0%,transparent 46%)}
 @media (min-width:641px){.mast{position:sticky;top:8px;z-index:50}}
+/* a faint ember glow that drifts ever so slightly over the static wash, so the
+   ambient looks alive and the glass has something gently moving to refract.
+   Transform-animated (compositor-friendly) and very slow; off for reduced motion. */
+body::before{content:"";position:fixed;inset:-25%;z-index:-1;pointer-events:none;
+  background:radial-gradient(38vmax 38vmax at 32% 26%,
+    color-mix(in srgb,var(--ember) 10%,transparent), transparent 60%);
+  will-change:transform;animation:ambientDrift 46s ease-in-out infinite alternate}
+@media (prefers-reduced-motion:reduce){body::before{animation:none}}
+@keyframes ambientDrift{
+  from{transform:translate3d(-2%,-1.5%,0) scale(1)}
+  to{transform:translate3d(3%,2%,0) scale(1.07)}}
 /* Chromium-only refraction: default stays plain glass; the .lg-refract class is
    added by feature-detection (see REFRACT_DEFS) only where SVG filters work in
    backdrop-filter. Safari / iOS / Firefox never get the class, so they keep the

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="A quality screen where the criterion that buys a company is the criterion that sells it. Six gates, 25 names, held while they keep passing. Every buy and sell across 51 quarterly formations, December 2013 to July 2026.">
 <meta name="author" content="Bilaal Raja">
-<meta name="x-build" content="f46a1c6c23">
+<meta name="x-build" content="3b9f8290ab">
 <link rel="canonical" href="https://bilaalraja.com/gate-exit">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Bilaal Raja">
@@ -90,6 +90,12 @@ body{margin:0;color:var(--ink);font-family:var(--serif);font-size:16px;line-heig
    var(--paper);
  background-attachment:fixed}
 .num,.mono{font-family:var(--mono)}
+/* faint accent glow drifting ever so slightly over the static wash */
+body::before{content:"";position:fixed;inset:-25%;z-index:-1;pointer-events:none;
+ background:radial-gradient(38vmax 38vmax at 32% 26%, color-mix(in srgb,var(--s1) 10%,transparent), transparent 60%);
+ will-change:transform;animation:ambientDrift 46s ease-in-out infinite alternate}
+@media (prefers-reduced-motion:reduce){body::before{animation:none}}
+@keyframes ambientDrift{from{transform:translate3d(-2%,-1.5%,0) scale(1)}to{transform:translate3d(3%,2%,0) scale(1.07)}}
 .wrap{max-width:1040px;margin:0 auto;padding:38px 20px 90px}
 h1{font-family:var(--serif);font-weight:600;font-size:2.3rem;line-height:1.12;margin:0 0 6px;letter-spacing:-.015em}
 .sub{color:var(--ink3);font-size:.9rem;margin-bottom:28px}
