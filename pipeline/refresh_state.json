@@ -1,14 +1,17 @@
 {
  "split_mismatch": [
-  "SECZ",
-  "USDE"
+  "KOD",
+  "LQDA",
+  "QURE",
+  "INDP",
+  "LFCR"
  ],
  "price_mismatch": 0,
- "n": 2580,
- "total_mcap": 81454.87204937499,
- "floor": 0.1234687347,
- "priced": 6795,
- "price_date": "2026-09-21",
- "built": "2026-09-21",
+ "n": 2583,
+ "total_mcap": 79983.32152669069,
+ "floor": 0.1207160028,
+ "priced": 6796,
+ "price_date": "2026-09-30",
+ "built": "2026-09-30",
  "unread_days": []
 }
