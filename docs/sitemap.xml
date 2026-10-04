@@ -620,6 +620,7 @@
   <url><loc>https://bilaalraja.com/c/CVBF</loc><lastmod>2026-10-04</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://bilaalraja.com/c/CVCO</loc><lastmod>2026-10-04</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://bilaalraja.com/c/CVEO</loc><lastmod>2026-10-04</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://bilaalraja.com/c/CVGI</loc><lastmod>2026-10-04</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://bilaalraja.com/c/CVI</loc><lastmod>2026-10-04</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://bilaalraja.com/c/CVLG</loc><lastmod>2026-10-04</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://bilaalraja.com/c/CVLT</loc><lastmod>2026-10-04</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
@@ -1310,6 +1311,7 @@
   <url><loc>https://bilaalraja.com/c/KSS</loc><lastmod>2026-10-04</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://bilaalraja.com/c/KTB</loc><lastmod>2026-10-04</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://bilaalraja.com/c/KTOS</loc><lastmod>2026-10-04</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://bilaalraja.com/c/KULR</loc><lastmod>2026-10-04</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://bilaalraja.com/c/KURA</loc><lastmod>2026-10-04</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://bilaalraja.com/c/KVHI</loc><lastmod>2026-10-04</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://bilaalraja.com/c/KVUE</loc><lastmod>2026-10-04</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
@@ -1396,7 +1398,6 @@
   <url><loc>https://bilaalraja.com/c/LTC</loc><lastmod>2026-10-04</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://bilaalraja.com/c/LTH</loc><lastmod>2026-10-04</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://bilaalraja.com/c/LTRX</loc><lastmod>2026-10-04</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://bilaalraja.com/c/LUCD</loc><lastmod>2026-10-04</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://bilaalraja.com/c/LUCK</loc><lastmod>2026-10-04</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://bilaalraja.com/c/LULU</loc><lastmod>2026-10-04</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://bilaalraja.com/c/LUMN</loc><lastmod>2026-10-04</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
@@ -2132,7 +2133,6 @@
   <url><loc>https://bilaalraja.com/c/SMCI</loc><lastmod>2026-10-04</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://bilaalraja.com/c/SMG</loc><lastmod>2026-10-04</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://bilaalraja.com/c/SMHI</loc><lastmod>2026-10-04</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://bilaalraja.com/c/SMID</loc><lastmod>2026-10-04</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://bilaalraja.com/c/SMP</loc><lastmod>2026-10-04</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://bilaalraja.com/c/SMPL</loc><lastmod>2026-10-04</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://bilaalraja.com/c/SMR</loc><lastmod>2026-10-04</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
@@ -2207,7 +2207,6 @@
   <url><loc>https://bilaalraja.com/c/STTK</loc><lastmod>2026-10-04</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://bilaalraja.com/c/STWD</loc><lastmod>2026-10-04</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://bilaalraja.com/c/STX</loc><lastmod>2026-10-04</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://bilaalraja.com/c/STXS</loc><lastmod>2026-10-04</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://bilaalraja.com/c/STZ</loc><lastmod>2026-10-04</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://bilaalraja.com/c/SUI</loc><lastmod>2026-10-04</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://bilaalraja.com/c/SUPN</loc><lastmod>2026-10-04</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
@@ -2386,6 +2385,7 @@
   <url><loc>https://bilaalraja.com/c/UNM</loc><lastmod>2026-10-04</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://bilaalraja.com/c/UNP</loc><lastmod>2026-10-04</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://bilaalraja.com/c/UNTY</loc><lastmod>2026-10-04</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://bilaalraja.com/c/UP</loc><lastmod>2026-10-04</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://bilaalraja.com/c/UPB</loc><lastmod>2026-10-04</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://bilaalraja.com/c/UPBD</loc><lastmod>2026-10-04</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://bilaalraja.com/c/UPS</loc><lastmod>2026-10-04</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
@@ -2465,6 +2465,7 @@
   <url><loc>https://bilaalraja.com/c/VTR</loc><lastmod>2026-10-04</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://bilaalraja.com/c/VTRS</loc><lastmod>2026-10-04</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://bilaalraja.com/c/VTS</loc><lastmod>2026-10-04</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://bilaalraja.com/c/VTVT</loc><lastmod>2026-10-04</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://bilaalraja.com/c/VUZI</loc><lastmod>2026-10-04</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://bilaalraja.com/c/VVV</loc><lastmod>2026-10-04</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://bilaalraja.com/c/VVX</loc><lastmod>2026-10-04</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>

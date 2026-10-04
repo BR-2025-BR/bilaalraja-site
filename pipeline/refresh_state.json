@@ -1,17 +1,15 @@
 {
  "split_mismatch": [
-  "KOD",
-  "LQDA",
-  "QURE",
-  "INDP",
-  "LFCR"
+  "CTVA",
+  "SDEV",
+  "FHTX"
  ],
  "price_mismatch": 0,
- "n": 2583,
- "total_mcap": 79983.32152669069,
- "floor": 0.1207160028,
+ "n": 2584,
+ "total_mcap": 80808.73366132271,
+ "floor": 0.1199411174,
  "priced": 6796,
- "price_date": "2026-09-30",
- "built": "2026-09-30",
+ "price_date": "2026-10-02",
+ "built": "2026-10-04",
  "unread_days": []
 }
