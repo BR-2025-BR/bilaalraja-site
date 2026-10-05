@@ -153,6 +153,13 @@ body::before{content:"";position:fixed;inset:-25%;z-index:-1;pointer-events:none
 @keyframes ambientDrift{
   from{transform:translate3d(-2%,-1.5%,0) scale(1)}
   to{transform:translate3d(3%,2%,0) scale(1.07)}}
+/* refined hover micro-interaction (a Great-UI cue): a small lift on interactive
+   controls and nav links. Subtle, and off under reduced motion. */
+@media (prefers-reduced-motion:no-preference){
+  button,select,input[type=search],.mast nav a{transition:transform .15s ease,border-color .15s ease,box-shadow .15s ease,color .15s ease}
+  button:hover,select:hover{transform:translateY(-1px)}
+  .mast nav a:hover{transform:translateY(-1px)}
+}
 /* Chromium-only refraction: default stays plain glass; the .lg-refract class is
    added by feature-detection (see REFRACT_DEFS) only where SVG filters work in
    backdrop-filter. Safari / iOS / Firefox never get the class, so they keep the
@@ -356,7 +363,7 @@ footer{margin-top:52px;padding-top:20px;border-top:1px solid var(--rule);
 <p class="lede">The universe, the point-in-time discipline, the metric definitions,
 and the defects I found along the way.</p>
 <div class="stamp">2,584 companies &middot; filings to 2026-10-02 &middot;
-prices 2026-10-02 &middot; rebuilt 4 October 2026</div>
+prices 2026-10-02 &middot; rebuilt 5 October 2026</div>
 
 <h2>What this is, and what it is not</h2>
 <p>It is a <strong>reconstruction</strong>, not the licensed index. Constituents are

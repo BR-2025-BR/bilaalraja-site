@@ -400,4 +400,35 @@ render(Q.length-1);
    +`<span>&#9644; S&amp;P 500 <b>${money(Q[Q.length-1].spy)}</b></span>`
    +`<span>${Q.length} formations, ${Q[0].formed} to ${Q[Q.length-1].formed}</span>`;
 })();
-</script></body></html>
+</script>
+<style>
+/* Blur scroll-reveal (a Great-UI cue): content un-blurs and rises into place.
+   Only active when JS adds .rv AND motion is allowed -- so with no JS or
+   reduced-motion, every block is fully visible at rest (never hidden). */
+.rv .rvl{opacity:0;transform:translateY(16px);filter:blur(7px);will-change:opacity,transform,filter;
+  transition:opacity .7s cubic-bezier(.22,.61,.36,1),transform .7s cubic-bezier(.22,.61,.36,1),filter .7s cubic-bezier(.22,.61,.36,1)}
+.rv .rvl.shown{opacity:1;transform:none;filter:none}
+/* refined hover micro-interaction on the controls, the other Great-UI cue */
+select,button{transition:transform .15s ease,border-color .15s ease,box-shadow .15s ease}
+select:hover,button:hover{transform:translateY(-1px)}
+</style>
+<script>
+(function(){
+  if(!matchMedia||!matchMedia('(prefers-reduced-motion: no-preference)').matches) return;
+  var wrap=document.querySelector('.wrap'); if(!wrap) return;
+  // tag only static readable blocks; never the live chart/canvas/svg
+  var els=[].slice.call(wrap.querySelectorAll(
+    ':scope > h2, :scope > p, :scope > .rule, :scope > .ctl, :scope > .kv, :scope > .scroll, :scope > .trades'));
+  if(!els.length) return;
+  document.documentElement.classList.add('rv');
+  els.forEach(function(el){el.classList.add('rvl');});
+  if(!('IntersectionObserver' in window)){els.forEach(function(el){el.classList.add('shown');});return;}
+  var io=new IntersectionObserver(function(ents){
+    ents.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('shown'); io.unobserve(e.target); } });
+  },{rootMargin:'0px 0px -7% 0px',threshold:0.08});
+  els.forEach(function(el){io.observe(el);});
+  // safety net: reveal everything after 2.5s regardless, so nothing can stay hidden
+  setTimeout(function(){els.forEach(function(el){el.classList.add('shown');});},2500);
+})();
+</script>
+</body></html>
