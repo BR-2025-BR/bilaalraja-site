@@ -804,6 +804,24 @@ MANIFEST = """{{
     {{"src": "__I192__", "sizes": "192x192", "type": "image/png", "purpose": "any"}},
     {{"src": "__I512__", "sizes": "512x512", "type": "image/png", "purpose": "any"}},
     {{"src": "__I512__", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}}
+  ],
+  "shortcuts": [
+    {{"name": "Cross-section", "short_name": "Screen",
+      "description": "Where the US market sits right now",
+      "url": "/russell3000/",
+      "icons": [{{"src": "__I192__", "sizes": "192x192", "type": "image/png"}}]}},
+    {{"name": "The Gate Exit Rule", "short_name": "Book",
+      "description": "The strategy put to the test",
+      "url": "/gate-exit/",
+      "icons": [{{"src": "__I192__", "sizes": "192x192", "type": "image/png"}}]}},
+    {{"name": "Commentary", "short_name": "Commentary",
+      "description": "What management actually said",
+      "url": "/commentary/",
+      "icons": [{{"src": "__I192__", "sizes": "192x192", "type": "image/png"}}]}},
+    {{"name": "US Treasury Yields", "short_name": "Rates",
+      "description": "The Treasury curve and the Fed",
+      "url": "/rates/",
+      "icons": [{{"src": "__I192__", "sizes": "192x192", "type": "image/png"}}]}}
   ]
 }}"""
 
